@@ -6,18 +6,6 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
-    "prompt-sync": "^4.2.0",
     "sequelize": "^6.37.7"
-  },
-  "name": "nucleo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "base.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  }
 }
