@@ -1,0 +1,22 @@
+datos:
+	rut
+	nombre
+	apellido
+	nacimiento?
+
+vinculante:
+	estrellas (puntuación)
+	publicaciónes (realizadas por el)
+	compartidos
+
+*POSIBLE*
+*estrellas:
+	puntuación;
+	comparitr publicaciónes
+	publicaciones
+	PREMIOS:
+		restaurantes pet friendly? descuentos
+
+*
+EJEMPLO: rut: nombre,apellido,nacimiento
+vinculante
