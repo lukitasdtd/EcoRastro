@@ -1,0 +1,175 @@
+/* ============================
+   TOKENS: EcoRastro Design
+   ============================ */
+:root{
+  --er-dark: #182722;
+  --er-text: #2D3748;
+  --er-bg: #D0E6DA;
+  --er-white: #FFFFFF;
+  --er-primary: #5B9A68;
+  --er-primary-2: #A0AC48;
+  --er-accent: #F79A3E;
+
+  --er-radius-lg: 16px;
+  --er-radius-md: 12px;
+  --er-gap: 16px;
+  --er-shadow: 0 4px 12px rgba(0,0,0,.15);
+
+  --er-font-title: 700 28px/1.25 Quicksand, system-ui, sans-serif;
+  --er-font-h2: 600 20px/1.2 Quicksand, system-ui, sans-serif;
+  --er-font-body: 400 16px/1.4 Roboto, system-ui, sans-serif;
+  --er-font-label: 400 14px/1 Roboto, system-ui, sans-serif;
+  --er-font-note: 14px/1.4 "Lucida Bright", Georgia, serif;
+}
+
+/* Base */
+*,*::before,*::after{ box-sizing: border-box; }
+html,body{ height:100%; }
+body{
+  margin:0; background:var(--er-bg); color:var(--er-text);
+  font: var(--er-font-body);
+}
+img{ max-width:100%; display:block; }
+
+/* Layout helpers */
+.er-container{ width:100%; max-width:960px; margin:40px auto; padding:0 16px; }
+.er-card{ background:var(--er-white); border-radius:var(--er-radius-lg); box-shadow:var(--er-shadow); padding:32px; }
+.er-title{ font: var(--er-font-title); margin: 8px 0 24px; text-align:center; }
+.er-brand{ display:grid; justify-content:center; gap:8px; margin-bottom:8px; }
+.er-brand__logo{ width:76px; height:76px; border-radius:50%; object-fit:contain; }
+.er-brand__name{ font:700 28px/1.1 Quicksand, sans-serif; text-align:center; letter-spacing:.2px; }
+
+/* Grid */
+.er-grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:var(--er-gap); }
+.er-grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--er-gap); }
+
+/* Section */
+.er-section{ display:grid; gap:var(--er-gap); margin-block:20px; }
+.er-section__title{ font: var(--er-font-h2); margin:0; }
+
+/* Fields */
+.er-field{ display:grid; gap:6px; }
+.er-label{ font: var(--er-font-label); }
+
+/* Inputs base */
+.er-input, .er-textarea, .er-select{
+  width:100%; border-radius:var(--er-radius-md);
+  border:2px solid var(--er-primary); background:var(--er-white);
+  color:var(--er-text); font:inherit; padding:12px 14px; outline:none;
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+.er-textarea{ min-height:120px; resize:vertical; }
+.er-input:focus, .er-textarea:focus, .er-select:focus{
+  border-color: var(--er-primary-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--er-primary) 25%, transparent);
+}
+.is-invalid{ border-color:#E53E3E !important; }
+.is-disabled{ opacity:.6; pointer-events:none; }
+
+/* Checkbox & Radio */
+.er-check, .er-radio{
+  display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none;
+}
+.er-check input[type="checkbox"],
+.er-radio input[type="radio"]{
+  appearance:none; width:20px; height:20px; border:2px solid var(--er-primary);
+  background:var(--er-white); display:grid; place-items:center; transition:.15s;
+}
+.er-check input[type="checkbox"]{ border-radius:4px; }
+.er-radio input[type="radio"]{ border-radius:999px; }
+.er-check input[type="checkbox"]:checked{
+  background: radial-gradient(var(--er-primary) 50%, transparent 51%);
+}
+.er-radio input[type="radio"]:checked{
+  background: radial-gradient(var(--er-primary) 45%, transparent 46%);
+}
+
+/* Uploader */
+.er-uploader{
+  position:relative; min-height:120px; border:2px dashed var(--er-accent);
+  border-radius:var(--er-radius-md); background:#fffdf7; display:grid; place-items:center;
+  text-align:center; padding:12px; overflow:hidden;
+}
+.er-uploader input[type="file"]{ position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+.er-uploader__hint{ pointer-events:none; font:500 14px/1 Quicksand, sans-serif; color:var(--er-accent); }
+.er-uploader__preview{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; }
+.er-uploader.is-filled .er-uploader__preview{ display:block; }
+.er-uploader.is-filled .er-uploader__hint{ display:none; }
+
+/* Buttons */
+.er-actions{ display:grid; gap:12px; grid-auto-flow:column; justify-content:center; margin-top:8px; }
+.er-btn{ border:0; border-radius:var(--er-radius-md); padding:12px 22px; font:600 16px/1 Quicksand, sans-serif; cursor:pointer; transition:transform .06s, filter .15s, box-shadow .15s; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+.er-btn:active{ transform:translateY(1px); }
+.er-btn--primary{ background:var(--er-primary); color:#fff; }
+.er-btn--primary:hover{ filter:brightness(1.05); }
+.er-btn--secondary{ background:#fff; color:var(--er-text); border:2px solid var(--er-primary); }
+.er-btn--secondary:hover{ filter:brightness(1.02); }
+.er-btn--accent{ background:var(--er-accent); color:#fff; }
+
+/* Note */
+.er-note{ font: var(--er-font-note); color: color-mix(in srgb, var(--er-text) 80%, white); }
+
+/* Responsive */
+@media (max-width: 920px){ .er-grid-2{ grid-template-columns:1fr; } }
+@media (max-width: 600px){
+  .er-card{ padding:20px; }
+  .er-grid-3{ grid-template-columns:1fr; }
+  .er-actions{ grid-auto-flow:row; }
+}
+/* ============================
+   NAVBAR
+   ============================ */
+.er-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  background: var(--er-primary);
+  padding:8px 20px;
+  border-radius:0 0 var(--er-radius-md) var(--er-radius-md);
+  color:#fff;
+  font:500 16px Quicksand, sans-serif;
+}
+
+.er-nav__logo img{
+  width:40px; height:40px; object-fit:contain;
+}
+
+.er-nav__search{
+  position:relative;
+  flex:1;
+  max-width:240px;
+}
+.er-nav__search input{
+  width:100%;
+  padding:8px 32px 8px 12px;
+  border-radius:var(--er-radius-md);
+  border:0;
+  outline:none;
+  font:14px Roboto, sans-serif;
+}
+.er-nav__search .er-nav__icon{
+  position:absolute;
+  right:8px; top:50%; transform:translateY(-50%);
+  font-size:14px;
+  color: var(--er-accent);
+}
+
+.er-nav__links{
+  display:flex; gap:20px;
+  list-style:none; margin:0; padding:0;
+}
+.er-nav__links a{
+  text-decoration:none; color:#fff;
+  transition:.2s;
+}
+.er-nav__links a:hover{ color: var(--er-accent); }
+
+.er-nav__user .er-nav__avatar{
+  font-size:22px;
+  display:grid; place-items:center;
+  width:32px; height:32px;
+  border-radius:50%;
+  background: #fff;
+  color: var(--er-primary);
+}

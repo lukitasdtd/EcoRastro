@@ -1,0 +1,289 @@
+/* =========================
+   VARIABLES
+   ========================= */
+   :root {
+    --verde-principal: #2e7d32;
+    --verde-suave: #5B9A68;
+    --verde-oscuro: #4a8157;
+    --fondo-claro: #f9fff7;
+    --texto: #2e2e2e;
+  }
+  
+  /* =========================
+     GLOBAL
+     ========================= */
+  * {
+    font-family: 'Quicksand', sans-serif;
+  }
+  
+  body {
+    background: linear-gradient(135deg, var(--fondo-claro), #e8f5e9, #ffffff);
+    margin: 0;
+    padding: 0;
+    color: var(--texto);
+  }
+  
+  h1, h2, h5 {
+    color: var(--verde-principal);
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  /* =========================
+     NAVBAR MODERNO
+     ========================= */
+  .custom-navbar {
+    background: linear-gradient(90deg, var(--verde-suave), var(--verde-oscuro));
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  
+  .custom-navbar .navbar-brand {
+    color: #fff !important;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  
+  .custom-navbar .nav-link {
+    color: #e8f5e9 !important;
+    font-weight: 500;
+    margin: 0 4px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-navbar .nav-link:hover,
+  .custom-navbar .nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff !important;
+  }
+  
+  .custom-navbar .user-icon img {
+    filter: brightness(0) invert(1); /* Icono blanco */
+    transition: transform 0.2s ease;
+  }
+  
+  .custom-navbar .user-icon img:hover {
+    transform: scale(1.1);
+  }
+  
+  /* =========================
+     BUSCADOR
+     ========================= */
+  .search-form {
+    flex: 1;
+    max-width: 400px;
+  }
+  
+  .search-form input {
+    border-radius: 30px;
+    padding: 6px 14px;
+    border: none;
+  }
+  
+  .search-input {
+    border-radius: 20px;
+    padding: 6px 14px;
+    border: 2px solid #c8e6c9;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #66bb6a;
+    box-shadow: 0 0 6px rgba(102, 187, 106, 0.4);
+  }
+  
+  .search-form button {
+    border-radius: 30px;
+    font-weight: bold;
+    padding: 6px 14px;
+    border: none;
+    background: #fff;
+    color: var(--verde-suave);
+    transition: background 0.2s;
+  }
+  
+  .search-form button:hover {
+    background: #f1f8f4;
+  }
+  
+  /* =========================
+     ICONO USUARIO
+     ========================= */
+  .user-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #c8e6c9;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .user-icon:hover {
+    transform: scale(1.1);
+    border-color: #66bb6a;
+  }
+  
+  /* =========================
+     HERO
+     ========================= */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+    gap: 20px;
+  }
+  
+  .hero-img img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .hero-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .hero-center .logo-central {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .hero-center h2 {
+    font-size: 1.6rem;
+    color: var(--verde-principal);
+  }
+  
+  .hero-center p {
+    max-width: 400px;
+    color: #444;
+    font-size: 1rem;
+  }
+  
+  /* =========================
+     CARDS
+     ========================= */
+  .card {
+    border: none;
+    border-radius: 14px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  
+  .card-anim:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--verde-principal);
+    margin-bottom: 0.75rem;
+  }
+  
+  .card-text {
+    flex-grow: 1;
+    font-size: 0.95em;
+    color: #444;
+  }
+  
+  .card-body ul li {
+    margin-bottom: 6px;
+    font-size: 0.95em;
+  }
+  
+  /* Botones dentro de cards */
+  .card .btn {
+    align-self: flex-start;
+    margin-top: auto;
+  }
+  
+  /* =========================
+     BOTONES
+     ========================= */
+  .btn-success {
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  
+  /* =========================
+     CARRUSEL EDUCATIVO
+     ========================= */
+  #carruselSimple {
+    max-height: 280px;
+  }
+  
+  #carruselSimple img {
+    height: 280px;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+  
+  @media (max-width: 768px) {
+    #carruselSimple,
+    #carruselSimple img {
+      height: 200px;
+    }
+  }
+  
+  /* =========================
+     CONTENEDOR CENTRAL
+     ========================= */
+  .container-lg {
+    max-width: 1100px;   /* centrado elegante */
+  }
+  
+  /* =========================
+     RESPONSIVE HERO
+     ========================= */
+  @media (max-width: 992px) {
+    .hero {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .hero-img {
+      order: 2;
+    }
+    .hero-center {
+      order: 1;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    header.navbar {
+      flex-direction: column;
+      gap: 10px;
+    }
+    header nav {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+  
+  /* =========================
+     FOOTER
+     ========================= */
+  footer {
+    background: #f8f9fa;
+    text-align: center;
+    padding: 16px;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 40px;
+  }
+  

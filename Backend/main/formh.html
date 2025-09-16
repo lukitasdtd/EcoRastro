@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EcoRastro | Formulario de Huerta</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Tipografías -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="assets/css/ecorastro-ui.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <!-- Barra de navegación -->
+<nav class="er-nav">
+  <div class="er-nav__logo">
+    <img src="assets/img/logo-ecorastro.png" alt="EcoRastro" />
+  </div>
+
+  <div class="er-nav__search">
+    <input type="text" placeholder="Buscar..." />
+    <span class="er-nav__icon">🔍</span>
+  </div>
+
+  <ul class="er-nav__links">
+    <li><a href="#">Mapa interactivo</a></li>
+    <li><a href="#">Calendario de siembras</a></li>
+    <li><a href="#">Huertas</a></li>
+    <li><a href="#">Mascotas</a></li>
+  </ul>
+
+  <div class="er-nav__user">
+    <span class="er-nav__avatar">👤</span>
+  </div>
+</nav>
+
+
+  <main class="er-container">
+    <article class="er-card" role="region" aria-labelledby="form-title">
+
+      <!-- Brand -->
+      <header class="er-brand" aria-label="EcoRastro">
+        <img class="er-brand__logo" src="assets/img/logo-ecorastro.png" alt="EcoRastro">
+        <div class="er-brand__name">EcoRastro</div>
+      </header>
+
+      <h1 id="form-title" class="er-title">Formulario de Huerta</h1>
+
+      <!-- Datos principales -->
+      <section class="er-section" aria-labelledby="s-datos">
+        <h2 id="s-datos" class="er-section__title">Datos principales</h2>
+
+        <div class="er-grid-2">
+          <label class="er-field">
+            <span class="er-label">Nombre de la huerta *</span>
+            <input class="er-input" type="text" name="name" required placeholder="Ej. Huerta Los Aromos">
+          </label>
+
+          <label class="er-field">
+            <span class="er-label">Ubicación (comuna / región) *</span>
+            <input class="er-input" type="text" name="location" id="region-select">
+          </label>
+        </div>
+
+        <label class="er-field">
+          <span class="er-label">Superficie aproximada (m²)</span>
+          <input class="er-input" type="number" name="area" min="1" inputmode="numeric" placeholder="Ej. 20">
+        </label>
+      </section>
+
+      <!-- Descripción -->
+      <section class="er-section" aria-labelledby="s-desc">
+        <h2 id="s-desc" class="er-section__title">Descripción</h2>
+        <label class="er-field">
+          <span class="er-label">Cuéntanos sobre tu huerta</span>
+          <textarea class="er-textarea" name="description" placeholder="Qué cultivas, cómo la cuidas, propósito…"></textarea>
+        </label>
+      </section>
+
+      <!-- Cultivos / Prácticas -->
+      <section class="er-section" aria-labelledby="s-cultivos">
+        <h2 id="s-cultivos" class="er-section__title">Cultivos & Prácticas</h2>
+
+        <div class="er-grid-2">
+          <!-- Cultivos -->
+          <div class="er-section">
+            <strong class="er-label">Cultivos</strong>
+            <label class="er-check"><input type="checkbox" name="crops" value="tomates"><span>Tomates</span></label>
+            <label class="er-check"><input type="checkbox" name="crops" value="lechugas"><span>Lechugas</span></label>
+            <label class="er-check"><input type="checkbox" name="crops" value="hierbas"><span>Hierbas</span></label>
+            <label class="er-check"><input type="checkbox" name="crops" value="frutales"><span>Frutales</span></label>
+
+            <div class="er-grid-2">
+              <label class="er-check"><input id="otrosCk" type="checkbox"><span>Otros</span></label>
+              <input id="otrosInp" class="er-input is-disabled" type="text" placeholder="Especifica" disabled>
+            </div>
+          </div>
+
+          <!-- Prácticas -->
+          <div class="er-section">
+            <strong class="er-label">Prácticas sostenibles</strong>
+            <label class="er-radio"><input type="radio" name="practice" value="compostaje"><span>Compostaje</span></label>
+            <label class="er-radio"><input type="radio" name="practice" value="riego"><span>Riego eficiente</span></label>
+            <label class="er-radio"><input type="radio" name="practice" value="sin-pesticidas"><span>Sin pesticidas químicos</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fotos -->
+      <section class="er-section" aria-labelledby="s-fotos">
+        <h2 id="s-fotos" class="er-section__title">Fotos</h2>
+
+        <div class="er-grid-3">
+          <div class="er-uploader" data-uploader>
+            <img class="er-uploader__preview" alt="">
+            <input type="file" accept="image/*">
+            <div class="er-uploader__hint">Subir imagen</div>
+          </div>
+
+          <div class="er-uploader" data-uploader>
+            <img class="er-uploader__preview" alt="">
+            <input type="file" accept="image/*">
+            <div class="er-uploader__hint">Subir imagen</div>
+          </div>
+
+          <div class="er-uploader" data-uploader>
+            <img class="er-uploader__preview" alt="">
+            <input type="file" accept="image/*">
+            <div class="er-uploader__hint">Subir imagen</div>
+          </div>
+        </div>
+
+        <p class="er-note">Formatos JPG/PNG. Máximo 3 imágenes, ideal horizontal.</p>
+      </section>
+
+      <!-- Compartir -->
+      <section class="er-section" aria-labelledby="s-share">
+        <h2 id="s-share" class="er-section__title">Opciones de compartir</h2>
+        <label class="er-check"><input type="checkbox" name="share_map" checked><span>Visible en el mapa comunitario</span></label>
+        <label class="er-check"><input type="checkbox" name="allow_comments"><span>Permitir comentarios</span></label>
+      </section>
+
+      <!-- Acciones -->
+      <div class="er-actions">
+        <button class="er-btn er-btn--primary" type="button" id="publishBtn">Publicar</button>
+        <button class="er-btn er-btn--secondary" type="button">Guardar borrador</button>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- JS -->
+  <script src="assets/js/app.js"></script>
+  <footer>
+    <p>© 2025 EcoRastro - Conectando comunidades 🌱</p>
+  </footer>
+</body>
+</html>

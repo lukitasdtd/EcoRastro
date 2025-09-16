@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoRastro | Calendario de Siembra</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Fuente Quicksand -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/calendario.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+  <div class="container-fluid px-4">
+
+    <!-- Logo -->
+    <a class="navbar-brand fw-bold text-success d-flex align-items-center" href="index.html">
+      🌱 <span class="ms-2">EcoRastro</span>
+    </a>
+
+    <!-- Botón de hamburguesa -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Contenido -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <!-- Buscador -->
+      <form class="d-flex mx-lg-auto my-3 my-lg-0 search-form" role="search">
+        <input class="form-control search-input" type="search" placeholder="🔍 Buscar..." aria-label="Buscar">
+      </form>
+
+      <!-- Menú -->
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="index.html">🏠 <span class="d-none d-lg-inline">Inicio</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="calendario.html">📅 <span class="d-none d-lg-inline">Calendario de siembra</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="educacion.html">📖 <span class="d-none d-lg-inline">Sección Educativa</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="mapa.html">🗺️ <span class="d-none d-lg-inline">Mapa</span></a></li>
+        <!-- Icono usuario -->
+        <li class="nav-item ms-lg-3">
+          <a class="nav-link p-0" href="login.html">
+            <img src="img/user-icon.png" alt="Ingresa/Regístrate" class="user-icon">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Contenido -->
+  <div class="container">
+    <div class="row g-4">
+      <!-- Col izquierda: filtros + calendario -->
+      <div class="col-lg-8">
+        <!-- Controles -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <button class="btn btn-outline-success btn-sm" onclick="cambiarMes(-1)">◀</button>
+            <button class="btn btn-outline-success btn-sm" onclick="cambiarMes(1)">▶</button>
+            <span id="mes-anio" class="fw-bold ms-2"></span>
+          </div>
+          <span id="estacion-label" class="badge"></span>
+        </div>
+
+        <!-- Filtros -->
+        <div class="d-flex gap-2 mb-3">
+          <select class="form-select form-select-sm w-auto" onchange="aplicarFiltro(this.value)">
+            <option value="todos">Todos</option>
+            <option value="verdura">Verduras</option>
+            <option value="fruta">Frutas</option>
+            <option value="hierba">Hierbas</option>
+            <option value="flor">Flores</option>
+          </select>
+          <select class="form-select form-select-sm w-auto" onchange="aplicarFiltroEstacion(this.value)">
+            <option value="auto">Estación automática</option>
+            <option value="primavera">Primavera</option>
+            <option value="verano">Verano</option>
+            <option value="otoño">Otoño</option>
+            <option value="invierno">Invierno</option>
+          </select>
+        </div>
+
+        <!-- Cabecera días -->
+        <div id="calendario-header"></div>
+        <!-- Calendario -->
+        <div id="calendario" class="mb-4"></div>
+      </div>
+
+      <!-- Col derecha: Card de tips -->
+      <div class="col-lg-4">
+        <div id="tip-card" class="card shadow-sm">
+          <img src="assets/img/tomate.jpg" class="card-img-top" alt="Imagen cultivo">
+          <div class="card-body">
+            <h5 class="card-title">Selecciona un cultivo</h5>
+            <p class="card-text">Haz clic en un evento del calendario para ver consejos de siembra aquí.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/calendario.js"></script>
+</body>
+</html>

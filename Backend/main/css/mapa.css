@@ -1,0 +1,165 @@
+/* =========================
+   VARIABLES DE COLOR
+   ========================= */
+   :root {
+    --verde-principal: #2e7d32;
+    --verde-suave: #5B9A68;
+    --verde-oscuro: #4a8157;
+    --fondo-claro: #f9fff7;
+    --texto: #2e2e2e;
+  }
+  
+  /* =========================
+     GLOBAL
+     ========================= */
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(135deg, var(--fondo-claro), #e8f5e9, #ffffff);
+    margin: 0;
+    padding: 0;
+    color: var(--texto);
+  }
+  
+  h1, h2, h5 {
+    color: var(--verde-principal);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  /* =========================
+     NAVBAR
+     ========================= */
+  .custom-navbar {
+    background: linear-gradient(90deg, var(--verde-suave), var(--verde-oscuro));
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  
+  .custom-navbar .navbar-brand {
+    color: #fff !important;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  
+  .custom-navbar .nav-link {
+    color: #e8f5e9 !important;
+    font-weight: 500;
+    margin: 0 4px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-navbar .nav-link:hover,
+  .custom-navbar .nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff !important;
+  }
+  
+  .user-icon img {
+    filter: brightness(0) invert(1);
+    transition: transform 0.2s ease;
+  }
+  
+  .user-icon img:hover {
+    transform: scale(1.1);
+  }
+  
+  /* =========================
+     BUSCADOR EN NAVBAR
+     ========================= */
+  .search-form input {
+    border-radius: 20px;
+    padding: 6px 14px;
+    border: 2px solid #c8e6c9;
+    transition: all 0.3s ease;
+  }
+  
+  .search-form input:focus {
+    outline: none;
+    border-color: #66bb6a;
+    box-shadow: 0 0 6px rgba(102, 187, 106, 0.4);
+  }
+  
+  .search-form button {
+    border-radius: 30px;
+    font-weight: bold;
+    padding: 6px 14px;
+    border: none;
+    background: #fff;
+    color: var(--verde-suave);
+    transition: background 0.2s;
+  }
+  
+  .search-form button:hover {
+    background: #f1f8f4;
+  }
+  
+  /* =========================
+     CARDS
+     ========================= */
+  .card {
+    border: none;
+    border-radius: 14px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+  
+  .card-header {
+    border-radius: 14px 14px 0 0 !important;
+    font-weight: 600;
+  }
+  
+  /* Encabezados personalizados */
+  .card-header.bg-success {
+    background: var(--verde-principal) !important;
+    color: #fff;
+  }
+  
+  .card-header.lugares-header {
+    background: var(--verde-suave);
+    color: #fff;
+  }
+  
+  .card-header.publicar-header {
+    background: var(--verde-oscuro);
+    color: #fff;
+  }
+  
+  /* =========================
+     MAPA
+     ========================= */
+  #map {
+    width: 100%;
+    height: 500px;
+    border-radius: 0 0 14px 14px;
+    z-index: 1;
+  }
+  
+  /* =========================
+     BOTONES
+     ========================= */
+  .btn-success {
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  
+  .btn-success:hover {
+    background-color: #388e3c;
+  }
+  
+  /* =========================
+     FOOTER
+     ========================= */
+  footer {
+    font-size: 0.9em;
+    color: #555;
+    text-align: center;
+    padding: 16px;
+    margin-top: 30px;
+  }
+  

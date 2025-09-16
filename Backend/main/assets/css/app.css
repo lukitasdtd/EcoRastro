@@ -1,0 +1,7 @@
+/* Ajustes puntuales de la página (si necesitas sobreescribir algo) */
+
+/* Ejemplo: espaciar un poco más el título */
+.er-title{ margin-top: 12px; }
+
+/* Ejemplo: cambiar ancho máximo del contenedor */
+/* .er-container{ max-width: 820px; } */
