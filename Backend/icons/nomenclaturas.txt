@@ -1,0 +1,7 @@
+bw = black & white
+r = red
+bl = blue
+grn = green
+br = brown
+v = violet
+y = yellow
