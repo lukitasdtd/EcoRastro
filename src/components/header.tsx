@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, PawPrint, Sprout, CalendarDays, Map, UserCircle } from 'lucide-react';
+import { Menu, PawPrint, Sprout, CalendarDays, Flag, UserCircle } from 'lucide-react';
 
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,10 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/', label: 'Mapa Interactivo', icon: Map },
-  { href: '/calendar', label: 'Calendario de Siembra', icon: CalendarDays },
+  { href: '/report-pet', label: 'Reportar Mascota', icon: Flag },
+  { href: '/adoption', label: 'Adopción', icon: PawPrint },
   { href: '/gardens', label: 'Huertas', icon: Sprout },
-  { href: '/adoption', label: 'Mascotas', icon: PawPrint },
+  { href: '/calendar', label: 'Calendario', icon: CalendarDays },
 ];
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -24,7 +24,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     <Link
       href={href}
       className={cn(
-        "transition-colors hover:text-primary pb-2",
+        "transition-colors hover:text-primary pb-2 text-lg",
         isActive ? "text-primary font-semibold border-b-2 border-primary" : "text-foreground/70"
       )}
     >
@@ -34,8 +34,14 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 }
 
 export function Header() {
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
+  
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={cn(
+      "sticky top-0 z-50 w-full border-b border-border/40",
+      isHomePage ? "bg-transparent" : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+    )}>
       <div className="container flex h-20 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Logo />
@@ -50,7 +56,7 @@ export function Header() {
                 <span className="sr-only">Abrir Menú</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72">
+            <SheetContent side="left" className="w-72 bg-card">
               <div className="px-4 py-2">
                 <Logo />
               </div>

@@ -1,6 +1,6 @@
 import { ReportForm } from "@/components/report-form";
 
-export default function ReportPage() {
+export default function ReportPetPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <section className="text-center mb-12">
