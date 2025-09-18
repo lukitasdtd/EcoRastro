@@ -42,55 +42,56 @@ export function Header() {
         </div>
 
         {/* Mobile Nav */}
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Abrir Menú</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-72">
-               <div className="p-4 border-b">
-                 <Logo />
-               </div>
-              <nav className="flex flex-col gap-4 p-4">
-                {navItems.map((item) => (
-                   <Link
-                      key={item.href}
-                      href={item.href}
-                      className="text-foreground/80 hover:text-primary"
+        <div className="flex items-center md:hidden">
+            <Sheet>
+                <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Abrir Menú</span>
+                </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-72">
+                <div className="p-4 border-b">
+                    <Logo />
+                </div>
+                <nav className="flex flex-col gap-4 p-4">
+                    {navItems.map((item) => (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        className="text-foreground/80 hover:text-primary"
                     >
-                      {item.label}
+                        {item.label}
                     </Link>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
+                    ))}
+                </nav>
+                </SheetContent>
+            </Sheet>
         </div>
-        
+
         <nav className="hidden flex-1 items-center justify-center gap-6 md:flex">
-            {navItems.map((item) => (
-                <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
-            ))}
+          {navItems.map((item) => (
+            <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
+          ))}
         </nav>
         
-        <div className="flex items-center gap-2 ml-auto">
-          <div className="relative hidden md:block">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Buscar..." className="pl-8 sm:w-[200px] lg:w-[300px] rounded-full bg-muted border-none h-9" />
-          </div>
-          <div className="hidden md:flex items-center">
-              <Button variant="ghost" size="icon" asChild className="rounded-full">
-                  <Link href="/login">
-                    <UserCircle className="h-5 w-5" />
-                    <span className="sr-only">Perfil</span>
-                  </Link>
-              </Button>
-          </div>
-           <div className="md:hidden ml-4">
-            <Logo />
-          </div>
+        <div className="flex flex-1 items-center justify-end gap-2">
+            <div className="md:hidden">
+                <Logo />
+            </div>
+
+            <div className="relative hidden md:block">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input type="search" placeholder="Buscar..." className="pl-8 sm:w-[200px] lg:w-[300px] rounded-full bg-muted border-none h-9" />
+            </div>
+            <div className="hidden md:flex items-center">
+                <Button variant="ghost" size="icon" asChild className="rounded-full">
+                    <Link href="/login">
+                        <UserCircle className="h-5 w-5" />
+                        <span className="sr-only">Perfil</span>
+                    </Link>
+                </Button>
+            </div>
         </div>
       </div>
     </header>
