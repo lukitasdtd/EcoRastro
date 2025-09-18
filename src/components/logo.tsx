@@ -4,10 +4,10 @@ import Link from 'next/link';
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2">
-      <div className="bg-primary/10 p-2 rounded-full">
-        <Leaf className="h-6 w-6 text-primary" />
+      <div className="bg-primary/10 p-1.5 rounded-lg">
+        <Leaf className="h-5 w-5 text-primary" />
       </div>
-      <span className="text-2xl font-bold text-foreground tracking-wide">
+      <span className="text-xl font-bold text-foreground tracking-tight">
         EcoRastro
       </span>
     </Link>

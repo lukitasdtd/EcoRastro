@@ -11,10 +11,10 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/mapa', label: 'Mapa Interactivo', icon: Map },
-  { href: '/calendar', label: 'Calendario de Siembra', icon: Calendar },
-  { href: '/gardens', label: 'Huertas', icon: Sprout },
-  { href: '/mascotas', label: 'Mascotas', icon: PawPrint },
+  { href: '/mapa', label: 'Mapa Interactivo' },
+  { href: '/calendar', label: 'Calendario de Siembra' },
+  { href: '/gardens', label: 'Huertas' },
+  { href: '/mascotas', label: 'Mascotas' },
 ];
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -26,7 +26,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
       href={href}
       className={cn(
         "transition-colors hover:text-primary pb-1 text-sm font-medium",
-        isActive ? "text-primary border-b-2 border-primary" : "text-foreground/80"
+        isActive ? "text-primary border-b-2 border-primary" : "text-foreground/60"
       )}
     >
       {children}
@@ -38,7 +38,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
-        <div className="mr-4 hidden md:flex">
+        <div className="mr-8 hidden md:flex">
           <Logo />
         </div>
 
@@ -51,18 +51,17 @@ export function Header() {
                 <span className="sr-only">Abrir Menú</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 bg-card p-0">
+            <SheetContent side="left" className="w-72 p-0">
               <div className="p-4 border-b">
                 <Logo />
               </div>
               <div className="flex flex-col gap-1 p-4">
                 {navItems.map((item) => (
-                  <Button variant="ghost" asChild key={item.href} className="justify-start">
+                   <Button variant="ghost" asChild key={item.href} className="justify-start">
                     <Link
                       href={item.href}
                       className="flex items-center gap-3 rounded-lg p-3 text-base font-medium"
                     >
-                      <item.icon className="h-5 w-5" />
                       <span>{item.label}</span>
                     </Link>
                   </Button>
@@ -86,15 +85,15 @@ export function Header() {
             ))}
         </nav>
         
-        <div className="flex items-center gap-4 ml-auto">
+        <div className="flex items-center gap-2 ml-auto">
           <div className="relative hidden md:block">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Buscar..." className="pl-8 sm:w-[200px] lg:w-[300px]" />
+            <Input type="search" placeholder="Buscar..." className="pl-8 sm:w-[200px] lg:w-[300px] rounded-full bg-muted border-none h-9" />
           </div>
           <div className="hidden md:flex items-center">
-              <Button variant="ghost" size="icon" asChild>
+              <Button variant="ghost" size="icon" asChild className="rounded-full">
                   <Link href="/login">
-                    <UserCircle className="h-6 w-6" />
+                    <UserCircle className="h-5 w-5" />
                     <span className="sr-only">Perfil</span>
                   </Link>
               </Button>

@@ -1,50 +1,35 @@
-import Image from 'next/image';
-import { MapPin, PawPrint, Sprout } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function InteractiveMap() {
-  const mapImage = PlaceHolderImages.find(img => img.id === 'map');
-
   return (
-    <Card className="overflow-hidden shadow-lg rounded-2xl aspect-square w-full h-full">
+    <Card className="overflow-hidden shadow-sm rounded-2xl w-full h-full border">
       <CardContent className="p-0">
-        <div className="relative w-full h-full bg-muted">
-          {mapImage ? (
-            <Image
-              src={mapImage.imageUrl}
-              alt={mapImage.description}
-              fill
-              style={{ objectFit: 'cover' }}
-              className="opacity-70"
-              data-ai-hint={mapImage.imageHint}
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              <p className="text-gray-500">Map image not available</p>
+        <div className="relative w-full h-full bg-muted flex items-center justify-center">
+            {/* Placeholder for map content */}
+            <div className="text-center text-muted-foreground">
+                <p className="font-semibold">Mapa Interactivo</p>
+                <p className="text-sm">Contenido del mapa se mostrará aquí</p>
             </div>
-          )}
-          <div className="absolute inset-0 flex items-center justify-center">
+
             {/* Mock Map Pins */}
-            <div className="absolute top-[20%] left-[25%] transform -translate-x-1/2 -translate-y-1/2">
-              <div className="flex flex-col items-center animate-pulse">
-                <PawPrint className="h-8 w-8 text-destructive fill-destructive/20" />
-                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Mascota Perdida</span>
-              </div>
+             <div className="absolute top-[20%] left-[25%] transform -translate-x-1/2 -translate-y-1/2">
+               <div className="flex items-center gap-2 bg-background/80 px-3 py-1.5 rounded-full shadow-lg border backdrop-blur-sm">
+                 <div className="h-2 w-2 rounded-full bg-red-500"></div>
+                 <span className="text-xs font-semibold">Mascota Perdida</span>
+               </div>
             </div>
-            <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-               <div className="flex flex-col items-center">
-                <Sprout className="h-10 w-10 text-primary fill-primary/20" />
-                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Huerta</span>
-              </div>
+             <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                <div className="flex items-center gap-2 bg-background/80 px-3 py-1.5 rounded-full shadow-lg border backdrop-blur-sm">
+                 <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  <span className="text-xs font-semibold">Huerta</span>
+                </div>
             </div>
-            <div className="absolute top-[60%] left-[75%] transform -translate-x-1/2 -translate-y-1/2">
-               <div className="flex flex-col items-center">
-                <MapPin className="h-8 w-8 text-accent fill-accent/20" />
-                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Adopción</span>
-              </div>
+             <div className="absolute top-[60%] left-[75%] transform -translate-x-1/2 -translate-y-1/2">
+                <div className="flex items-center gap-2 bg-background/80 px-3 py-1.5 rounded-full shadow-lg border backdrop-blur-sm">
+                 <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                  <span className="text-xs font-semibold">Adopción</span>
+                </div>
             </div>
-          </div>
         </div>
       </CardContent>
     </Card>

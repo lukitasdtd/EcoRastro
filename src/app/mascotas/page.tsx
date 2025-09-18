@@ -10,7 +10,7 @@ export default function MascotasPage() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative w-full h-96">
+      <section className="relative w-full h-96 bg-secondary/30">
         {heroImage && (
           <Image
             src={heroImage.imageUrl}
@@ -42,7 +42,7 @@ export default function MascotasPage() {
       <section id="adopcion" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold">Adopta un Amigo Fiel</h2>
-          <p className="max-w-2xl mx-auto text-lg text-foreground/80 mt-2">
+          <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
             Estos maravillosos animales están buscando un hogar lleno de amor. ¿Podría ser el tuyo?
           </p>
         </div>

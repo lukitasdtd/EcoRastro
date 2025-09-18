@@ -6,7 +6,7 @@ export default function AdoptionPage() {
     <div className="container mx-auto px-4 py-8">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">Encuentra a tu Nuevo Mejor Amigo</h1>
-        <p className="max-w-3xl mx-auto text-lg text-foreground/80">
+        <p className="max-w-3xl mx-auto text-lg text-foreground/60">
           Estas maravillosas mascotas están buscando un hogar lleno de amor. ¿Podría ser el tuyo?
         </p>
       </section>

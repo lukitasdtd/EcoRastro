@@ -7,16 +7,16 @@ export default function CalendarPage() {
     <div className="container mx-auto px-4 py-8">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">Calendario de Siembra</h1>
-        <p className="max-w-3xl mx-auto text-lg text-foreground/80">
+        <p className="max-w-3xl mx-auto text-lg text-foreground/60">
           Una guía anual para ayudarte a saber qué plantar y cuándo. ¡Feliz cultivo!
         </p>
       </section>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {plantingCalendar.map(item => (
-          <Card key={item.month} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <Card key={item.month} className="shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-primary">{item.month}</CardTitle>
+              <CardTitle className="text-xl font-bold text-primary">{item.month}</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
