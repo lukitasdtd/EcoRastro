@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Map, Calendar, Sprout, PawPrint, Search, UserCircle } from 'lucide-react';
-
+import { Menu, Search, UserCircle } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -51,30 +50,21 @@ export function Header() {
                 <span className="sr-only">Abrir Menú</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 p-0">
-              <div className="p-4 border-b">
-                <Logo />
-              </div>
-              <div className="flex flex-col gap-1 p-4">
+            <SheetContent side="left" className="w-72">
+               <div className="p-4 border-b">
+                 <Logo />
+               </div>
+              <nav className="flex flex-col gap-4 p-4">
                 {navItems.map((item) => (
-                   <Button variant="ghost" asChild key={item.href} className="justify-start">
-                    <Link
+                   <Link
+                      key={item.href}
                       href={item.href}
-                      className="flex items-center gap-3 rounded-lg p-3 text-base font-medium"
+                      className="text-foreground/80 hover:text-primary"
                     >
-                      <span>{item.label}</span>
+                      {item.label}
                     </Link>
-                  </Button>
                 ))}
-              </div>
-              <div className="mt-auto flex flex-col gap-2 p-4 border-t">
-                  <Button variant="outline" asChild>
-                      <Link href="/login">Iniciar Sesión</Link>
-                  </Button>
-                  <Button asChild>
-                      <Link href="/signup">Registrarse</Link>
-                  </Button>
-              </div>
+              </nav>
             </SheetContent>
           </Sheet>
         </div>
@@ -98,7 +88,7 @@ export function Header() {
                   </Link>
               </Button>
           </div>
-           <div className="md:hidden">
+           <div className="md:hidden ml-4">
             <Logo />
           </div>
         </div>
