@@ -9,14 +9,14 @@ import { Logo } from '@/components/logo';
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+    <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center p-4 bg-secondary/50">
       <Card className="mx-auto max-w-sm w-full shadow-2xl">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
+        <CardHeader className="text-center space-y-2">
+          <div className="inline-block">
             <Logo />
           </div>
-          <CardTitle className="font-headline text-2xl">Bienvenido de Nuevo</CardTitle>
-          <CardDescription>Ingresa tus credenciales para acceder a tu cuenta</CardDescription>
+          <CardTitle className="text-2xl font-bold">Bienvenido de Vuelta</CardTitle>
+          <CardDescription>Ingresa tus datos para acceder a tu cuenta</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
@@ -25,7 +25,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="tu@correo.com"
                 required
               />
             </div>
@@ -39,7 +39,7 @@ export default function LoginPage() {
           </div>
           <div className="mt-4 text-center text-sm">
             ¿No tienes una cuenta?{' '}
-            <Link href="/signup" className="underline text-primary">
+            <Link href="/signup" className="underline text-primary font-semibold">
               Regístrate
             </Link>
           </div>

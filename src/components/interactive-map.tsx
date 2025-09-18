@@ -7,9 +7,9 @@ export default function InteractiveMap() {
   const mapImage = PlaceHolderImages.find(img => img.id === 'map');
 
   return (
-    <Card className="overflow-hidden shadow-lg">
+    <Card className="overflow-hidden shadow-lg rounded-2xl aspect-square w-full h-full">
       <CardContent className="p-0">
-        <div className="relative w-full h-[400px] md:h-[600px] bg-muted">
+        <div className="relative w-full h-full bg-muted">
           {mapImage && (
             <Image
               src={mapImage.imageUrl}
@@ -31,7 +31,7 @@ export default function InteractiveMap() {
             <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                <div className="flex flex-col items-center">
                 <Sprout className="h-10 w-10 text-primary fill-primary/20" />
-                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Jardín</span>
+                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Huerta</span>
               </div>
             </div>
             <div className="absolute top-[60%] left-[75%] transform -translate-x-1/2 -translate-y-1/2">

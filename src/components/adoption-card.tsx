@@ -12,7 +12,7 @@ export default function AdoptionCard({ pet }: AdoptionCardProps) {
   const image = PlaceHolderImages.find(img => img.id === pet.imageId);
 
   return (
-    <Card className="flex flex-col overflow-hidden shadow-lg transition-transform hover:scale-105 duration-300">
+    <Card className="flex flex-col overflow-hidden shadow-lg transition-transform hover:scale-105 duration-300 rounded-2xl">
       <CardHeader className="p-0">
         <div className="relative w-full aspect-[4/3]">
           {image && (
@@ -27,12 +27,12 @@ export default function AdoptionCard({ pet }: AdoptionCardProps) {
         </div>
       </CardHeader>
       <CardContent className="p-6 flex-grow">
-        <CardTitle className="font-headline text-2xl text-primary">{pet.name}</CardTitle>
+        <CardTitle className="text-2xl font-bold text-foreground">{pet.name}</CardTitle>
         <CardDescription>{pet.breed}</CardDescription>
         <p className="text-sm text-muted-foreground mt-2">{pet.age} años</p>
       </CardContent>
       <CardFooter className="p-6 pt-0">
-        <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90">Adoptarme</Button>
+        <Button className="w-full">Adoptar</Button>
       </CardFooter>
     </Card>
   );

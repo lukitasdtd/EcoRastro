@@ -32,7 +32,7 @@ export function ReportForm() {
           <CardHeader>
             <CardTitle>Enviar un Reporte</CardTitle>
             <CardDescription>
-              Proporciona detalles sobre la mascota perdida o encontrada. Nuestra IA lo resumirá y extraerá la ubicación.
+              Entrega detalles sobre la mascota perdida o encontrada. Nuestra IA lo resumirá y extraerá la ubicación.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -41,7 +41,7 @@ export function ReportForm() {
               <Textarea
                 id="reportText"
                 name="reportText"
-                placeholder="Ej: 'Encontré un pequeño terrier mestizo de color marrón cerca de la esquina de Oak y Main St. Tiene un collar azul pero sin placas. Muy amigable.'"
+                placeholder="Ej: 'Encontré un quiltro chico, de color café, cerca de la esquina de Irarrazaval con Manuel Montt. Tiene un collar azul pero sin placa. Es muy amistoso.'"
                 rows={6}
                 required
               />

@@ -2,37 +2,49 @@
   "placeholderImages": [
     {
       "id": "map",
-      "description": "A placeholder image of a stylized map.",
+      "description": "Una imagen de marcador de posición de un mapa estilizado.",
       "imageUrl": "https://picsum.photos/seed/map1/1200/600",
       "imageHint": "stylized map"
     },
     {
+      "id": "hero1",
+      "description": "Una mujer en una huerta comunitaria.",
+      "imageUrl": "https://picsum.photos/seed/hero1/600/400",
+      "imageHint": "woman community garden"
+    },
+     {
+      "id": "hero2",
+      "description": "Una persona sosteniendo un cachorro.",
+      "imageUrl": "https://picsum.photos/seed/hero2/600/400",
+      "imageHint": "person puppy"
+    },
+    {
       "id": "pet1",
-      "description": "A golden retriever available for adoption.",
+      "description": "Un golden retriever disponible para adopción.",
       "imageUrl": "https://picsum.photos/seed/pet1/400/300",
       "imageHint": "golden retriever"
     },
     {
       "id": "pet2",
-      "description": "A tabby cat available for adoption.",
+      "description": "Un gato atigrado disponible para adopción.",
       "imageUrl": "https://picsum.photos/seed/pet2/400/300",
       "imageHint": "tabby cat"
     },
     {
       "id": "pet3",
-      "description": "A small mixed-breed dog available for adoption.",
+      "description": "Un perro quiltro pequeño disponible para adopción.",
       "imageUrl": "https://picsum.photos/seed/pet3/400/300",
       "imageHint": "small dog"
     },
     {
       "id": "pet4",
-      "description": "A black cat available for adoption.",
+      "description": "Un gato negro disponible para adopción.",
       "imageUrl": "https://picsum.photos/seed/pet4/400/300",
       "imageHint": "black cat"
     },
     {
       "id": "garden1",
-      "description": "A lush community garden with various plants.",
+      "description": "Una exuberante huerta comunitaria con varias plantas.",
       "imageUrl": "https://picsum.photos/seed/garden1/600/400",
       "imageHint": "community garden"
     }

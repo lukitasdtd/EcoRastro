@@ -1,29 +1,29 @@
 import type { Pet, Garden, PlantingInfo } from '@/lib/types';
 
 export const adoptionPets: Pet[] = [
-  { id: '1', name: 'Buddy', type: 'Dog', breed: 'Golden Retriever', age: 3, imageId: 'pet1' },
-  { id: '2', name: 'Whiskers', type: 'Cat', breed: 'Tabby', age: 2, imageId: 'pet2' },
-  { id: '3', name: 'Rocky', type: 'Dog', breed: 'Mixed Breed', age: 5, imageId: 'pet3' },
-  { id: '4', name: 'Luna', type: 'Cat', breed: 'Black Cat', age: 1, imageId: 'pet4' },
+  { id: '1', name: 'Buddy', type: 'Perro', breed: 'Golden Retriever', age: 3, imageId: 'pet1' },
+  { id: '2', name: 'Bigotes', type: 'Gato', breed: 'Atigrado', age: 2, imageId: 'pet2' },
+  { id: '3', name: 'Rocky', type: 'Perro', breed: 'Quiltro', age: 5, imageId: 'pet3' },
+  { id: '4', name: 'Luna', type: 'Gato', breed: 'Gato Negro', age: 1, imageId: 'pet4' },
 ];
 
 export const communityGardens: Garden[] = [
-  { id: 'g1', name: 'Jardín Comunitario Greenleaf', location: '123 Garden Lane, Cityville', description: 'Un vibrante jardín comunitario enfocado en el cultivo de vegetales orgánicos y eventos comunitarios.' },
-  { id: 'g2', name: 'Parcelas Sunshine', location: '456 Bloom Blvd, Townburg', description: 'Parcelas individuales disponibles para alquilar. Proporcionamos herramientas y agua.' },
-  { id: 'g3', name: 'El Huerto del Pueblo', location: '789 Root Road, Metropolis', description: 'Un jardín colaborativo donde todos comparten el trabajo y la cosecha.' },
+  { id: 'g1', name: 'Huerta Comunitaria Greenleaf', location: 'Av. Jardín 123, Villa Alegre', description: 'Una huerta comunitaria vibrante, enfocada en el cultivo de verduras orgánicas y eventos para la comunidad.' },
+  { id: 'g2', name: 'Parcelas El Sol', location: 'Pasaje Las Flores 456, Pueblito', description: 'Parcelas individuales disponibles para arriendo. Ofrecemos herramientas y agua.' },
+  { id: 'g3', name: 'El Huerto del Barrio', location: 'Calle Las Raíces 789, Metrópolis', description: 'Una huerta colaborativa donde todos comparten el trabajo y la cosecha.' },
 ];
 
 export const plantingCalendar: PlantingInfo[] = [
   { month: 'Enero', crops: ['Cebollas', 'Espinacas', 'Lechuga'] },
-  { month: 'Febrero', crops: ['Guisantes', 'Rábanos', 'Col Rizada'] },
-  { month: 'Marzo', crops: ['Zanahorias', 'Remolachas', 'Acelgas'] },
+  { month: 'Febrero', crops: ['Arvejas', 'Rábanos', 'Kale'] },
+  { month: 'Marzo', crops: ['Zanahorias', 'Betarragas', 'Acelgas'] },
   { month: 'Abril', crops: ['Tomates', 'Pimientos', 'Brócoli'] },
-  { month: 'Mayo', crops: ['Pepinos', 'Calabacines', 'Frijoles'] },
-  { month: 'Junio', crops: ['Maíz', 'Calabaza', 'Melones'] },
-  { month: 'Julio', crops: ['Calabazas', 'Batatas', 'Okra'] },
+  { month: 'Mayo', crops: ['Pepinos', 'Zapallitos italianos', 'Porotos'] },
+  { month: 'Junio', crops: ['Choclo', 'Calabaza', 'Melones'] },
+  { month: 'Julio', crops: ['Zapallos', 'Camotes', 'Okra'] },
   { month: 'Agosto', crops: ['Repollo', 'Coliflor', 'Tomates de otoño'] },
   { month: 'Septiembre', crops: ['Espinacas', 'Lechuga', 'Ajo'] },
-  { month: 'Octubre', crops: ['Col Rizada', 'Berzas', 'Nabos'] },
+  { month: 'Octubre', crops: ['Kale', 'Berzas', 'Nabos'] },
   { month: 'Noviembre', crops: ['Cultivos de cobertura', 'Ajo', 'Cebollas'] },
   { month: 'Diciembre', crops: ['Planificando para la Primavera'] },
 ];

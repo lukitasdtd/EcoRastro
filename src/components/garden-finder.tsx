@@ -18,7 +18,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? 'Buscando Jardines...' : 'Buscar Jardines'}
+      {pending ? 'Buscando huertas...' : 'Buscar Huertas'}
     </Button>
   );
 }
@@ -31,9 +31,9 @@ export function GardenFinder() {
       <form action={formAction}>
         <Card className="max-w-2xl mx-auto shadow-lg">
           <CardHeader>
-            <CardTitle>Encuentra un Jardín Comunitario</CardTitle>
+            <CardTitle>Encuentra una Huerta Comunitaria</CardTitle>
             <CardDescription>
-              Dinos tus intereses y ubicación, y te sugeriremos jardines que sean ideales para ti.
+              Dinos qué te interesa y dónde estás, y te sugeriremos huertas ideales para ti.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -42,7 +42,7 @@ export function GardenFinder() {
               <Textarea
                 id="userInterests"
                 name="userInterests"
-                placeholder="Ej: 'Estoy interesado en cultivar vegetales orgánicos, aprender sobre compostaje y conocer a otros jardineros locales.'"
+                placeholder="Ej: 'Me interesa cultivar verduras orgánicas, aprender de compostaje y conocer a otros hortelanos.'"
                 rows={4}
                 required
               />
@@ -51,11 +51,11 @@ export function GardenFinder() {
               )}
             </div>
             <div className="grid w-full gap-2">
-              <Label htmlFor="userLocation">Tu Ubicación (Ciudad/Barrio)</Label>
+              <Label htmlFor="userLocation">Tu Ubicación (Comuna/Barrio)</Label>
               <Input
                 id="userLocation"
                 name="userLocation"
-                placeholder="Ej: 'Centro de la Ciudad'"
+                placeholder="Ej: 'Ñuñoa, Santiago'"
                 required
               />
               {state.errors?.userLocation && (
@@ -72,7 +72,7 @@ export function GardenFinder() {
       {state.message && (
         <Alert variant={state.suggestedGardens ? "default" : "destructive"} className="max-w-2xl mx-auto">
            {state.suggestedGardens ? <CheckCircle className="h-4 w-4" /> : <Info className="h-4 w-4" />}
-          <AlertTitle>{state.suggestedGardens ? "¡Jardines Encontrados!" : "Error"}</AlertTitle>
+          <AlertTitle>{state.suggestedGardens ? "¡Huertas Encontradas!" : "Error"}</AlertTitle>
           <AlertDescription>
             {state.message}
           </AlertDescription>
@@ -84,7 +84,7 @@ export function GardenFinder() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sprout className="h-6 w-6 text-primary" />
-              Jardines Sugeridos
+              Huertas Sugeridas
             </CardTitle>
           </CardHeader>
           <CardContent>

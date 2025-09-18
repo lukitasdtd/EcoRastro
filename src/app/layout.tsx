@@ -2,10 +2,17 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Header } from '@/components/header';
 import { Toaster } from '@/components/ui/toaster';
+import { Poppins } from 'next/font/google'
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-poppins'
+})
 
 export const metadata: Metadata = {
-  title: 'EcoTrack',
-  description: 'Conectando comunidades con la naturaleza.',
+  title: 'EcoRastro',
+  description: 'Conectando comunidades. Protegiendo ecosistemas.',
 };
 
 export default function RootLayout({
@@ -14,14 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Belleza&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-body antialiased">
+    <html lang="es-CL" suppressHydrationWarning>
+      <body className={`${poppins.variable} font-body antialiased`}>
         <div className="flex min-h-screen w-full flex-col">
           <Header />
           <main className="flex-1">{children}</main>

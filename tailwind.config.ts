@@ -17,9 +17,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Alegreya', 'serif'],
-        headline: ['Belleza', 'sans-serif'],
-        code: ['monospace'],
+        body: ['var(--font-poppins)', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
