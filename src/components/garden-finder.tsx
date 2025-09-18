@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { findGardensAction, type GardenState } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -24,7 +25,7 @@ function SubmitButton() {
 }
 
 export function GardenFinder() {
-  const [state, formAction] = useFormState(findGardensAction, initialState);
+  const [state, formAction] = useActionState(findGardensAction, initialState);
 
   return (
     <div className="space-y-6">
