@@ -33,7 +33,7 @@ export default function MascotasPage() {
               <Link href="/report-pet">Reportar Mascota</Link>
             </Button>
             <Button asChild variant="secondary" size="lg">
-              <Link href="#adopcion">Ver en Adopción</Link>
+              <Link href="/adoption">Ver en Adopción</Link>
             </Button>
           </div>
         </div>

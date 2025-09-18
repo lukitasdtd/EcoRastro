@@ -10,7 +10,7 @@ export default function InteractiveMap() {
     <Card className="overflow-hidden shadow-lg rounded-2xl aspect-square w-full h-full">
       <CardContent className="p-0">
         <div className="relative w-full h-full bg-muted">
-          {mapImage && (
+          {mapImage ? (
             <Image
               src={mapImage.imageUrl}
               alt={mapImage.description}
@@ -19,6 +19,10 @@ export default function InteractiveMap() {
               className="opacity-70"
               data-ai-hint={mapImage.imageHint}
             />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <p className="text-gray-500">Map image not available</p>
+            </div>
           )}
           <div className="absolute inset-0 flex items-center justify-center">
             {/* Mock Map Pins */}
