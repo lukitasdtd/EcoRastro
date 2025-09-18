@@ -37,61 +37,66 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
-        <div className="mr-8 hidden md:flex">
-          <Logo />
-        </div>
-
-        {/* Mobile Nav */}
-        <div className="flex items-center md:hidden">
+        
+        {/* Left side */}
+        <div className="flex items-center">
+          {/* Mobile Menu */}
+          <div className="md:hidden mr-4">
             <Sheet>
-                <SheetTrigger asChild>
+              <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Abrir Menú</span>
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Abrir Menú</span>
                 </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-72">
+              </SheetTrigger>
+              <SheetContent side="left" className="w-72">
                 <div className="p-4 border-b">
-                    <Logo />
+                  <Logo />
                 </div>
                 <nav className="flex flex-col gap-4 p-4">
-                    {navItems.map((item) => (
+                  {navItems.map((item) => (
                     <Link
-                        key={item.href}
-                        href={item.href}
-                        className="text-foreground/80 hover:text-primary"
+                      key={item.href}
+                      href={item.href}
+                      className="text-foreground/80 hover:text-primary"
                     >
-                        {item.label}
+                      {item.label}
                     </Link>
-                    ))}
+                  ))}
                 </nav>
-                </SheetContent>
+              </SheetContent>
             </Sheet>
+          </div>
+          {/* Desktop Logo */}
+          <div className="hidden md:flex">
+            <Logo />
+          </div>
         </div>
 
-        <nav className="hidden flex-1 items-center justify-center gap-6 md:flex">
+        {/* Center Nav */}
+        <nav className="hidden md:flex flex-1 items-center justify-center gap-6">
           {navItems.map((item) => (
             <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
           ))}
         </nav>
-        
-        <div className="flex flex-1 items-center justify-end gap-2">
-            <div className="md:hidden">
-                <Logo />
-            </div>
 
+        {/* Mobile Logo */}
+        <div className="flex-1 flex justify-center md:hidden">
+            <Logo />
+        </div>
+
+        {/* Right side */}
+        <div className="flex items-center gap-2">
             <div className="relative hidden md:block">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input type="search" placeholder="Buscar..." className="pl-8 sm:w-[200px] lg:w-[300px] rounded-full bg-muted border-none h-9" />
             </div>
-            <div className="hidden md:flex items-center">
-                <Button variant="ghost" size="icon" asChild className="rounded-full">
-                    <Link href="/login">
-                        <UserCircle className="h-5 w-5" />
-                        <span className="sr-only">Perfil</span>
-                    </Link>
-                </Button>
-            </div>
+            <Button variant="ghost" size="icon" asChild className="rounded-full">
+                <Link href="/login">
+                    <UserCircle className="h-5 w-5" />
+                    <span className="sr-only">Perfil</span>
+                </Link>
+            </Button>
         </div>
       </div>
     </header>
