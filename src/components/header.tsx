@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Search, UserCircle } from 'lucide-react';
+import { Menu, Search, UserCircle, Map, Calendar, Sprout, PawPrint } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -10,10 +10,10 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/mapa', label: 'Mapa Interactivo' },
-  { href: '/calendar', label: 'Calendario de Siembra' },
-  { href: '/gardens', label: 'Huertas' },
-  { href: '/mascotas', label: 'Mascotas' },
+  { href: '/mapa', label: 'Mapa Interactivo', icon: Map },
+  { href: '/calendar', label: 'Calendario de Siembra', icon: Calendar },
+  { href: '/gardens', label: 'Huertas', icon: Sprout },
+  { href: '/mascotas', label: 'Mascotas', icon: PawPrint },
 ];
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -38,9 +38,8 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
         
-        {/* Left side */}
         <div className="flex items-center">
-          {/* Mobile Menu */}
+          {/* Mobile Menu Trigger */}
           <div className="md:hidden mr-4">
             <Sheet>
               <SheetTrigger asChild>
@@ -58,8 +57,9 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="text-foreground/80 hover:text-primary"
+                      className="text-foreground/80 hover:text-primary flex items-center gap-2"
                     >
+                      <item.icon className="h-5 w-5" />
                       {item.label}
                     </Link>
                   ))}
@@ -67,25 +67,26 @@ export function Header() {
               </SheetContent>
             </Sheet>
           </div>
+          
           {/* Desktop Logo */}
           <div className="hidden md:flex">
             <Logo />
           </div>
         </div>
 
-        {/* Center Nav */}
+        {/* Centered Navigation for Desktop */}
         <nav className="hidden md:flex flex-1 items-center justify-center gap-6">
           {navItems.map((item) => (
             <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
           ))}
         </nav>
 
-        {/* Mobile Logo */}
+        {/* Centered Logo for Mobile */}
         <div className="flex-1 flex justify-center md:hidden">
             <Logo />
         </div>
 
-        {/* Right side */}
+        {/* Right-aligned items */}
         <div className="flex items-center gap-2">
             <div className="relative hidden md:block">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -98,6 +99,7 @@ export function Header() {
                 </Link>
             </Button>
         </div>
+
       </div>
     </header>
   );
