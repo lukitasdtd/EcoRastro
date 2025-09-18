@@ -9,10 +9,10 @@ import { Logo } from '@/components/logo';
 
 export default function SignupPage() {
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center p-4 bg-secondary/50">
-      <Card className="mx-auto max-w-sm w-full shadow-2xl">
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+      <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
         <CardHeader className="text-center space-y-2">
-           <div className="inline-block">
+           <div className="inline-block mx-auto">
             <Logo />
           </div>
           <CardTitle className="text-2xl font-bold">Crea tu Cuenta</CardTitle>

@@ -24,8 +24,8 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     <Link
       href={href}
       className={cn(
-        "transition-colors hover:text-primary pb-2 text-lg",
-        isActive ? "text-primary font-semibold border-b-2 border-primary" : "text-foreground/70"
+        "transition-colors hover:text-primary pb-1 text-sm font-medium",
+        isActive ? "text-primary border-b-2 border-primary" : "text-foreground/60"
       )}
     >
       {children}
@@ -40,9 +40,9 @@ export function Header() {
   return (
     <header className={cn(
       "sticky top-0 z-50 w-full border-b border-border/40",
-      isHomePage ? "bg-transparent" : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     )}>
-      <div className="container flex h-20 max-w-screen-2xl items-center">
+      <div className="container flex h-16 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Logo />
         </div>
@@ -56,43 +56,42 @@ export function Header() {
                 <span className="sr-only">Abrir Menú</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 bg-card">
-              <div className="px-4 py-2">
+            <SheetContent side="left" className="w-72 bg-card p-0">
+              <div className="p-4 border-b">
                 <Logo />
               </div>
-              <div className="flex flex-col gap-2 p-4">
+              <div className="flex flex-col gap-1 p-4">
                 {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-lg p-3 text-lg font-medium hover:bg-muted"
-                  >
-                    <item.icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </Link>
+                  <Button variant="ghost" asChild key={item.href} className="justify-start">
+                    <Link
+                      href={item.href}
+                      className="flex items-center gap-3 rounded-lg p-3 text-base font-medium"
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.label}</span>
+                    </Link>
+                  </Button>
                 ))}
-                 <div className="mt-auto flex flex-col gap-2 pt-10">
-                    <Button variant="outline" asChild size="lg">
-                        <Link href="/login">Iniciar Sesión</Link>
-                    </Button>
-                    <Button asChild size="lg">
-                        <Link href="/signup">Registrarse</Link>
-                    </Button>
-                </div>
+              </div>
+              <div className="mt-auto flex flex-col gap-2 p-4 border-t">
+                  <Button variant="outline" asChild>
+                      <Link href="/login">Iniciar Sesión</Link>
+                  </Button>
+                  <Button asChild>
+                      <Link href="/signup">Registrarse</Link>
+                  </Button>
               </div>
             </SheetContent>
           </Sheet>
         </div>
         
-        <div className="flex flex-1 items-center justify-center space-x-2 md:justify-center">
-             <nav className="hidden items-center gap-8 text-base font-medium md:flex">
-                {navItems.map((item) => (
-                    <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
-                ))}
-             </nav>
-        </div>
+        <nav className="hidden flex-1 items-center justify-center space-x-6 md:flex">
+            {navItems.map((item) => (
+                <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
+            ))}
+        </nav>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           <div className="hidden md:flex items-center gap-2">
               <Button variant="ghost" asChild>
                   <Link href="/login">Iniciar Sesión</Link>
@@ -101,10 +100,6 @@ export function Header() {
                   <Link href="/signup">Registrarse</Link>
               </Button>
           </div>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-              <UserCircle className="h-6 w-6" />
-              <span className="sr-only">Perfil de Usuario</span>
-          </Button>
            <div className="md:hidden">
             <Logo />
           </div>
