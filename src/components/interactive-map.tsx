@@ -25,19 +25,19 @@ export default function InteractiveMap() {
             <div className="absolute top-[20%] left-[25%] transform -translate-x-1/2 -translate-y-1/2">
               <div className="flex flex-col items-center animate-pulse">
                 <PawPrint className="h-8 w-8 text-destructive fill-destructive/20" />
-                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Lost Pet</span>
+                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Mascota Perdida</span>
               </div>
             </div>
             <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                <div className="flex flex-col items-center">
                 <Sprout className="h-10 w-10 text-primary fill-primary/20" />
-                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Garden</span>
+                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Jardín</span>
               </div>
             </div>
             <div className="absolute top-[60%] left-[75%] transform -translate-x-1/2 -translate-y-1/2">
                <div className="flex flex-col items-center">
                 <MapPin className="h-8 w-8 text-accent fill-accent/20" />
-                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Adoption</span>
+                <span className="text-xs font-bold bg-background/80 px-2 py-1 rounded-full shadow-md">Adopción</span>
               </div>
             </div>
           </div>

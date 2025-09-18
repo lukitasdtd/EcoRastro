@@ -8,22 +8,22 @@ export const adoptionPets: Pet[] = [
 ];
 
 export const communityGardens: Garden[] = [
-  { id: 'g1', name: 'Greenleaf Community Garden', location: '123 Garden Lane, Cityville', description: 'A vibrant community garden focused on organic vegetable cultivation and community events.' },
-  { id: 'g2', name: 'Sunshine Plots', location: '456 Bloom Blvd, Townburg', description: 'Individual plots available for rent. We provide tools and water.' },
-  { id: 'g3', name: 'The People\'s Patch', location: '789 Root Road, Metropolis', description: 'A collaborative garden where everyone shares in the work and the harvest.' },
+  { id: 'g1', name: 'Jardín Comunitario Greenleaf', location: '123 Garden Lane, Cityville', description: 'Un vibrante jardín comunitario enfocado en el cultivo de vegetales orgánicos y eventos comunitarios.' },
+  { id: 'g2', name: 'Parcelas Sunshine', location: '456 Bloom Blvd, Townburg', description: 'Parcelas individuales disponibles para alquilar. Proporcionamos herramientas y agua.' },
+  { id: 'g3', name: 'El Huerto del Pueblo', location: '789 Root Road, Metropolis', description: 'Un jardín colaborativo donde todos comparten el trabajo y la cosecha.' },
 ];
 
 export const plantingCalendar: PlantingInfo[] = [
-  { month: 'January', crops: ['Onions', 'Spinach', 'Lettuce'] },
-  { month: 'February', crops: ['Peas', 'Radishes', 'Kale'] },
-  { month: 'March', crops: ['Carrots', 'Beets', 'Swiss Chard'] },
-  { month: 'April', crops: ['Tomatoes', 'Peppers', 'Broccoli'] },
-  { month: 'May', crops: ['Cucumbers', 'Zucchini', 'Beans'] },
-  { month: 'June', crops: ['Corn', 'Squash', 'Melons'] },
-  { month: 'July', crops: ['Pumpkins', 'Sweet Potatoes', 'Okra'] },
-  { month: 'August', crops: ['Cabbage', 'Cauliflower', 'Fall Tomatoes'] },
-  { month: 'September', crops: ['Spinach', 'Lettuce', 'Garlic'] },
-  { month: 'October', crops: ['Kale', 'Collard Greens', 'Turnips'] },
-  { month: 'November', crops: ['Cover Crops', 'Garlic', 'Onions'] },
-  { month: 'December', crops: ['Planning for Spring'] },
+  { month: 'Enero', crops: ['Cebollas', 'Espinacas', 'Lechuga'] },
+  { month: 'Febrero', crops: ['Guisantes', 'Rábanos', 'Col Rizada'] },
+  { month: 'Marzo', crops: ['Zanahorias', 'Remolachas', 'Acelgas'] },
+  { month: 'Abril', crops: ['Tomates', 'Pimientos', 'Brócoli'] },
+  { month: 'Mayo', crops: ['Pepinos', 'Calabacines', 'Frijoles'] },
+  { month: 'Junio', crops: ['Maíz', 'Calabaza', 'Melones'] },
+  { month: 'Julio', crops: ['Calabazas', 'Batatas', 'Okra'] },
+  { month: 'Agosto', crops: ['Repollo', 'Coliflor', 'Tomates de otoño'] },
+  { month: 'Septiembre', crops: ['Espinacas', 'Lechuga', 'Ajo'] },
+  { month: 'Octubre', crops: ['Col Rizada', 'Berzas', 'Nabos'] },
+  { month: 'Noviembre', crops: ['Cultivos de cobertura', 'Ajo', 'Cebollas'] },
+  { month: 'Diciembre', crops: ['Planificando para la Primavera'] },
 ];

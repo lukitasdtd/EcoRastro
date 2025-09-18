@@ -11,10 +11,10 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/report', label: 'Report Pet', icon: Flag },
-  { href: '/adoption', label: 'Adoption', icon: PawPrint },
-  { href: '/gardens', label: 'Gardens', icon: Sprout },
-  { href: '/calendar', label: 'Calendar', icon: Calendar },
+  { href: '/report', label: 'Reportar Mascota', icon: Flag },
+  { href: '/adoption', label: 'Adopción', icon: PawPrint },
+  { href: '/gardens', label: 'Jardines', icon: Sprout },
+  { href: '/calendar', label: 'Calendario', icon: Calendar },
 ];
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -84,16 +84,16 @@ export function Header() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search..."
+                placeholder="Buscar..."
                 className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
               />
             </div>
             <div className="hidden md:flex items-center gap-2">
                 <Button variant="ghost" asChild>
-                    <Link href="/login">Log In</Link>
+                    <Link href="/login">Iniciar Sesión</Link>
                 </Button>
                 <Button asChild>
-                    <Link href="/signup">Sign Up</Link>
+                    <Link href="/signup">Registrarse</Link>
                 </Button>
             </div>
              <div className="md:hidden">

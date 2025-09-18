@@ -17,7 +17,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? 'Summarizing...' : 'Submit Report'}
+      {pending ? 'Resumiendo...' : 'Enviar Reporte'}
     </Button>
   );
 }
@@ -30,18 +30,18 @@ export function ReportForm() {
       <form action={formAction}>
         <Card className="max-w-2xl mx-auto shadow-lg">
           <CardHeader>
-            <CardTitle>Submit a Report</CardTitle>
+            <CardTitle>Enviar un Reporte</CardTitle>
             <CardDescription>
-              Provide details about the lost or found pet. Our AI will summarize it and extract the location.
+              Proporciona detalles sobre la mascota perdida o encontrada. Nuestra IA lo resumirá y extraerá la ubicación.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid w-full gap-2">
-              <Label htmlFor="reportText">Report Details</Label>
+              <Label htmlFor="reportText">Detalles del Reporte</Label>
               <Textarea
                 id="reportText"
                 name="reportText"
-                placeholder="e.g., 'Found a small, brown terrier mix near the corner of Oak & Main St. It has a blue collar but no tags. Very friendly.'"
+                placeholder="Ej: 'Encontré un pequeño terrier mestizo de color marrón cerca de la esquina de Oak y Main St. Tiene un collar azul pero sin placas. Muy amigable.'"
                 rows={6}
                 required
               />
@@ -59,7 +59,7 @@ export function ReportForm() {
       {state.message && (
         <Alert variant={state.summary ? "default" : "destructive"} className="max-w-2xl mx-auto">
            {state.summary ? <CheckCircle className="h-4 w-4" /> : <Info className="h-4 w-4" />}
-          <AlertTitle>{state.summary ? "Summary Complete" : "Error"}</AlertTitle>
+          <AlertTitle>{state.summary ? "Resumen Completo" : "Error"}</AlertTitle>
           <AlertDescription>
             {state.message}
           </AlertDescription>
@@ -69,15 +69,15 @@ export function ReportForm() {
       {state.summary && (
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle>AI Generated Summary</CardTitle>
+            <CardTitle>Resumen Generado por IA</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h3 className="font-semibold">Report Summary:</h3>
+              <h3 className="font-semibold">Resumen del Reporte:</h3>
               <p className="text-foreground/80">{state.summary}</p>
             </div>
             <div>
-              <h3 className="font-semibold">Location Details:</h3>
+              <h3 className="font-semibold">Detalles de Ubicación:</h3>
               <p className="text-foreground/80">{state.location}</p>
             </div>
           </CardContent>

@@ -18,7 +18,7 @@ export default function AdoptionCard({ pet }: AdoptionCardProps) {
           {image && (
             <Image
               src={image.imageUrl}
-              alt={`A photo of ${pet.name}`}
+              alt={`Una foto de ${pet.name}`}
               fill
               style={{ objectFit: 'cover' }}
               data-ai-hint={image.imageHint}
@@ -29,10 +29,10 @@ export default function AdoptionCard({ pet }: AdoptionCardProps) {
       <CardContent className="p-6 flex-grow">
         <CardTitle className="font-headline text-2xl text-primary">{pet.name}</CardTitle>
         <CardDescription>{pet.breed}</CardDescription>
-        <p className="text-sm text-muted-foreground mt-2">{pet.age} years old</p>
+        <p className="text-sm text-muted-foreground mt-2">{pet.age} años</p>
       </CardContent>
       <CardFooter className="p-6 pt-0">
-        <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90">Adopt Me</Button>
+        <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90">Adoptarme</Button>
       </CardFooter>
     </Card>
   );

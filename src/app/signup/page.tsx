@@ -15,17 +15,17 @@ export default function SignupPage() {
           <div className="flex justify-center mb-4">
             <Logo />
           </div>
-          <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
-          <CardDescription>Join the EcoTrack community today</CardDescription>
+          <CardTitle className="font-headline text-2xl">Crear una Cuenta</CardTitle>
+          <CardDescription>Únete a la comunidad de EcoTrack hoy</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
             <div className="grid gap-2">
-                <Label htmlFor="full-name">Full Name</Label>
+                <Label htmlFor="full-name">Nombre Completo</Label>
                 <Input id="full-name" placeholder="John Doe" required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Correo Electrónico</Label>
               <Input
                 id="email"
                 type="email"
@@ -34,17 +34,17 @@ export default function SignupPage() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Input id="password" type="password" required />
             </div>
             <Button type="submit" className="w-full">
-              Create Account
+              Crear Cuenta
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
+            ¿Ya tienes una cuenta?{' '}
             <Link href="/login" className="underline text-primary">
-              Login
+              Iniciar Sesión
             </Link>
           </div>
         </CardContent>
