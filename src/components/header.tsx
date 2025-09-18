@@ -2,18 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, PawPrint, Sprout, CalendarDays, Flag, UserCircle } from 'lucide-react';
+import { Menu, Map, Calendar, Sprout, PawPrint, Search, UserCircle } from 'lucide-react';
 
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/report-pet', label: 'Reportar Mascota', icon: Flag },
-  { href: '/adoption', label: 'Adopción', icon: PawPrint },
+  { href: '/mapa', label: 'Mapa Interactivo', icon: Map },
+  { href: '/calendar', label: 'Calendario de Siembra', icon: Calendar },
   { href: '/gardens', label: 'Huertas', icon: Sprout },
-  { href: '/calendar', label: 'Calendario', icon: CalendarDays },
+  { href: '/mascotas', label: 'Mascotas', icon: PawPrint },
 ];
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -25,7 +26,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
       href={href}
       className={cn(
         "transition-colors hover:text-primary pb-1 text-sm font-medium",
-        isActive ? "text-primary border-b-2 border-primary" : "text-foreground/60"
+        isActive ? "text-primary border-b-2 border-primary" : "text-foreground/80"
       )}
     >
       {children}
@@ -34,14 +35,8 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 }
 
 export function Header() {
-  const pathname = usePathname();
-  const isHomePage = pathname === '/';
-  
   return (
-    <header className={cn(
-      "sticky top-0 z-50 w-full border-b border-border/40",
-      "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-    )}>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Logo />
@@ -85,19 +80,23 @@ export function Header() {
           </Sheet>
         </div>
         
-        <nav className="hidden flex-1 items-center justify-center space-x-6 md:flex">
+        <nav className="hidden flex-1 items-center justify-center gap-6 md:flex">
             {navItems.map((item) => (
                 <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
             ))}
         </nav>
         
-        <div className="flex items-center gap-2 ml-auto">
-          <div className="hidden md:flex items-center gap-2">
-              <Button variant="ghost" asChild>
-                  <Link href="/login">Iniciar Sesión</Link>
-              </Button>
-              <Button asChild>
-                  <Link href="/signup">Registrarse</Link>
+        <div className="flex items-center gap-4 ml-auto">
+          <div className="relative hidden md:block">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input type="search" placeholder="Buscar..." className="pl-8 sm:w-[200px] lg:w-[300px]" />
+          </div>
+          <div className="hidden md:flex items-center">
+              <Button variant="ghost" size="icon" asChild>
+                  <Link href="/login">
+                    <UserCircle className="h-6 w-6" />
+                    <span className="sr-only">Perfil</span>
+                  </Link>
               </Button>
           </div>
            <div className="md:hidden">
