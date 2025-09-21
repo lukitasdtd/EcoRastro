@@ -11,10 +11,10 @@ export function Logo() {
       <Image
         src="/logo.png"
         alt="EcoRastro Logo"
-        width={128}
-        height={40}
+        width={160}
+        height={50}
         priority
-        className="h-10 w-auto"
+        className="h-12 w-auto"
       />
     </Link>
   );
