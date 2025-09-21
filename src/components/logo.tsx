@@ -11,6 +11,7 @@ export function Logo() {
         xmlns="http://www.w3.org/2000/svg"
         className="h-10 w-auto"
       >
+        <title>EcoRastro</title>
         <path
           d="M26.2161 23.0827L29.5331 16.3262L22.9001 16.3262L26.2161 23.0827Z"
           fill="#386641"
