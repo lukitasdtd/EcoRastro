@@ -9,7 +9,7 @@
 // - Maneja el ciclo de vida del mapa (creación y limpieza) usando hooks de React (`useEffect`, `useRef`).
 // - Utiliza variables de entorno para la clave de la API.
 
-import React, from 'react';
+import React from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -93,6 +93,13 @@ export default function InteractiveMap({ points }: InteractiveMapProps) {
           markers.current.push(marker);
         });
       }
+    }).catch(e => {
+        console.error("Failed to load Google Maps API", e);
+        toast({
+            title: 'Error al cargar el mapa',
+            description: 'No se pudo conectar con el servicio de Google Maps. Inténtalo de nuevo más tarde.',
+            variant: 'destructive',
+        });
     });
 
     // 3. Limpieza al desmontar el componente.
