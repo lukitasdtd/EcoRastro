@@ -24,17 +24,17 @@ const markersData: MarkerData[] = [
 
 const benefits = [
     {
-        icon: <Search className="w-8 h-8 text-primary" />,
+        icon: <Search className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
         title: "Encuentra y Reporta",
         description: "Visualiza reportes de mascotas perdidas y encontradas en tiempo real. Tu ayuda es crucial."
     },
     {
-        icon: <Users className="w-8 h-8 text-primary" />,
+        icon: <Users className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
         title: "Conecta con la Comunidad",
         description: "Únete a una red de vecinos comprometidos con el bienestar animal y el cuidado del entorno."
     },
     {
-        icon: <CheckCircle className="w-8 h-8 text-primary" />,
+        icon: <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
         title: "Ayuda Efectiva",
         description: "Recibe notificaciones y accede a herramientas que hacen la diferencia para reunir a una mascota con su familia."
     },
@@ -82,7 +82,7 @@ export function MapFeatures() {
   return (
     <section className="w-full bg-background py-16 lg:py-24">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold">Mapa Interactivo: Encuentra y Ayuda</h2>
             <p className="max-w-3xl mx-auto text-lg text-foreground/60 mt-2">
                 Explora los últimos reportes en tu comunidad y sé parte de la solución. Cada avistamiento cuenta.
@@ -94,6 +94,7 @@ export function MapFeatures() {
             {mapImage && (
                 <Image src={mapImage.imageUrl} alt={mapImage.description} fill style={{objectFit: 'cover'}} className="brightness-90" data-ai-hint={mapImage.imageHint}/>
             )}
+            <div className="absolute inset-0 bg-black/10"></div>
             
             {/* Marcadores */}
             {markersData.map(marker => {
@@ -104,20 +105,19 @@ export function MapFeatures() {
                         data-marker-id={marker.id}
                         onClick={() => handleMarkerClick(marker)} 
                         aria-label={`Ver detalles de ${marker.name}`}
-                        className="group flex items-center justify-center w-8 h-8 bg-accent rounded-full shadow-xl transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-accent"
+                        className="relative group flex items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-accent"
                     >
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
                         {petImage && (
-                          <Image src={petImage.imageUrl} alt={marker.name} width={28} height={28} className="rounded-full object-cover border-2 border-white"/>
+                          <Image src={petImage.imageUrl} alt={marker.name} width={32} height={32} className="relative rounded-full object-cover border-2 border-white shadow-md transition-transform group-hover:scale-110"/>
                         )}
-                         <div className="absolute -bottom-2 w-px h-2 bg-accent"></div>
-                         <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-accent rounded-full"></div>
                     </button>
                 </div>
               )
             })}
              {/* Cluster */}
             <div style={{ top: '20%', left: '75%' }} className="absolute transform -translate-x-1/2 -translate-y-1/2">
-                <div className="flex items-center justify-center w-12 h-12 bg-accent/80 backdrop-blur-sm text-white font-bold text-lg rounded-full shadow-xl border-2 border-white/50">
+                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-accent/80 backdrop-blur-sm text-white font-bold text-base md:text-lg rounded-full shadow-xl ring-2 ring-white/50">
                     +3
                 </div>
             </div>
@@ -134,7 +134,7 @@ export function MapFeatures() {
               >
                 <div className="relative h-32 w-full">
                   <Image src={PlaceHolderImages.find(img => img.id === selectedMarker.image)?.imageUrl ?? ''} alt={`Foto de ${selectedMarker.name}`} fill style={{objectFit: 'cover'}} />
-                  <button onClick={closePopup} aria-label="Cerrar popup" className="absolute top-2 right-2 p-1 bg-black/40 rounded-full text-white hover:bg-black/60 focus:outline-none focus:ring-2 focus:ring-white">
+                  <button onClick={closePopup} aria-label="Cerrar popup" className="absolute top-2 right-2 p-1 bg-black/40 rounded-full text-white hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
@@ -155,20 +155,20 @@ export function MapFeatures() {
 
             {/* Controles del mapa */}
             <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-                <Button size="icon" variant="secondary" className="w-9 h-9 shadow-md"><ZoomIn className="w-5 h-5"/></Button>
-                <Button size="icon" variant="secondary" className="w-9 h-9 shadow-md"><ZoomOut className="w-5 h-5"/></Button>
+                <Button size="icon" variant="secondary" className="w-9 h-9 shadow-md focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2"><ZoomIn className="w-5 h-5"/></Button>
+                <Button size="icon" variant="secondary" className="w-9 h-9 shadow-md focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2"><ZoomOut className="w-5 h-5"/></Button>
             </div>
           </div>
 
           {/* Columna de Beneficios */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 md:gap-8">
             {benefits.map((benefit) => (
                 <div key={benefit.title} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 bg-primary/10 rounded-full p-3">
+                    <div className="flex-shrink-0 bg-primary/10 rounded-full p-3 mt-1">
                         {benefit.icon}
                     </div>
                     <div>
-                        <h3 className="font-bold text-lg">{benefit.title}</h3>
+                        <h3 className="font-semibold text-lg">{benefit.title}</h3>
                         <p className="text-foreground/70">{benefit.description}</p>
                     </div>
                 </div>
