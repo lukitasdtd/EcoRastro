@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -28,18 +29,18 @@ function NavLink({
   const isActive = pathname === href;
 
   return (
-    <Link href={href} legacyBehavior passHref>
-      <a
-        className={cn(
-          'relative block whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary',
-          isActive ? 'font-bold' : ''
-        )}
-      >
-        {children}
-        {isActive && (
-          <span className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 bg-accent"></span>
-        )}
-      </a>
+    <Link 
+      href={href}
+      className={cn(
+        'relative block whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary',
+        isActive ? 'font-bold' : ''
+      )}
+      aria-current={isActive ? 'page' : undefined}
+    >
+      {children}
+      {isActive && (
+        <span className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 bg-accent"></span>
+      )}
     </Link>
   );
 }
@@ -100,14 +101,14 @@ function DropdownMenu({ item }: { item: NavItem }) {
           <div className="absolute -top-2 left-4 h-0 w-0 border-x-8 border-x-transparent border-b-8 border-b-gray-800"></div>
           <div className="grid grid-cols-2 gap-x-8 gap-y-4">
             {item.subItems.map(subItem => (
-              <Link key={subItem.href} href={subItem.href} legacyBehavior passHref>
-                <a
-                  role="menuitem"
-                  onClick={() => setIsOpen(false)}
-                  className="block rounded-md p-2 text-sm hover:bg-gray-700 focus:bg-gray-700 focus:outline-none"
-                >
-                  {subItem.label}
-                </a>
+              <Link
+                key={subItem.href}
+                href={subItem.href}
+                role="menuitem"
+                onClick={() => setIsOpen(false)}
+                className="block rounded-md p-2 text-sm hover:bg-gray-700 focus:bg-gray-700 focus:outline-none"
+              >
+                {subItem.label}
               </Link>
             ))}
           </div>
