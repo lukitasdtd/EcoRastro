@@ -2,10 +2,16 @@
 {
   "placeholderImages": [
     {
-      "id": "map-features",
-      "description": "Una imagen de marcador de posición de un mapa estilizado.",
-      "imageUrl": "https://picsum.photos/seed/map-features/1200/800",
-      "imageHint": "stylized map city"
+      "id": "map-light",
+      "description": "Una imagen de marcador de posición de un mapa estilizado de color claro.",
+      "imageUrl": "https://picsum.photos/seed/map-light/1000/1333",
+      "imageHint": "light map satellite"
+    },
+    {
+      "id": "pet5",
+      "description": "Un perro feliz de raza mixta.",
+      "imageUrl": "https://picsum.photos/seed/pet5/100/100",
+      "imageHint": "happy dog"
     },
     {
       "id": "hero-huerta",

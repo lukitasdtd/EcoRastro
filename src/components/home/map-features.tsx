@@ -1,177 +1,118 @@
+
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
-import { X, CheckCircle, Search, Users, ZoomIn, ZoomOut, Info } from 'lucide-react';
-
-type MarkerData = {
-  id: number;
-  name: string;
-  type: 'Mascota Perdida' | 'Avistamiento';
-  distance: string;
-  position: { top: string; left: string };
-  image: string;
-  imageHint: string;
-};
-
-const markersData: MarkerData[] = [
-  { id: 1, name: 'Toby', type: 'Mascota Perdida', distance: 'A 2km de ti', position: { top: '35%', left: '25%' }, image: 'pet1', imageHint: 'golden retriever' },
-  { id: 2, name: 'Luna', type: 'Avistamiento', distance: 'A 800m de ti', position: { top: '55%', left: '60%' }, image: 'pet4', imageHint: 'black cat' },
-  { id: 3, name: 'Rocky', type: 'Mascota Perdida', distance: 'A 1.5km de ti', position: { top: '70%', left: '40%' }, image: 'pet3', imageHint: 'small dog' },
-];
-
-const benefits = [
-    {
-        icon: <Search className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
-        title: "Encuentra y Reporta",
-        description: "Visualiza reportes de mascotas perdidas y encontradas en tiempo real. Tu ayuda es crucial."
-    },
-    {
-        icon: <Users className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
-        title: "Conecta con la Comunidad",
-        description: "Únete a una red de vecinos comprometidos con el bienestar animal y el cuidado del entorno."
-    },
-    {
-        icon: <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
-        title: "Ayuda Efectiva",
-        description: "Recibe notificaciones y accede a herramientas que hacen la diferencia para reunir a una mascota con su familia."
-    },
-]
+import { Plus, Minus, Clock, PawPrint, Leaf } from 'lucide-react';
 
 export function MapFeatures() {
-  const [selectedMarker, setSelectedMarker] = useState<MarkerData | null>(null);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapImage = PlaceHolderImages.find(img => img.id === 'map-light');
+  const petImage = PlaceHolderImages.find(img => img.id === 'pet5');
 
-  const handleMarkerClick = (marker: MarkerData) => {
-    setSelectedMarker(marker);
-  };
+  const benefits = [
+    {
+      icon: <Clock className="w-6 h-6" />,
+      title: 'Reportes en Tiempo Real',
+      description:
+        'Visualiza al instante los reportes de mascotas perdidas o avistadas por la comunidad.',
+    },
+    {
+      icon: <PawPrint className="w-6 h-6" />,
+      title: 'Red de Ayuda Activa',
+      description:
+        'Conecta con vecinos y voluntarios dispuestos a colaborar en la búsqueda y rescate.',
+    },
+    {
+      icon: <Leaf className="w-6 h-6" />,
+      title: 'Encuentra Espacios Verdes',
+      description:
+        'Descubre huertas comunitarias y zonas seguras para mascotas cerca de ti.',
+    },
+  ];
 
-  const closePopup = () => {
-    setSelectedMarker(null);
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        closePopup();
-      }
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        const target = event.target as HTMLElement;
-        if (!target.closest('[data-marker-id]')) {
-          closePopup();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const mapImage = PlaceHolderImages.find(img => img.id === 'map-features');
-  
   return (
-    <section className="w-full bg-background py-16 lg:py-24">
+    <section className="w-full bg-background py-16 lg:py-24" aria-labelledby="map-title">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">Mapa Interactivo: Encuentra y Ayuda</h2>
-            <p className="max-w-3xl mx-auto text-lg text-foreground/60 mt-2">
-                Explora los últimos reportes en tu comunidad y sé parte de la solución. Cada avistamiento cuenta.
-            </p>
+          <h2 id="map-title" className="text-3xl md:text-4xl font-bold tracking-tight">
+            Mapa Interactivo: Encuentra y Ayuda
+          </h2>
+          <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
+            Explora los últimos reportes, conecta con tu comunidad y sé parte de la solución.
+          </p>
         </div>
-        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12 items-center">
-          {/* Columna del Mapa */}
-          <div ref={mapRef} className="lg:col-span-2 relative h-96 md:h-[32rem] w-full rounded-2xl shadow-lg overflow-hidden border">
-            {mapImage && (
-                <Image src={mapImage.imageUrl} alt={mapImage.description} fill style={{objectFit: 'cover'}} className="brightness-90" data-ai-hint={mapImage.imageHint}/>
-            )}
-            <div className="absolute inset-0 bg-black/10"></div>
-            
-            {/* Marcadores */}
-            {markersData.map(marker => {
-              const petImage = PlaceHolderImages.find(img => img.id === marker.image);
-              return (
-                <div key={marker.id} style={{ top: marker.position.top, left: marker.position.left }} className="absolute transform -translate-x-1/2 -translate-y-1/2">
-                    <button 
-                        data-marker-id={marker.id}
-                        onClick={() => handleMarkerClick(marker)} 
-                        aria-label={`Ver detalles de ${marker.name}`}
-                        className="relative group flex items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-accent"
-                    >
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
-                        {petImage && (
-                          <Image src={petImage.imageUrl} alt={marker.name} width={32} height={32} className="relative rounded-full object-cover border-2 border-white shadow-md transition-transform group-hover:scale-110"/>
-                        )}
-                    </button>
-                </div>
-              )
-            })}
-             {/* Cluster */}
-            <div style={{ top: '20%', left: '75%' }} className="absolute transform -translate-x-1/2 -translate-y-1/2">
-                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-accent/80 backdrop-blur-sm text-white font-bold text-base md:text-lg rounded-full shadow-xl ring-2 ring-white/50">
-                    +3
-                </div>
-            </div>
 
-            {/* Popup */}
-            {selectedMarker && (
-              <div
-                ref={popupRef}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby={`popup-title-${selectedMarker.id}`}
-                className="absolute w-64 bg-background rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95"
-                style={{ top: selectedMarker.position.top, left: selectedMarker.position.left, transform: 'translate(1.5rem, -50%)' }}
-              >
-                <div className="relative h-32 w-full">
-                  <Image src={PlaceHolderImages.find(img => img.id === selectedMarker.image)?.imageUrl ?? ''} alt={`Foto de ${selectedMarker.name}`} fill style={{objectFit: 'cover'}} />
-                  <button onClick={closePopup} aria-label="Cerrar popup" className="absolute top-2 right-2 p-1 bg-black/40 rounded-full text-white hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="p-4">
-                  <h3 id={`popup-title-${selectedMarker.id}`} className="font-bold text-lg">{selectedMarker.name}</h3>
-                  <p className="text-sm text-muted-foreground">{selectedMarker.type}</p>
-                  <p className="text-sm font-semibold text-primary mt-1">{selectedMarker.distance}</p>
-                  <div className="flex gap-2 mt-4">
-                    <Button size="sm" className="flex-1">Contactar</Button>
-                    <Button size="sm" variant="secondary" className="flex-1">
-                      <Info className="w-4 h-4 mr-1.5"/>
-                      Más Info
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Columna del Mapa */}
+          <div className="relative w-full aspect-[3/4] lg:aspect-auto lg:h-full">
+            <div className="relative w-full h-full p-3 bg-[#1F3D2A] rounded-[28px] shadow-lg">
+              <div className="relative w-full h-full overflow-hidden rounded-[18px]">
+                {mapImage && (
+                  <Image
+                    src={mapImage.imageUrl}
+                    alt={mapImage.description}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="brightness-110"
+                    data-ai-hint={mapImage.imageHint}
+                  />
+                )}
+                <div className="absolute inset-0 bg-white/10"></div>
+                
+                {/* Popup Estático */}
+                <div className="absolute top-6 left-6 w-[250px] bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 border border-gray-200/50">
+                  <div className="flex items-center gap-3">
+                    {petImage && (
+                        <Image
+                            src={petImage.imageUrl}
+                            alt="Mascota en el mapa"
+                            width={56}
+                            height={56}
+                            className="rounded-full object-cover border-2 border-white"
+                            data-ai-hint={petImage.imageHint}
+                        />
+                    )}
+                    <div>
+                      <h4 className="font-bold text-lg text-gray-900">Max</h4>
+                      <p className="text-sm text-gray-600">A 0,5 km de usted</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2 mt-4">
+                    <Button size="sm" asChild>
+                        <Link href="#">Más Información</Link>
                     </Button>
+                    <Button size="sm" variant="outline">Contactar</Button>
                   </div>
                 </div>
-              </div>
-            )}
 
-            {/* Controles del mapa */}
-            <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-                <Button size="icon" variant="secondary" className="w-9 h-9 shadow-md focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2"><ZoomIn className="w-5 h-5"/></Button>
-                <Button size="icon" variant="secondary" className="w-9 h-9 shadow-md focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2"><ZoomOut className="w-5 h-5"/></Button>
+                {/* Controles de Zoom */}
+                <div className="absolute bottom-4 right-4 flex flex-col gap-1.5">
+                    <button aria-label="Acercar" className="flex items-center justify-center w-9 h-9 bg-[#1F3D2A]/80 text-white rounded-md backdrop-blur-sm shadow-md hover:bg-[#1F3D2A] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-transparent">
+                        <Plus className="w-5 h-5"/>
+                    </button>
+                    <button aria-label="Alejar" className="flex items-center justify-center w-9 h-9 bg-[#1F3D2A]/80 text-white rounded-md backdrop-blur-sm shadow-md hover:bg-[#1F3D2A] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-transparent">
+                        <Minus className="w-5 h-5"/>
+                    </button>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Columna de Beneficios */}
-          <div className="flex flex-col gap-6 md:gap-8">
-            {benefits.map((benefit) => (
-                <div key={benefit.title} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 bg-primary/10 rounded-full p-3 mt-1">
-                        {benefit.icon}
-                    </div>
-                    <div>
-                        <h3 className="font-semibold text-lg">{benefit.title}</h3>
-                        <p className="text-foreground/70">{benefit.description}</p>
-                    </div>
+          <div className="flex flex-col gap-y-12">
+            {benefits.map((benefit, index) => (
+              <div key={index} className="relative bg-[#E6F4EC] rounded-2xl p-6 pt-10 text-center">
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2">
+                   <div className="w-12 h-12 rounded-full bg-[#1F3D2A] flex items-center justify-center text-white ring-4 ring-[#E6F4EC]">
+                     {benefit.icon}
+                   </div>
                 </div>
+                <h3 className="font-semibold text-lg text-gray-900 mb-1">{benefit.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
+              </div>
             ))}
           </div>
         </div>
