@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle, Info } from 'lucide-react';
+import { CheckCircle, Info, LoaderCircle } from 'lucide-react';
 
 const initialState: ReportState = {
   message: null,
@@ -17,8 +17,15 @@ const initialState: ReportState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending}>
-      {pending ? 'Resumiendo...' : 'Enviar Reporte'}
+    <Button type="submit" disabled={pending} className="w-full sm:w-auto">
+      {pending ? (
+        <>
+          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          Resumiendo...
+        </>
+      ) : (
+        'Enviar Reporte'
+      )}
     </Button>
   );
 }
@@ -29,7 +36,7 @@ export function ReportForm() {
   return (
     <div className="space-y-6">
       <form action={formAction}>
-        <Card className="max-w-2xl mx-auto shadow-lg">
+        <Card className="max-w-2xl mx-auto shadow-lg border-0">
           <CardHeader>
             <CardTitle>Enviar un Reporte</CardTitle>
             <CardDescription>
@@ -47,7 +54,7 @@ export function ReportForm() {
                 required
               />
                {state.errors?.reportText && (
-                <p className="text-sm font-medium text-destructive">{state.errors.reportText}</p>
+                <p className="text-sm font-medium text-destructive mt-2">{state.errors.reportText}</p>
               )}
             </div>
           </CardContent>
@@ -58,9 +65,9 @@ export function ReportForm() {
       </form>
       
       {state.message && (
-        <Alert variant={state.summary ? "default" : "destructive"} className="max-w-2xl mx-auto">
+        <Alert variant={state.errors || !state.summary ? "destructive" : "default"} className="max-w-2xl mx-auto">
            {state.summary ? <CheckCircle className="h-4 w-4" /> : <Info className="h-4 w-4" />}
-          <AlertTitle>{state.summary ? "Resumen Completo" : "Error"}</AlertTitle>
+          <AlertTitle>{state.errors || !state.summary ? "Error al Procesar" : "Resumen Completo"}</AlertTitle>
           <AlertDescription>
             {state.message}
           </AlertDescription>
@@ -68,17 +75,17 @@ export function ReportForm() {
       )}
 
       {state.summary && (
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-2xl mx-auto animate-in fade-in-50">
           <CardHeader>
             <CardTitle>Resumen Generado por IA</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h3 className="font-semibold">Resumen del Reporte:</h3>
+              <h3 className="font-semibold text-foreground/90">Resumen del Reporte:</h3>
               <p className="text-foreground/80">{state.summary}</p>
             </div>
             <div>
-              <h3 className="font-semibold">Detalles de Ubicación:</h3>
+              <h3 className="font-semibold text-foreground/90">Detalles de Ubicación:</h3>
               <p className="text-foreground/80">{state.location}</p>
             </div>
           </CardContent>

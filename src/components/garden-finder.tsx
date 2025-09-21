@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle, Info, Sprout } from 'lucide-react';
+import { CheckCircle, Info, Sprout, LoaderCircle } from 'lucide-react';
 
 const initialState: GardenState = {
   message: null,
@@ -19,7 +19,14 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? 'Buscando huertas...' : 'Buscar Huertas'}
+      {pending ? (
+        <>
+          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          Buscando...
+        </>
+      ): (
+        'Buscar Huertas'
+      )}
     </Button>
   );
 }
@@ -30,9 +37,9 @@ export function GardenFinder() {
   return (
     <div className="space-y-6">
       <form action={formAction}>
-        <Card className="max-w-2xl mx-auto shadow-lg">
+        <Card className="max-w-2xl mx-auto shadow-lg border-0">
           <CardHeader>
-            <CardTitle>Encuentra una Huerta Comunitaria</CardTitle>
+            <CardTitle>Encuentra tu Huerta Comunitaria</CardTitle>
             <CardDescription>
               Dinos qué te interesa y dónde estás, y te sugeriremos huertas ideales para ti.
             </CardDescription>
@@ -48,7 +55,7 @@ export function GardenFinder() {
                 required
               />
               {state.errors?.userInterests && (
-                  <p className="text-sm font-medium text-destructive">{state.errors.userInterests}</p>
+                  <p className="text-sm font-medium text-destructive mt-2">{state.errors.userInterests}</p>
               )}
             </div>
             <div className="grid w-full gap-2">
@@ -60,7 +67,7 @@ export function GardenFinder() {
                 required
               />
               {state.errors?.userLocation && (
-                  <p className="text-sm font-medium text-destructive">{state.errors.userLocation}</p>
+                  <p className="text-sm font-medium text-destructive mt-2">{state.errors.userLocation}</p>
               )}
             </div>
           </CardContent>
@@ -71,9 +78,9 @@ export function GardenFinder() {
       </form>
 
       {state.message && (
-        <Alert variant={state.suggestedGardens ? "default" : "destructive"} className="max-w-2xl mx-auto">
+        <Alert variant={state.errors || !state.suggestedGardens ? "destructive" : "default"} className="max-w-2xl mx-auto">
            {state.suggestedGardens ? <CheckCircle className="h-4 w-4" /> : <Info className="h-4 w-4" />}
-          <AlertTitle>{state.suggestedGardens ? "¡Huertas Encontradas!" : "Error"}</AlertTitle>
+          <AlertTitle>{state.errors || !state.suggestedGardens ? "Error en la Búsqueda" : "¡Huertas Encontradas!"}</AlertTitle>
           <AlertDescription>
             {state.message}
           </AlertDescription>
@@ -81,11 +88,11 @@ export function GardenFinder() {
       )}
 
       {state.suggestedGardens && (
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-2xl mx-auto animate-in fade-in-50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sprout className="h-6 w-6 text-primary" />
-              Huertas Sugeridas
+              Huertas Sugeridas para Ti
             </CardTitle>
           </CardHeader>
           <CardContent>
