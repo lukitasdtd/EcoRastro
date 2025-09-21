@@ -3,14 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { MapFeatures } from '@/components/home/map-features';
 
 export default function Home() {
   const heroHuerta = PlaceHolderImages.find(img => img.id === 'hero-huerta');
   const heroMascotas = PlaceHolderImages.find(img => img.id === 'hero-mascotas');
 
   return (
-    <div className="flex flex-col items-center bg-gray-50/50">
-      <header className="relative w-full py-16 md:py-24 px-4">
+    <div className="flex flex-col items-center bg-background">
+      <header className="relative w-full py-16 md:py-24 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
           {/* Contenedor de las imágenes */}
           <div className="grid md:grid-cols-2 gap-4 md:gap-6">
@@ -45,13 +46,13 @@ export default function Home() {
 
         {/* Contenedor del texto superpuesto */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <div className="bg-black/30 backdrop-blur-sm p-6 md:p-8 rounded-lg">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight text-shadow">
+          <div className="bg-black/40 backdrop-blur-sm p-6 md:p-8 rounded-lg">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
               Conectando comunidades,
               <br />
               <span className="text-primary-foreground/90">protegiendo ecosistemas.</span>
             </h1>
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-primary-foreground/80 mb-8 text-shadow-sm">
+            <p className="max-w-2xl mx-auto text-lg md:text-xl text-primary-foreground/80 mb-8">
               Encontramos mascotas, regeneramos la tierra, educamos para el futuro. Únete a EcoRastro.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -65,6 +66,10 @@ export default function Home() {
           </div>
         </div>
       </header>
+      
+      {/* Nueva sección del mapa interactivo */}
+      <MapFeatures />
+
     </div>
   );
 }

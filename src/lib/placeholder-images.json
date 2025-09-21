@@ -2,10 +2,10 @@
 {
   "placeholderImages": [
     {
-      "id": "map",
+      "id": "map-features",
       "description": "Una imagen de marcador de posición de un mapa estilizado.",
-      "imageUrl": "https://picsum.photos/seed/map1/1200/600",
-      "imageHint": "stylized map"
+      "imageUrl": "https://picsum.photos/seed/map-features/1200/800",
+      "imageHint": "stylized map city"
     },
     {
       "id": "hero-huerta",
