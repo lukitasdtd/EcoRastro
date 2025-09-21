@@ -12,6 +12,7 @@ export interface Garden {
   name: string;
   location: string;
   description: string;
+  imageId: string;
 }
 
 export interface PlantingInfo {

@@ -10,7 +10,7 @@ interface GardenCardProps {
 }
 
 export default function GardenCard({ garden }: GardenCardProps) {
-    const image = PlaceHolderImages.find(img => img.id === 'garden1');
+    const image = PlaceHolderImages.find(img => img.id === garden.imageId);
   return (
     <Card className="flex flex-col overflow-hidden shadow-lg transition-transform hover:scale-105 duration-300 rounded-2xl">
       <CardHeader className="p-0">
