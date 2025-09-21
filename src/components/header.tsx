@@ -1,116 +1,258 @@
 'use client';
 
-// TAREA 6: Navegación (rutas)
-// Este componente gestiona la barra de navegación principal de la aplicación.
-// Cumple con los siguientes requisitos del sprint:
-// - Define un menú de navegación que permite visitar todas las secciones de la aplicación.
-// - Utiliza el componente <Link> de Next.js para una navegación rápida del lado del cliente sin recargar la página.
-// - El proyecto se ejecuta sin errores y cada página carga en una URL separada.
-// - Implementa el Hook `usePathname` para resaltar visualmente la página activa.
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Map, Calendar, Sprout, PawPrint, Info, UserCircle } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Menu, X, ChevronDown, UserCircle } from 'lucide-react';
+import { navItems, type NavItem } from '@/lib/menu-data';
 import { cn } from '@/lib/utils';
 
-// Array de objetos que define los elementos de navegación.
-// Esto facilita la adición o eliminación de enlaces en el futuro.
-const navItems = [
-  { href: '/mapa', label: 'Mapa Interactivo', icon: Map },
-  { href: '/calendar', label: 'Calendario', icon: Calendar },
-  { href: '/gardens', label: 'Huertas', icon: Sprout },
-  { href: '/mascotas', label: 'Mascotas', icon: PawPrint },
-  { href: '/about', label: 'Acerca de', icon: Info },
-];
-
-// Componente interno para los enlaces de navegación.
-// Utiliza el Hook `usePathname` para saber cuál es la ruta actual.
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+// Componente para un elemento de navegación individual
+function NavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
-  const isActive = pathname === href; // Comprueba si el enlace es la página activa.
+  const isActive = pathname === href;
 
   return (
-    // El componente <Link> de Next.js gestiona la navegación del lado del cliente.
-    <Link
-      href={href}
-      // La función `cn` aplica clases de forma condicional para estilizar el enlace activo.
-      className={cn(
-        "transition-colors hover:text-primary pb-1 text-sm font-medium",
-        isActive ? "text-primary border-b-2 border-primary" : "text-foreground/60"
-      )}
-    >
-      {children}
+    <Link href={href} legacyBehavior passHref>
+      <a
+        className={cn(
+          'relative block whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary',
+          isActive ? 'font-bold' : ''
+        )}
+      >
+        {children}
+        {isActive && (
+          <span className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 bg-accent"></span>
+        )}
+      </a>
     </Link>
   );
 }
 
-export function Header() {
+// Componente para un elemento de menú con dropdown
+function DropdownMenu({ item }: { item: NavItem }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const menuRef = useRef<HTMLLIElement>(null);
+
+  const isParentActive =
+    item.subItems?.some(sub => pathname === sub.href) ?? false;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
+  if (!item.subItems) {
+    return <NavLink href={item.href}>{item.label}</NavLink>;
+  }
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-screen-2xl items-center">
-        
-        {/* Menú para dispositivos móviles (utiliza el componente Sheet de ShadCN). */}
-        <div className="flex items-center md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="mr-4">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Abrir Menú</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-72">
-              <div className="p-4 border-b">
-                <Logo />
-              </div>
-              <nav className="flex flex-col gap-4 p-4">
-                {/* Itera sobre `navItems` para renderizar los enlaces en el menú móvil. */}
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="text-foreground/80 hover:text-primary flex items-center gap-2"
-                  >
-                    <item.icon className="h-5 w-5" />
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
+    <li ref={menuRef} className="relative" onKeyDown={handleKeyDown}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="true"
+        aria-expanded={isOpen}
+        className={cn(
+          'flex w-full items-center gap-1 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary',
+          isParentActive ? 'font-bold' : ''
+        )}
+      >
+        {item.label}
+        <ChevronDown
+          className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')}
+        />
+        {isParentActive && (
+          <span className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 bg-accent"></span>
+        )}
+      </button>
+      {isOpen && (
+        <div
+          role="menu"
+          className="absolute left-0 top-full z-20 mt-2 w-max max-w-xl origin-top-left rounded-lg bg-gray-800 p-4 text-gray-200 shadow-lg ring-1 ring-black ring-opacity-5 transition ease-out duration-200"
+        >
+          <div className="absolute -top-2 left-4 h-0 w-0 border-x-8 border-x-transparent border-b-8 border-b-gray-800"></div>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+            {item.subItems.map(subItem => (
+              <Link key={subItem.href} href={subItem.href} legacyBehavior passHref>
+                <a
+                  role="menuitem"
+                  onClick={() => setIsOpen(false)}
+                  className="block rounded-md p-2 text-sm hover:bg-gray-700 focus:bg-gray-700 focus:outline-none"
+                >
+                  {subItem.label}
+                </a>
+              </Link>
+            ))}
+          </div>
         </div>
-        
-        {/* Logo para la vista de escritorio. */}
-        <div className="hidden md:flex">
+      )}
+    </li>
+  );
+}
+
+// Componente principal del Header/Navbar
+export function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <header
+      className={cn(
+        'sticky top-0 z-50 w-full bg-primary font-sans transition-shadow',
+        isScrolled && 'shadow-md'
+      )}
+    >
+      <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
+        {/* Logo */}
+        <div className="flex-shrink-0">
           <Logo />
         </div>
 
-        {/* Navegación centrada para la vista de escritorio. */}
-        <nav className="hidden md:flex flex-1 items-center justify-center gap-6">
-          {/* Itera sobre `navItems` para renderizar los enlaces usando el componente `NavLink`. */}
-          {navItems.map((item) => (
-            <NavLink key={item.href} href={item.href}>{item.label}</NavLink>
-          ))}
+        {/* Navegación Desktop */}
+        <nav className="hidden md:flex flex-1 items-center justify-center">
+          <ul className="flex items-center gap-6">
+            {navItems.map(item =>
+              item.subItems ? (
+                <DropdownMenu key={item.label} item={item} />
+              ) : (
+                <li key={item.href}>
+                  <NavLink href={item.href}>{item.label}</NavLink>
+                </li>
+              )
+            )}
+          </ul>
         </nav>
-        
-        {/* Logo centrado para la vista móvil. */}
-        <div className="flex-1 flex justify-center md:hidden">
-            <Logo />
+
+        {/* Botón de Login y Menú Móvil */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            className="hidden rounded-full border-accent text-accent hover:bg-accent hover:text-gray-900 md:flex"
+            asChild
+          >
+            <Link href="/login">
+              <UserCircle className="mr-2 h-5 w-5" />
+              Iniciar Sesión
+            </Link>
+          </Button>
+
+          {/* Botón Hamburguesa para Móvil */}
+          <div className="md:hidden">
+            <Sheet
+              open={isMobileMenuOpen}
+              onOpenChange={setIsMobileMenuOpen}
+            >
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-white hover:bg-primary-hover">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Abrir menú</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="left"
+                className="w-full max-w-sm bg-primary p-0 text-white"
+              >
+                <div className="flex h-16 items-center justify-between border-b border-primary-hover px-4">
+                  <Logo />
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-white hover:bg-primary-hover">
+                      <X className="h-6 w-6" />
+                      <span className="sr-only">Cerrar menú</span>
+                    </Button>
+                  </SheetTrigger>
+                </div>
+                <nav className="p-4">
+                  <Accordion type="single" collapsible className="w-full">
+                    {navItems.map(item =>
+                      item.subItems ? (
+                        <AccordionItem
+                          key={item.label}
+                          value={item.label}
+                          className="border-b-0"
+                        >
+                          <AccordionTrigger className="py-3 text-lg font-medium hover:no-underline">
+                            {item.label}
+                          </AccordionTrigger>
+                          <AccordionContent className="pl-4">
+                            <ul className="flex flex-col gap-2">
+                              {item.subItems.map(sub => (
+                                <li key={sub.href}>
+                                  <Link
+                                    href={sub.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="block rounded-md p-2 hover:bg-primary-hover"
+                                  >
+                                    {sub.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ) : (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block py-3 text-lg font-medium"
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    )}
+                  </Accordion>
+                   <div className="mt-6 border-t border-primary-hover pt-6">
+                     <Button
+                        variant="outline"
+                        className="w-full rounded-full border-accent text-accent hover:bg-accent hover:text-gray-900"
+                        asChild
+                      >
+                        <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                          <UserCircle className="mr-2 h-5 w-5" />
+                          Iniciar Sesión
+                        </Link>
+                      </Button>
+                   </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
-
-
-        {/* Elementos alineados a la derecha. */}
-        <div className="flex items-center ml-auto">
-            <Button variant="ghost" size="icon" asChild className="rounded-full">
-                <Link href="/login">
-                    <UserCircle className="h-5 w-5" />
-                    <span className="sr-only">Perfil</span>
-                </Link>
-            </Button>
-        </div>
-
       </div>
     </header>
   );

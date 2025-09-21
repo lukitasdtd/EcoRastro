@@ -1,10 +1,21 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Quicksand, Roboto } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header';
 import { Toaster } from '@/components/ui/toaster';
 
-const inter = Inter({ subsets: ['latin'] });
+const quicksand = Quicksand({
+  subsets: ['latin'],
+  variable: '--font-quicksand',
+  weight: ['400', '500', '700'],
+});
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  weight: ['400', '500', '700'],
+});
+
 
 export const metadata: Metadata = {
   title: 'EcoRastro',
@@ -17,11 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-CL" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="es-CL" className={`${quicksand.variable} ${roboto.variable}`} suppressHydrationWarning>
+      <body>
         <div className="flex min-h-screen w-full flex-col">
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pt-8">{children}</main>
         </div>
         <Toaster />
       </body>
