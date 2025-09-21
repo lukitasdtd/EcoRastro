@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -7,16 +8,16 @@
       "imageHint": "stylized map"
     },
     {
-      "id": "hero1",
-      "description": "Una mujer en una huerta comunitaria.",
-      "imageUrl": "https://picsum.photos/seed/hero1/600/400",
-      "imageHint": "woman community garden"
+      "id": "hero-huerta",
+      "description": "Una persona cuidando plantas en una huerta.",
+      "imageUrl": "https://picsum.photos/seed/huerta/800/600",
+      "imageHint": "gardening plants"
     },
-     {
-      "id": "hero2",
-      "description": "Una persona sosteniendo un cachorro.",
-      "imageUrl": "https://picsum.photos/seed/hero2/600/400",
-      "imageHint": "person puppy"
+    {
+      "id": "hero-mascotas",
+      "description": "Una persona abrazando a un perro feliz.",
+      "imageUrl": "https://picsum.photos/seed/mascotas/800/600",
+      "imageHint": "person hugging dog"
     },
     {
       "id": "pet1",
