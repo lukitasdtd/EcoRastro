@@ -2,18 +2,11 @@
 
 import Link from 'next/link';
 import { Instagram, Facebook, Copyright } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { Logo } from './logo';
 import { cn } from '@/lib/utils';
 
 export function Footer() {
-  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
-
-  // No mostrar el footer en la página de inicio
-  if (pathname === '/') {
-    return null;
-  }
 
   return (
     <footer className={cn('bg-primary text-primary-foreground font-sans mt-auto')}>
