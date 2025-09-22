@@ -2,7 +2,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useFormContext } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo, forwardRef, useRef, useEffect } from 'react';
@@ -66,41 +66,28 @@ const reportSchema = z.object({
 
 type ReportFormValues = z.infer<typeof reportSchema>;
 
-const MaskedInput = ({ field, form }: { field: any, form: any }) => {
+const MaskedInput = forwardRef<HTMLInputElement, { name: 'telefono' } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>>((props, ref) => {
+  const { setValue } = useFormContext<ReportFormValues>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!inputRef.current) return;
-
     const mask = IMask(inputRef.current, {
-      mask: '+{56} 9 0000 0000'
+      mask: '+{56} 9 0000 0000',
     });
 
     mask.on('accept', () => {
-      form.setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
+      setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
     });
-    
-    // Set initial value
-    if (field.value) {
-      mask.value = field.value;
-    }
 
     return () => {
       mask.destroy();
     };
-  }, [form, field.value]);
-
-  return (
-    <Input
-      {...field}
-      ref={inputRef}
-      placeholder="+56 9 XXXX XXXX"
-      onChange={() => {
-        // We let iMask handle the change
-      }}
-    />
-  );
-};
+  }, [setValue]);
+  
+  return <Input {...props} ref={inputRef} />;
+});
+MaskedInput.displayName = 'MaskedInput';
 
 
 export function ReportarMascotaForm() {
@@ -519,7 +506,7 @@ export function ReportarMascotaForm() {
                         <FormItem>
                             <FormLabel>Teléfono</FormLabel>
                             <FormControl>
-                              <MaskedInput field={field} form={form} />
+                              <MaskedInput {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -662,5 +649,3 @@ export function ReportarMascotaForm() {
     </Form>
   );
 }
-
-    
