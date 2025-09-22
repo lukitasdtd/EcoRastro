@@ -1,15 +1,11 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller, useFormContext } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState, useCallback, useMemo, forwardRef, useRef, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import { useDropzone } from 'react-dropzone';
-import IMask from 'imask';
-import { LoaderCircle, MapPin, UploadCloud, X, FileUp, AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { useState, useEffect } from 'react';
+import { LoaderCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,13 +17,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { Progress } from '@/components/ui/progress';
-import Image from 'next/image';
-import { storage } from '@/lib/firebase/config';
 
-// Esquema de validación y tipos...
+// [MODO SEGURO] Esquema de validación simplificado
 const phoneRegex = new RegExp(
   /^(\+?56)?(\s?)(9)(\s?)[987654321]\d{7}$/
 );
@@ -52,13 +44,15 @@ const reportSchema = z.object({
     fechaPerdida: z.date({ required_error: "La fecha es requerida." }).max(new Date(), "La fecha no puede ser en el futuro."),
     horaPerdida: z.string().optional(),
     direccion: z.string().min(1, "La dirección es requerida."),
-    lat: z.number({ required_error: "La ubicación en el mapa es requerida." }),
-    lng: z.number({ required_error: "La ubicación en el mapa es requerida." }),
+    // [MODO SEGURO] Mapa deshabilitado, lat/lng son opcionales
+    lat: z.number().optional(),
+    lng: z.number().optional(),
     nombreContacto: z.string().min(1, "El nombre de contacto es requerido."),
     telefono: z.string().regex(phoneRegex, "Número de teléfono inválido."),
     correo: z.string().email("Correo electrónico inválido.").optional().or(z.literal('')),
     medioPreferido: z.enum(["telefono", "whatsapp", "correo"], { required_error: "Debes seleccionar un medio de contacto." }),
-    fotos: z.array(z.string()).max(5, "Puedes subir hasta 5 imágenes.").default([]),
+    // [MODO SEGURO] Subida de archivos simple, no se validan aquí
+    fotos: z.any().optional(),
     visibleMapa: z.boolean().default(true),
     permitirComentarios: z.boolean().default(true),
     consentimiento: z.literal<boolean>(true, { errorMap: () => ({ message: "Debes aceptar las condiciones." }) }),
@@ -69,41 +63,15 @@ const reportSchema = z.object({
 
 type ReportFormValues = z.infer<typeof reportSchema>;
 
-const MaskedInput = forwardRef<HTMLInputElement, { name: 'telefono' } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>>((props, ref) => {
-  const { setValue } = useFormContext<ReportFormValues>();
-  
-  useEffect(() => {
-    if (typeof window === 'undefined' || !ref || !('current' in ref) || !ref.current) return;
-    const mask = IMask(ref.current, {
-      mask: '+{56} 9 0000 0000',
-    });
-
-    mask.on('accept', () => {
-      setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
-    });
-
-    return () => mask.destroy();
-  }, [ref, setValue]);
-  
-  return <Input {...props} ref={ref} />;
-});
-MaskedInput.displayName = 'MaskedInput';
-
-type FileUpload = {
-  file: File;
-  preview: string;
-  progress: number;
-  status: 'pending' | 'uploading' | 'success' | 'error';
-  error?: string;
-  uploadTask?: any;
-};
-
-
 export function ReportarMascotaForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploads, setUploads] = useState<FileUpload[]>([]);
+
+  // [MODO SEGURO] Log de montaje
+  useEffect(() => {
+    console.log('[SAFE] form mounted');
+  }, []);
 
   const form = useForm<ReportFormValues>({
     resolver: zodResolver(reportSchema),
@@ -120,226 +88,45 @@ export function ReportarMascotaForm() {
       nombreContacto: "",
       telefono: "",
       correo: "",
-      fotos: [],
       temperamento: [],
       llevaCollar: false,
       recompensa: false,
       visibleMapa: true,
       permitirComentarios: true,
     },
+    // [MODO SEGURO] Log en cada cambio
+    onChange: (values) => {
+        const changedFields = form.formState.dirtyFields;
+        const fieldName = Object.keys(changedFields)[Object.keys(changedFields).length-1];
+        if(fieldName) console.log('[SAFE] input change', fieldName);
+    }
   });
 
   const especieValue = form.watch('especie');
   const llevaCollarValue = form.watch('llevaCollar');
   const recompensaValue = form.watch('recompensa');
   
-  const compressImage = async (file: File): Promise<Blob> => {
-    console.log("Comprimiendo imagen...");
-    const bmp = await createImageBitmap(file);
-    const { width, height } = bmp;
-    const max_side = 1600;
-
-    let newWidth = width;
-    let newHeight = height;
-
-    if (width > height) {
-      if (width > max_side) {
-        newHeight = Math.round((height * max_side) / width);
-        newWidth = max_side;
-      }
-    } else {
-      if (height > max_side) {
-        newWidth = Math.round((width * max_side) / height);
-        newHeight = max_side;
-      }
-    }
-
-    const canvas = document.createElement('canvas');
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    const ctx = canvas.getContext('2d');
-    ctx?.drawImage(bmp, 0, 0, newWidth, newHeight);
-
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-             console.log("Compresión completada.");
-            resolve(blob);
-          } else {
-            reject(new Error('Error al comprimir la imagen.'));
-          }
-        },
-        'image/jpeg',
-        0.8
-      );
-    });
-  };
-  
-  const handleUpload = async (file: File, index: number) => {
-    try {
-      const compressedBlob = await compressImage(file);
-      const filePath = `reports/${Date.now()}-${file.name}`;
-      const fileStorageRef = storageRef(storage, filePath);
-      const uploadTask = uploadBytesResumable(fileStorageRef, compressedBlob, { contentType: 'image/jpeg' });
-      
-      setUploads(prev => {
-        const newUploads = [...prev];
-        newUploads[index].uploadTask = uploadTask;
-        newUploads[index].status = 'uploading';
-        return newUploads;
-      });
-
-      let timeoutId: NodeJS.Timeout;
-
-      const unsubscribe = uploadTask.on('state_changed',
-        (snapshot) => {
-          console.log(`Subiendo (${snapshot.bytesTransferred / snapshot.totalBytes * 100}%)...`);
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploads(prev => {
-            const newUploads = [...prev];
-            if (newUploads[index]) newUploads[index].progress = progress;
-            return newUploads;
-          });
-
-          // Reset timeout on progress
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => {
-            console.log("Cancelado por Timeout");
-            uploadTask.cancel();
-            toast({ variant: 'destructive', title: 'Error de subida', description: `La subida de ${file.name} ha tardado demasiado y fue cancelada.` });
-          }, 60000);
-        },
-        (error) => {
-           console.error("Error en la subida:", error.code);
-           clearTimeout(timeoutId);
-           setUploads(prev => {
-              const newUploads = [...prev];
-              if(newUploads[index]) {
-                newUploads[index].status = 'error';
-                newUploads[index].error = 'La subida falló. Intenta de nuevo.';
-              }
-              return newUploads;
-           });
-        },
-        async () => {
-          console.log("Completado");
-          clearTimeout(timeoutId);
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          form.setValue('fotos', [...form.getValues('fotos'), downloadURL]);
-          setUploads(prev => {
-             const newUploads = [...prev];
-             if(newUploads[index]) {
-                newUploads[index].status = 'success';
-             }
-             return newUploads;
-          });
-        }
-      );
-
-    } catch (error) {
-       console.error("Error al procesar la imagen:", error);
-       toast({ variant: 'destructive', title: 'Error de procesamiento', description: 'No se pudo procesar una de las imágenes.'});
-    }
-  };
-
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const currentUploadsCount = uploads.length;
-    if (currentUploadsCount + acceptedFiles.length > 5) {
-      toast({ variant: 'destructive', title: 'Límite de archivos', description: 'Puedes subir un máximo de 5 imágenes.' });
-      return;
-    }
-
-    const newFileUploads: FileUpload[] = acceptedFiles.map(file => {
-      // Validación de tipo y tamaño
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        toast({ variant: 'destructive', title: 'Tipo de archivo no válido', description: `${file.name} no es una imagen JPG o PNG.` });
-        return null;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        toast({ variant: 'destructive', title: 'Archivo demasiado grande', description: `${file.name} supera los 5MB.` });
-        return null;
-      }
-      return {
-        file,
-        preview: URL.createObjectURL(file),
-        progress: 0,
-        status: 'pending',
-      };
-    }).filter((f): f is FileUpload => f !== null);
-
-    setUploads(prev => [...prev, ...newFileUploads]);
-    newFileUploads.forEach((upload, i) => handleUpload(upload.file, currentUploadsCount + i));
-
-  }, [uploads.length, toast, form]);
-
-  useEffect(() => {
-    return () => uploads.forEach(upload => URL.revokeObjectURL(upload.preview));
-  }, [uploads]);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: { 'image/jpeg': [], 'image/png': [] },
-    maxFiles: 5,
-    disabled: uploads.length >= 5
-  });
-
-  const removeFile = (indexToRemove: number) => {
-    const upload = uploads[indexToRemove];
-    if (upload.uploadTask && (upload.status === 'uploading' || upload.status === 'pending')) {
-        console.log("Cancelado");
-        upload.uploadTask.cancel();
-    }
-    
-    setUploads(prev => {
-        const newUploads = prev.filter((_, index) => index !== indexToRemove);
-        const successfulUrls = newUploads
-            .filter(u => u.status === 'success')
-            .map(u => {
-                const url = form.getValues('fotos').find(url => url.includes(u.file.name));
-                return url;
-            })
-            .filter((url): url is string => !!url);
-        form.setValue('fotos', successfulUrls);
-        return newUploads;
-    });
-  };
-  
-  const Map = useMemo(() => dynamic(
-    () => import('@/components/leaflet-map-draggable'),
-    { 
-      loading: () => <Skeleton className="w-full h-full rounded-md" />,
-      ssr: false 
-    }
-  ), []);
-
   async function onSubmit(data: ReportFormValues) {
     setIsSubmitting(true);
-    
-    if (uploads.some(u => u.status === 'uploading')) {
-        toast({ variant: 'destructive', title: 'Espera un momento', description: 'Algunos archivos aún se están subiendo.'});
-        setIsSubmitting(false);
-        return;
-    }
-    
-    // Aquí iría la lógica para guardar los datos en Firestore, usando data.fotos que ya contiene las URLs.
-    console.log("Datos finales a guardar en Firestore:", data);
+    console.log("[SAFE] Submitting data:", data);
 
+    // Simular subida
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     toast({
-      title: "¡Reporte enviado!",
-      description: "Gracias por tu colaboración. Tu reporte ha sido publicado.",
+      title: "¡Reporte enviado! (Modo Seguro)",
+      description: "Los datos han sido validados. La subida real está desactivada.",
     });
 
-    router.push('/mascotas');
     setIsSubmitting(false);
+    // No redirigir para poder inspeccionar el estado
+    // router.push('/mascotas');
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* --- DATOS PRINCIPALES --- */}
         <Card className="max-w-3xl mx-auto shadow-sm">
           <CardHeader>
             <CardTitle>Datos principales</CardTitle>
@@ -461,6 +248,7 @@ export function ReportarMascotaForm() {
           </CardContent>
         </Card>
 
+        {/* --- SEÑALES Y CARACTERÍSTICAS --- */}
         <Card className="max-w-3xl mx-auto shadow-sm">
             <CardHeader>
                 <CardTitle>Señales y características</CardTitle>
@@ -589,6 +377,7 @@ export function ReportarMascotaForm() {
             </CardContent>
         </Card>
 
+        {/* --- ÚLTIMA VEZ VISTA --- */}
         <Card className="max-w-3xl mx-auto shadow-sm">
             <CardHeader>
                 <CardTitle>Última vez vista</CardTitle>
@@ -639,19 +428,15 @@ export function ReportarMascotaForm() {
                 />
                 <div>
                   <Label>Ubicación en el mapa</Label>
-                  <p className="text-sm text-muted-foreground">Arrastra el marcador al punto exacto.</p>
-                  <div className="w-full h-80 rounded-md mt-2 relative">
-                    <Map onLocationChange={(lat, lng) => {
-                      form.setValue('lat', lat, { shouldValidate: true });
-                      form.setValue('lng', lng, { shouldValidate: true });
-                    }}/>
-                  </div>
-                  {form.formState.errors.lat && <p className="text-sm font-medium text-destructive mt-2">{form.formState.errors.lat.message}</p>}
+                  <p className="text-sm text-muted-foreground p-4 bg-muted rounded-md mt-2">
+                    [MODO SEGURO] El mapa interactivo está deshabilitado temporalmente para depuración.
+                  </p>
                 </div>
             </CardContent>
         </Card>
 
-         <Card className="max-w-3xl mx-auto shadow-sm">
+        {/* --- CONTACTO --- */}
+        <Card className="max-w-3xl mx-auto shadow-sm">
             <CardHeader>
                 <CardTitle>Contacto</CardTitle>
             </CardHeader>
@@ -674,7 +459,7 @@ export function ReportarMascotaForm() {
                         <FormItem>
                             <FormLabel>Teléfono</FormLabel>
                             <FormControl>
-                              <MaskedInput {...field} />
+                              <Input type="tel" placeholder="+56 9 XXXX XXXX" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -724,62 +509,33 @@ export function ReportarMascotaForm() {
             </CardContent>
         </Card>
 
+        {/* --- FOTOS --- */}
         <Card className="max-w-3xl mx-auto shadow-sm">
             <CardHeader>
                 <CardTitle>Fotos</CardTitle>
-                <CardDescription>Sube hasta 5 fotos (JPG, PNG, máx. 5MB cada una).</CardDescription>
+                <CardDescription>[MODO SEGURO] La subida avanzada de archivos está deshabilitada. Usa el selector simple.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div {...getRootProps({ 'aria-disabled': uploads.length >= 5 })} className={`flex items-center justify-center w-full p-6 border-2 border-dashed rounded-lg ${uploads.length < 5 ? 'cursor-pointer hover:bg-muted' : 'bg-muted/50 cursor-not-allowed'}`}>
-                    <input {...getInputProps()} />
-                    <div className="text-center">
-                        <UploadCloud className="w-10 h-10 mx-auto text-muted-foreground" />
-                        <p className="mt-2 text-sm text-muted-foreground">{uploads.length >= 5 ? 'Has alcanzado el límite de 5 fotos' : 'Arrastra tus fotos aquí, o haz clic para seleccionarlas'}</p>
-                    </div>
-                </div>
-                 {uploads.length > 0 && (
-                    <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {uploads.map((upload, i) => (
-                            <div key={i} className="relative aspect-square">
-                                <Image
-                                    src={upload.preview}
-                                    alt={`Preview ${i}`}
-                                    fill
-                                    className="object-cover rounded-md"
-                                />
-                                {upload.status === 'uploading' && (
-                                    <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-2 rounded-md">
-                                        <Progress value={upload.progress} className="w-full h-2" />
-                                        <p className="text-white text-xs mt-1">{Math.round(upload.progress)}%</p>
-                                    </div>
-                                )}
-                                {upload.status === 'success' && (
-                                    <div className="absolute top-1 left-1 bg-green-500 text-white rounded-full p-1">
-                                        <CheckCircle className="w-3 h-3" />
-                                    </div>
-                                )}
-                                {upload.status === 'error' && (
-                                    <div className="absolute inset-0 bg-red-900/70 flex flex-col items-center justify-center text-center p-2 rounded-md">
-                                        <AlertCircle className="w-6 h-6 text-white" />
-                                        <p className="text-white text-xs mt-1 leading-tight">{upload.error}</p>
-                                    </div>
-                                )}
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="icon"
-                                    onClick={() => removeFile(i)}
-                                    className="absolute top-1 right-1 h-6 w-6"
-                                >
-                                    <X className="w-3 h-3" />
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <FormField
+                    control={form.control}
+                    name="fotos"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Seleccionar imágenes</FormLabel>
+                            <FormControl>
+                                <Input type="file" multiple accept="image/*" {...form.register('fotos')} />
+                            </FormControl>
+                            <FormDescription>
+                                Puedes seleccionar hasta 5 imágenes (JPG, PNG).
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
             </CardContent>
         </Card>
 
+        {/* --- OPCIONES Y PUBLICACIÓN --- */}
         <Card className="max-w-3xl mx-auto shadow-sm">
             <CardHeader>
                 <CardTitle>Opciones de privacidad y publicación</CardTitle>
@@ -825,7 +581,7 @@ export function ReportarMascotaForm() {
             <Button type="button" variant="outline" onClick={() => router.back()}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting || uploads.some(u => u.status === 'uploading')}>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Publicar Reporte'}
             </Button>
           </CardFooter>
