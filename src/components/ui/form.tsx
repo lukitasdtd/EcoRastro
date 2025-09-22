@@ -103,7 +103,7 @@ const FormLabel = React.forwardRef<
 })
 FormLabel.displayName = "FormLabel"
 
-const OriginalFormControl = React.forwardRef<
+const FormControlAsSlot = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
@@ -123,16 +123,15 @@ const OriginalFormControl = React.forwardRef<
     />
   )
 })
-OriginalFormControl.displayName = "FormControl"
+FormControlAsSlot.displayName = "FormControl"
 
-export function FormControl({ children, ...rest }: React.ComponentProps<typeof OriginalFormControl>) {
+
+export function FormControl({ children, ...rest }: React.ComponentProps<typeof FormControlAsSlot>) {
   const arr = React.Children.toArray(children);
   if (arr.length !== 1) {
-    // 👇 Te dirá exactamente dónde pasa y qué hijos está recibiendo
     console.error('[FormControl INVALID CHILDREN COUNT]', arr.length, arr);
   }
-  // Renderiza solo el primero para evitar el crash mientras arreglas
-  return <OriginalFormControl {...rest}>{arr[0] ?? <span style={{display:'none'}} />}</OriginalFormControl>;
+  return <FormControlAsSlot {...rest}>{arr[0] ?? <span style={{display:'none'}} />}</FormControlAsSlot>;
 }
 
 
