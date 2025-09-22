@@ -1,5 +1,14 @@
 'use client';
 
+// TAREA 8: Integración de API Externa (Leaflet)
+// Este componente encapsula el mapa de Leaflet.
+// Puntos clave para la exposición:
+// - La directiva 'use client' es fundamental porque Leaflet interactúa con el DOM del navegador, algo que solo existe en el cliente.
+// - Las importaciones de CSS se hacen al principio para asegurar que los estilos del mapa se carguen correctamente.
+// - `useEffect` se usa para inicializar el mapa de forma segura solo después de que el componente se haya montado en el cliente.
+// - Se maneja la limpieza del mapa en la función de retorno de `useEffect` para evitar fugas de memoria.
+// - Se muestra cómo añadir elementos interactivos como marcadores (`L.marker`) y popups (`bindPopup`).
+
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import React, { useEffect, useRef } from 'react';
@@ -10,6 +19,8 @@ import { useToast } from '@/hooks/use-toast';
 import type { Map, Marker } from 'leaflet';
 
 export default function LeafletMap() {
+  // `useRef` se usa para mantener una referencia al elemento DIV del mapa y a la instancia del mapa de Leaflet
+  // sin provocar que el componente se vuelva a renderizar cuando cambian.
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<Map | null>(null);
   const userMarker = useRef<Marker | null>(null);
@@ -18,33 +29,36 @@ export default function LeafletMap() {
   const initialCenter: [number, number] = [-33.4489, -70.6693];
   const initialZoom = 11;
 
+  // `useEffect` para inicializar el mapa de forma segura en el cliente.
   useEffect(() => {
     let isMounted = true;
+    // Se verifica que estemos en el navegador (`window` existe) y que el div del mapa esté listo.
     if (typeof window === 'undefined' || !mapRef.current) return;
 
-    // Importa Leaflet y sus CSS dinámicamente solo en el cliente
+    // Importa Leaflet dinámicamente solo en el cliente para evitar errores de SSR.
     Promise.all([
         import('leaflet'),
         import('leaflet-defaulticon-compatibility'),
     ]).then(([L]) => {
+      // Se asegura de que el componente todavía esté montado y que el mapa no se haya inicializado ya.
       if (!isMounted || !mapRef.current || mapInstance.current) return;
 
-      // Crea la instancia del mapa
+      // Crea la instancia del mapa y la guarda en `mapInstance.current`.
       mapInstance.current = L.map(mapRef.current, {
         center: initialCenter,
         zoom: initialZoom,
-        zoomControl: false, // Desactivamos el control por defecto para poner el nuestro
+        zoomControl: false, // Desactivamos el control por defecto para añadir el nuestro.
       });
 
-      // Añade la capa de OpenStreetMap
+      // Añade la capa de teselas de OpenStreetMap.
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(mapInstance.current);
 
-      // Añade control de zoom en la posición deseada
+      // Añade el control de zoom en la posición deseada.
       L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current);
 
-      // Marcadores de ejemplo
+      // Marcadores de ejemplo para demostrar la funcionalidad del mapa.
       const points = [
         { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: 'paw' },
         { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: 'sprout' },
@@ -65,26 +79,27 @@ export default function LeafletMap() {
       });
     });
 
-    // Limpieza al desmontar el componente
+    // Función de limpieza: se ejecuta cuando el componente se desmonta.
     return () => {
       isMounted = false;
       if (mapInstance.current) {
-        mapInstance.current.remove();
+        mapInstance.current.remove(); // Destruye la instancia del mapa para liberar memoria.
         mapInstance.current = null;
       }
     };
-  }, [toast]);
+  }, [toast]); // `toast` se incluye como dependencia, aunque rara vez cambia.
 
   const handleGeolocate = () => {
+    // Usa la API de geolocalización del navegador.
     if (navigator.geolocation && mapInstance.current) {
       const map = mapInstance.current;
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const pos: [number, number] = [position.coords.latitude, position.coords.longitude];
           
-          map.flyTo(pos, 15);
+          map.flyTo(pos, 15); // Anima el mapa hacia la nueva posición.
 
-          // Si ya existe el marcador de usuario, solo actualiza su posición
+          // Actualiza o crea el marcador de la ubicación del usuario.
           if (userMarker.current) {
             userMarker.current.setLatLng(pos);
           } else {
@@ -101,6 +116,7 @@ export default function LeafletMap() {
           userMarker.current?.bindPopup('<b>Estás aquí</b>').openPopup();
         },
         () => {
+          // Manejo de errores si el usuario deniega el permiso de ubicación.
           toast({
             variant: 'destructive',
             title: 'Permiso de ubicación denegado',
@@ -120,7 +136,7 @@ export default function LeafletMap() {
       <CardContent className="p-0 h-full relative">
         <div ref={mapRef} className="w-full h-full z-0" role="region" aria-label="Mapa interactivo de la comunidad" />
         
-        {/* Controles personalizados del Mapa */}
+        {/* Controles personalizados sobre el mapa */}
         <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
            <Button size="icon" onClick={handleGeolocate} aria-label="Centrar en mi ubicación">
                 <LocateFixed className="w-5 h-5"/>

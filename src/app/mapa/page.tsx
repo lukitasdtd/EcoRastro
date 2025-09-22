@@ -1,9 +1,11 @@
 // TAREA 8: Integración de API de Mapa (Leaflet + OpenStreetMap)
-// Esta página ahora renderiza un mapa interactivo usando Leaflet.
+// Esta página renderiza un mapa interactivo usando Leaflet.
 // Cumple con los siguientes requisitos:
-// - Carga el componente del mapa de forma dinámica con `next/dynamic` para evitar errores de SSR.
-// - Muestra un estado de carga mientras el componente del mapa se está cargando.
-// - Elimina la dependencia de Google Maps y su API key.
+// - Carga el componente del mapa de forma dinámica con `next/dynamic` para evitar errores de SSR (Server-Side Rendering).
+//   Leaflet es una librería que manipula el `window` y el `document` del navegador, por lo que solo debe ejecutarse en el cliente.
+//   `next/dynamic` con `ssr: false` asegura esto.
+// - Muestra un estado de carga (`Skeleton`) mientras el componente del mapa se está cargando, mejorando la UX (Punto 14).
+// - Esta implementación evita el uso de APIs que requieren una clave (como Google Maps), optando por la solución abierta de OpenStreetMap.
 
 'use client';
 
@@ -12,11 +14,14 @@ import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function InteractiveMapPage() {
-  // Carga dinámica del componente del mapa para que solo se renderice en el cliente.
+  // Carga dinámica del componente del mapa. `useMemo` se usa para asegurar que la importación dinámica
+  // solo se defina una vez por renderizado del componente.
   const Map = useMemo(() => dynamic(
-    () => import('@/components/leaflet-map'),
+    () => import('@/components/leaflet-map'), // Ruta al componente del mapa.
     { 
+      // `loading` define qué mostrar mientras el componente principal se está cargando.
       loading: () => <Skeleton className="w-full h-full rounded-2xl" />,
+      // `ssr: false` es la clave aquí: le dice a Next.js que no intente renderizar este componente en el servidor.
       ssr: false 
     }
   ), []);
@@ -31,6 +36,7 @@ export default function InteractiveMapPage() {
       </section>
       
       <div className="w-full max-w-6xl h-[70vh] min-h-[500px]">
+        {/* Se renderiza el componente del mapa cargado dinámicamente. */}
         <Map />
       </div>
     </div>

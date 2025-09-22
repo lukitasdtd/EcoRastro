@@ -14,6 +14,7 @@ import { matchUserToGarden } from '@/ai/flows/community-garden-matching';
 import { communityGardens } from '@/lib/data';
 
 // Esquema de validación para el formulario de reporte de mascotas.
+// Define la forma esperada de los datos y las reglas de validación.
 const reportSchema = z.object({
   reportText: z.string().min(10, { message: 'Por favor, proporciona más detalles en tu reporte.' }),
 });
@@ -25,7 +26,7 @@ const gardenSchema = z.object({
 });
 
 // Define la estructura del estado que devolverá la acción de reporte.
-// Incluye mensajes, datos de éxito y errores de validación.
+// Incluye mensajes, datos de éxito y errores de validación, lo que permite comunicar el resultado al cliente.
 export type ReportState = {
   message?: string | null;
   summary?: string | null;
@@ -36,17 +37,18 @@ export type ReportState = {
 }
 
 // Server Action para procesar el reporte de una mascota.
-// Es una función asíncrona que se ejecuta en el servidor.
+// Es una función asíncrona que se ejecuta exclusivamente en el servidor.
 export async function summarizePetReportAction(
   prevState: ReportState,
   formData: FormData
 ): Promise<ReportState> {
-  // 1. Validar los datos del formulario.
+  // 1. Validar los datos del formulario usando el esquema de Zod. `safeParse` no lanza errores.
   const validatedFields = reportSchema.safeParse({
     reportText: formData.get('reportText'),
   });
 
-  // 2. Si la validación falla, devolver los errores.
+  // 2. Si la validación falla, se devuelve un objeto con los errores detallados.
+  // El hook `useActionState` en el cliente recibirá este estado y podrá mostrar los errores.
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -54,18 +56,19 @@ export async function summarizePetReportAction(
     };
   }
 
-  // 3. Si la validación es exitosa, ejecutar la lógica asíncrona.
+  // 3. Si la validación es exitosa, se ejecuta la lógica asíncrona.
   try {
-    // Llama al flujo de IA para resumir el reporte (simula un fetch a un servicio externo).
+    // Se llama al flujo de IA para resumir el reporte. Esto simula un "fetch" a un servicio externo.
     const result = await summarizeReport({ reportText: validatedFields.data.reportText });
-    // Devuelve un estado de éxito con los datos procesados.
+    // Se devuelve un estado de éxito con los datos procesados por la IA.
     return { 
       message: '¡Reporte resumido con éxito!', 
       summary: result.summary,
       location: result.locationDetails,
     };
   } catch (error) {
-    // 4. Gestión de errores: Si la llamada asíncrona falla, devuelve un mensaje de error.
+    // 4. Gestión de errores: Si la llamada asíncrona (el "fetch") falla, se devuelve un mensaje de error genérico.
+    // Esto cumple con el requisito de manejo de errores (Punto 13).
     return { message: 'Ocurrió un error al resumir el reporte.' };
   }
 }
@@ -85,11 +88,13 @@ export async function findGardensAction(
     prevState: GardenState,
     formData: FormData
 ): Promise<GardenState> {
+    // 1. Validar los datos del formulario.
     const validatedFields = gardenSchema.safeParse({
         userInterests: formData.get('userInterests'),
         userLocation: formData.get('userLocation'),
     });
 
+    // 2. Si la validación falla, devolver errores.
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
@@ -97,14 +102,19 @@ export async function findGardensAction(
         };
     }
 
+    // 3. Si la validación es exitosa, ejecutar lógica asíncrona.
     try {
+        // Se obtienen los datos de las huertas (simulando una consulta a BD).
         const nearbyGardens = communityGardens.map(g => `${g.name} en ${g.location}: ${g.description}`).join('\n');
+        // Se llama al flujo de IA para obtener sugerencias.
         const result = await matchUserToGarden({ ...validatedFields.data, nearbyGardens });
+        // Se devuelve un estado de éxito.
         return { 
             message: '¡Hemos encontrado algunas huertas para ti!',
             suggestedGardens: result.suggestedGardens,
         };
     } catch (error) {
+        // 4. Gestión de errores en caso de que falle la llamada a la IA.
         return { message: 'Ocurrió un error al buscar las huertas.' };
     }
 }

@@ -1,10 +1,10 @@
-// TAREA: Integrar API en el Calendario de Siembra
-// Este componente ha sido refactorizado para consumir datos desde la nueva API.
-// Cumple con los siguientes requisitos:
-// - Utiliza `useEffect` y `useState` para cargar los datos de la API de forma asíncrona.
-// - Muestra un estado de carga mientras se obtienen los datos.
-// - Maneja posibles errores durante la carga de datos.
-// - Se ha dividido en sub-componentes más pequeños (`CalendarHeader`, `SeasonFilters`, `FeaturedCropCard`, `CalendarGrid`) para mejorar la legibilidad y mantenibilidad.
+// TAREA 7: Integración de API y uso de Hooks en React
+// Este componente consume datos desde una API creada con un Route Handler de Next.js.
+// Cumple con los siguientes requisitos de la rúbrica:
+// - Implementación de `useState` y `useEffect` (Punto 12): Se usan para manejar el estado (datos, carga, error) y para ejecutar el fetch de datos cuando el componente se monta.
+// - Gestión de errores (Punto 13): El bloque `try...catch` maneja errores de red o de la API y actualiza el estado para mostrar un mensaje al usuario.
+// - Indicadores de carga (Punto 14): Se muestra un spinner y un mensaje de "Cargando..." mientras los datos se están obteniendo, mejorando la UX.
+// - El código está dividido en sub-componentes (ej. `CalendarHeader`, `CalendarGrid`) para mayor legibilidad y mantenibilidad (Punto 6 y 10).
 
 'use client';
 
@@ -24,6 +24,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 type PlantingData = Record<string, MonthlyPlantingData>;
 
 // --- Sub-componentes ---
+// Dividir la UI en componentes más pequeños hace que el código sea más fácil de leer y mantener.
 
 const CalendarHeader = ({ currentDate, setCurrentDate }: { currentDate: Date, setCurrentDate: (date: Date) => void }) => {
   const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1));
@@ -60,6 +61,7 @@ const FeaturedCropCard = ({ date, plantingData }: { date: Date, plantingData: Pl
   const featured = plantingData?.[monthKey]?.featuredCrop;
   const image = PlaceHolderImages.find(img => img.id === featured?.imageId);
 
+  // Muestra un esqueleto de carga si los datos aún no están disponibles.
   if (!plantingData) {
     return (
       <Card className="h-full">
@@ -146,32 +148,43 @@ const CalendarGrid = ({ currentDate, selectedDate, setSelectedDate, plantingData
 
 // --- Componente Principal ---
 export default function CalendarPage() {
+  // TAREA 7: Hook `useState` (Punto 12)
+  // Se definen varios estados para manejar la fecha actual, la fecha seleccionada,
+  // los datos de siembra, el estado de carga y los errores.
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [plantingData, setPlantingData] = useState<PlantingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // TAREA 7: Hook `useEffect` para fetch de datos (Punto 12)
+  // Este hook se ejecuta una vez, cuando el componente se monta, gracias al array de dependencias vacío `[]`.
+  // Su propósito es obtener los datos de la API.
   useEffect(() => {
     const fetchPlantingData = async () => {
-      setIsLoading(true);
+      setIsLoading(true); // Activa el indicador de carga (Punto 14)
       setError(null);
       try {
+        // Se realiza la petición `fetch` a nuestro endpoint de API.
         const response = await fetch('/api/planting-data');
+        // TAREA 7: Gestión de errores y respuestas no exitosas (Punto 13)
+        // Se verifica si la respuesta de la API fue exitosa (status 200-299).
         if (!response.ok) {
           throw new Error('No se pudieron cargar los datos de siembra.');
         }
         const data: PlantingData = await response.json();
-        setPlantingData(data);
+        setPlantingData(data); // Se guardan los datos en el estado.
       } catch (err) {
+        // Si ocurre un error (de red o por el `throw` anterior), se guarda el mensaje en el estado de error.
         setError(err instanceof Error ? err.message : 'Ocurrió un error inesperado.');
       } finally {
+        // Se desactiva el indicador de carga, tanto si la petición fue exitosa como si falló.
         setIsLoading(false);
       }
     };
 
     fetchPlantingData();
-  }, []);
+  }, []); // El array vacío asegura que el efecto se ejecute solo una vez.
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -181,13 +194,17 @@ export default function CalendarPage() {
       </section>
 
       <main className="bg-background p-4 md:p-8 rounded-3xl shadow-lg border">
+        {/* TAREA 7: Renderizado condicional basado en el estado */}
+        {/* Muestra un mensaje de error si el estado `error` tiene un valor. */}
         {error && <div className="text-center text-red-500 p-4">{error}</div>}
+        {/* Muestra un indicador de carga si el estado `isLoading` es true. (Punto 14) */}
         {isLoading && (
           <div className="flex items-center justify-center p-8">
             <LoaderCircle className="w-8 h-8 animate-spin text-primary" />
             <p className="ml-4">Cargando datos del calendario...</p>
           </div>
         )}
+        {/* Solo si no está cargando y no hay errores, se muestra el contenido principal del calendario. */}
         {!isLoading && !error && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">

@@ -1,12 +1,13 @@
 'use client';
 
 // TAREA 7: Implementación de Hooks en React
-// Este componente de formulario demuestra el uso de Hooks modernos de React.
+// Este componente de formulario demuestra el uso de Hooks modernos de React para interactuar con Server Actions.
 // Cumple con los siguientes requisitos del sprint:
-// - Implementación correcta de `useActionState` para manejar el estado del formulario (entradas, errores, respuesta del servidor).
-//   Este Hook es una evolución de `useState` diseñada para trabajar con Server Actions.
-// - Implementación de `useFormStatus` para crear indicadores de carga, mejorando la experiencia del usuario.
-// - Verificación de la gestión de errores: el estado 'state' contiene los errores que vienen del servidor y se muestran en la UI.
+// - Implementación correcta de `useActionState` (Punto 12): Maneja el estado del formulario (entradas, errores, respuesta del servidor)
+//   de una manera diseñada específicamente para Server Actions.
+// - Implementación de `useFormStatus` (Punto 14): Proporciona un indicador de carga visual mientras el formulario se está enviando.
+// - Verificación de la gestión de errores (Punto 13): El estado `state` contiene los errores de validación que vienen del servidor
+//   y se muestran en la UI para informar al usuario.
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -19,19 +20,19 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle, Info, Sprout, LoaderCircle } from 'lucide-react';
 
-// Estado inicial del formulario.
+// Estado inicial que se pasará al hook `useActionState`.
 const initialState: GardenState = {
   message: null,
 };
 
 // Componente para el botón de envío.
-// Utiliza el Hook `useFormStatus` para saber si el formulario se está enviando.
+// Utiliza el Hook `useFormStatus` para obtener el estado de envío del formulario padre.
 function SubmitButton() {
-  const { pending } = useFormStatus(); // `pending` es true durante el envío del formulario.
+  const { pending } = useFormStatus(); // `pending` es `true` mientras el formulario se está enviando.
 
   return (
-    // Deshabilita el botón y muestra un ícono de carga mientras `pending` es true.
-    // Esto es un indicador de carga para mejorar la experiencia del usuario.
+    // Se deshabilita el botón y se muestra un ícono de carga mientras `pending` es true.
+    // Esto es un indicador de carga para mejorar la experiencia del usuario (Punto 14).
     <Button type="submit" disabled={pending}>
       {pending ? (
         <>
@@ -46,15 +47,15 @@ function SubmitButton() {
 }
 
 export function GardenFinder() {
-  // Hook `useActionState`: maneja el estado del formulario.
-  // - `state`: el estado actual del formulario (contiene mensajes, errores, etc.).
-  // - `formAction`: la función a ejecutar cuando se envía el formulario.
+  // Hook `useActionState`: maneja el estado del formulario asociado a una Server Action.
+  // - `state`: el estado actual del formulario (contiene mensajes, errores, y los datos devueltos por la acción).
+  // - `formAction`: la función que se pasa al atributo `action` del formulario.
   // - `initialState`: el estado con el que comienza el formulario.
   const [state, formAction] = useActionState(findGardensAction, initialState);
 
   return (
     <div className="space-y-6">
-      {/* El atributo `action` del formulario se vincula con la Server Action. */}
+      {/* El atributo `action` del formulario se vincula con la Server Action gestionada por el hook. */}
       <form action={formAction}>
         <Card className="max-w-2xl mx-auto shadow-lg border-0">
           <CardHeader>
@@ -73,7 +74,8 @@ export function GardenFinder() {
                 rows={4}
                 required
               />
-              {/* Gestión de errores: Muestra los errores de validación si existen en el `state`. */}
+              {/* TAREA 7: Gestión de errores (Punto 13) */}
+              {/* Muestra los errores de validación si existen en el `state` devuelto por la Server Action. */}
               {state.errors?.userInterests && (
                   <p className="text-sm font-medium text-destructive mt-2">{state.errors.userInterests}</p>
               )}
@@ -92,7 +94,7 @@ export function GardenFinder() {
             </div>
           </CardContent>
           <CardFooter>
-            {/* El botón de envío es un componente separado que gestiona su propio estado de carga. */}
+            {/* El botón de envío es un componente separado que reacciona al estado del formulario. */}
             <SubmitButton />
           </CardFooter>
         </Card>
@@ -109,7 +111,7 @@ export function GardenFinder() {
         </Alert>
       )}
 
-      {/* Si la búsqueda fue exitosa, muestra las sugerencias. */}
+      {/* Si la búsqueda fue exitosa y hay sugerencias, se renderiza la tarjeta con los resultados. */}
       {state.suggestedGardens && (
         <Card className="max-w-2xl mx-auto animate-in fade-in-50">
           <CardHeader>
