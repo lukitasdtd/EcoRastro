@@ -22,8 +22,9 @@ import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Upload, X, FileImage, Trash2, AlertCircle } from 'lucide-react';
+import { LoaderCircle, Upload, X, Trash2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import * as React from 'react';
 
 const storage = getStorage(app);
 
@@ -82,7 +83,7 @@ interface FileUpload {
   preview: string;
 }
 
-const MaskedInput = ({ field, form, ...props }: { field: any, form: any, [key: string]: any }) => {
+const MaskedInput = React.forwardRef<HTMLInputElement, { field: any, form: any, [key: string]: any }>(({ field, form, ...props }, ref) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const maskOptions = useMemo(() => ({ mask: '+{56} 9 0000 0000' }), []);
   
@@ -98,7 +99,8 @@ const MaskedInput = ({ field, form, ...props }: { field: any, form: any, [key: s
     }, [maskOptions, form]);
   
     return <Input ref={inputRef} {...field} {...props} />;
-};
+});
+MaskedInput.displayName = "MaskedInput";
 
 export function ReportarMascotaForm() {
   const router = useRouter();
@@ -376,7 +378,9 @@ export function ReportarMascotaForm() {
             <CardHeader> <CardTitle>Contacto</CardTitle> </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="nombreContacto" render={({ field }) => ( <FormItem> <FormLabel>Nombre de contacto</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                <FormField control={form.control} name="telefono" render={({ field }) => ( <FormItem> <FormLabel>Teléfono</FormLabel> <FormControl><MaskedInput field={field} form={form} type="tel" placeholder="+56 9 XXXX XXXX" /></FormControl> <FormMessage /> </FormItem> )}/>
+                <FormField control={form.control} name="telefono" render={({ field }) => ( <FormItem> <FormLabel>Teléfono</FormLabel> <FormControl>
+                  <MaskedInput field={field} form={form} type="tel" placeholder="+56 9 XXXX XXXX" />
+                </FormControl> <FormMessage /> </FormItem> )}/>
                 <FormField control={form.control} name="correo" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Correo electrónico (opcional)</FormLabel> <FormControl><Input type="email" placeholder="tu@correo.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                 <FormField control={form.control} name="medioPreferido" render={({ field }) => ( <FormItem className="space-y-3 md:col-span-2"> <FormLabel>Medio de contacto preferido</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="telefono" /></FormControl> <FormLabel className="font-normal">Teléfono</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="whatsapp" /></FormControl> <FormLabel className="font-normal">WhatsApp</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="correo" /></FormControl> <FormLabel className="font-normal">Correo</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
             </CardContent>
