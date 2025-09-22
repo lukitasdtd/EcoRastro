@@ -1,22 +1,11 @@
-// TAREA 5: Proyecto Base React - Componentes
-// Este archivo define la página "Acerca de Nosotros" como un componente funcional de React.
-// Cumple con los siguientes requisitos del sprint:
-// - La página es un componente de React, migrado desde HTML estático.
-// - Utiliza JSX para una estructura declarativa y legible.
-// - Importa y reutiliza otros componentes definidos en archivos separados, como `Card` e `Image`.
-
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Users, Target, Leaf } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-// Define el componente 'AboutPage' como una función de exportación por defecto.
-// En Next.js, cada archivo 'page.tsx' dentro de 'app' corresponde a una ruta URL.
 export default function AboutPage() {
-  // Busca la imagen del héroe en los datos de placeholder.
   const heroImage = PlaceHolderImages.find(img => img.id === 'garden1');
 
-  // Datos del equipo, idealmente vendrían de una API, pero aquí se definen localmente.
   const teamMembers = [
     { name: 'Javiera López', role: 'Miembro del Equipo' },
     { name: 'Geraldine Garces', role: 'Miembro del Equipo' },
@@ -25,10 +14,8 @@ export default function AboutPage() {
     { name: 'Angelo Jimenez', role: 'Miembro del Equipo' },
   ];
 
-  // El retorno del componente utiliza JSX para describir la interfaz de usuario.
   return (
     <div className="flex flex-col">
-      {/* Sección Hero: Muestra una imagen de fondo con un título y subtítulo. */}
       <section className="relative w-full h-80 bg-secondary/30">
         {heroImage && (
           <Image
@@ -50,7 +37,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Sección de Misión y Visión: Utiliza componentes de tarjeta para organizar la información. */}
       <section className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -60,7 +46,6 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 gap-6">
-             {/* Componente Card reutilizado para Visión y Valores. */}
              <Card>
               <CardHeader className="flex-row items-center gap-4">
                 <Target className="w-8 h-8 text-primary" />
@@ -88,7 +73,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Sección del Equipo: Itera sobre el array 'teamMembers' para renderizar dinámicamente las tarjetas del equipo. */}
       <section className="bg-muted/40 py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-2">Conoce al Equipo</h2>

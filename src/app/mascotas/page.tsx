@@ -6,7 +6,7 @@ import AdoptionCard from '@/components/adoption-card';
 import { adoptionPets } from '@/lib/data';
 
 export default function MascotasPage() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'hero2');
+  const heroImage = PlaceHolderImages.find(img => img.id === 'hero-mascotas');
 
   return (
     <div className="flex flex-col">
@@ -30,7 +30,7 @@ export default function MascotasPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild size="lg">
-              <Link href="/report-pet">Reportar Mascota</Link>
+              <Link href="/reportar-mascota">Reportar Mascota</Link>
             </Button>
             <Button asChild variant="secondary" size="lg">
               <Link href="/adoption">Ver en Adopción</Link>
@@ -47,9 +47,14 @@ export default function MascotasPage() {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {adoptionPets.map(pet => (
+          {adoptionPets.slice(0, 4).map(pet => (
             <AdoptionCard key={pet.id} pet={pet} />
           ))}
+        </div>
+        <div className="text-center mt-12">
+            <Button asChild>
+                <Link href="/adoption">Ver todos los animales en adopción</Link>
+            </Button>
         </div>
       </section>
     </div>
