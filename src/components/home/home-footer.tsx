@@ -38,7 +38,7 @@ export function HomeFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-lg mx-auto">
           <ul className="space-y-3">
             {leftLinks.map(link => (
-              <li key={link.href}>
+              <li key={`${link.href}-${link.label}`}>
                 <Link href={link.href} className="text-lg hover:text-primary hover:underline transition-colors">
                   {link.label}
                 </Link>
@@ -47,7 +47,7 @@ export function HomeFooter() {
           </ul>
           <ul className="space-y-3">
             {rightLinks.map(link => (
-              <li key={link.href}>
+              <li key={`${link.href}-${link.label}`}>
                 <Link href={link.href} className="text-lg hover:text-primary hover:underline transition-colors">
                   {link.label}
                 </Link>
