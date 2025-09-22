@@ -37,6 +37,8 @@ export default function SupportNetworksPage() {
     }
   ), []);
 
+  const featuredShelters = shelters.filter(shelter => shelter.rating > 4).slice(0, 5);
+
   return (
     <div className="flex flex-col">
       {/* Sección Hero */}
@@ -115,7 +117,7 @@ export default function SupportNetworksPage() {
                 className="w-full"
               >
                 <CarouselContent>
-                  {shelters.slice(0, 5).map((shelter) => (
+                  {featuredShelters.map((shelter) => (
                     <CarouselItem key={shelter.id} className="md:basis-1/2 lg:basis-full">
                       <div className="p-1">
                         <ShelterCard shelter={shelter} />
