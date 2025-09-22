@@ -6,7 +6,13 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import {
   Accordion,
   AccordionContent,
@@ -29,7 +35,7 @@ function NavLink({
   const isActive = pathname === href;
 
   return (
-    <Link 
+    <Link
       href={href}
       className={cn(
         'relative block whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary',
@@ -174,12 +180,13 @@ export function Header() {
 
           {/* Botón Hamburguesa para Móvil */}
           <div className="md:hidden">
-            <Sheet
-              open={isMobileMenuOpen}
-              onOpenChange={setIsMobileMenuOpen}
-            >
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-primary-hover">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-primary-hover"
+                >
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Abrir menú</span>
                 </Button>
@@ -188,15 +195,20 @@ export function Header() {
                 side="left"
                 className="w-full max-w-sm bg-primary p-0 text-white"
               >
-                <div className="flex h-16 items-center justify-between border-b border-primary-hover px-4">
+                <SheetHeader className="flex h-16 flex-row items-center justify-between border-b border-primary-hover px-4">
                   <Logo />
+                  <SheetTitle className="sr-only">Menú Principal</SheetTitle>
                   <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-white hover:bg-primary-hover">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-white hover:bg-primary-hover"
+                    >
                       <X className="h-6 w-6" />
                       <span className="sr-only">Cerrar menú</span>
                     </Button>
                   </SheetTrigger>
-                </div>
+                </SheetHeader>
                 <nav className="p-4">
                   <Accordion type="single" collapsible className="w-full">
                     {navItems.map(item =>
@@ -237,18 +249,21 @@ export function Header() {
                       )
                     )}
                   </Accordion>
-                   <div className="mt-6 border-t border-primary-hover pt-6">
-                     <Button
-                        variant="outline"
-                        className="w-full rounded-full border-accent text-accent hover:bg-accent hover:text-gray-900"
-                        asChild
+                  <div className="mt-6 border-t border-primary-hover pt-6">
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-full border-accent text-accent hover:bg-accent hover:text-gray-900"
+                      asChild
+                    >
+                      <Link
+                        href="/login"
+                        onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                          <UserCircle className="mr-2 h-5 w-5" />
-                          Iniciar Sesión
-                        </Link>
-                      </Button>
-                   </div>
+                        <UserCircle className="mr-2 h-5 w-5" />
+                        Iniciar Sesión
+                      </Link>
+                    </Button>
+                  </div>
                 </nav>
               </SheetContent>
             </Sheet>
