@@ -61,11 +61,14 @@ export async function getGardeningInfo(
   }
 }
 
+const GardeningInputSchema = z.object({ query: z.string() });
+const GardeningOutputSchema = z.object({ response: z.string() });
+
 // Define the Genkit prompt
 const gardeningPrompt = ai.definePrompt({
   name: 'gardeningExpertPrompt',
-  input: { schema: z.object({ query: z.string() }) },
-  output: { schema: z.object({ response: z.string() }) },
+  input: { schema: GardeningInputSchema },
+  output: { schema: GardeningOutputSchema },
   prompt: `Eres un experto en horticultura y agricultura urbana sostenible en Chile. Tu misión es proporcionar consejos prácticos, claros y amigables para principiantes. Un usuario tiene la siguiente pregunta:
 
   "{{{query}}}"
@@ -77,8 +80,8 @@ const gardeningPrompt = ai.definePrompt({
 const gardeningInfoFlow = ai.defineFlow(
   {
     name: 'gardeningInfoFlow',
-    inputSchema: z.object({ query: z.string() }),
-    outputSchema: z.object({ response: z.string() }),
+    inputSchema: GardeningInputSchema,
+    outputSchema: GardeningOutputSchema,
   },
   async (input) => {
     const { output } = await gardeningPrompt(input);
