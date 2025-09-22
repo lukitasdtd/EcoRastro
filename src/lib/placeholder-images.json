@@ -66,6 +66,12 @@
       "description": "Ilustración de árboles y raíces para el footer de la página de inicio.",
       "imageUrl": "https://picsum.photos/seed/footerbg/1920/400",
       "imageHint": "trees roots illustration"
+    },
+    {
+      "id": "redes-apoyo-hero",
+      "description": "Un adorable gato naranjo mirando hacia arriba, sentado en un sillón.",
+      "imageUrl": "https://picsum.photos/seed/redesapoyo/1200/800",
+      "imageHint": "orange cat"
     }
   ]
 }
