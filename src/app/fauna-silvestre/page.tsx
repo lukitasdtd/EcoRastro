@@ -1,12 +1,46 @@
 'use client';
 
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Bird, Bug, Rabbit, Phone, ShieldCheck, Heart, Leaf, HelpCircle, AlertTriangle } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Bird, Bug, Rabbit, Phone, ShieldCheck, Leaf, HelpCircle, AlertTriangle, LoaderCircle, Sparkles, Wand2 } from 'lucide-react';
 import Link from 'next/link';
+import { getWildlifeInfo, type WildlifeInfoState } from '@/ai/flows/wildlife-info';
+
+
+const initialState: WildlifeInfoState = {
+  message: null,
+};
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" disabled={pending} className="w-full">
+      {pending ? (
+        <>
+          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          Generando respuesta...
+        </>
+      ) : (
+        <>
+         <Wand2 className="mr-2 h-4 w-4" />
+          Preguntar al experto
+        </>
+      )}
+    </Button>
+  );
+}
+
 
 export default function FaunaSilvestrePage() {
+
+  const [state, formAction] = useActionState(getWildlifeInfo, initialState);
 
   const localFauna = [
     {
@@ -23,29 +57,6 @@ export default function FaunaSilvestrePage() {
       name: "Pequeños Mamíferos",
       description: "Zorros, conejos y roedores nativos como el degú cumplen roles importantes. Respeta su espacio y no los alimentes para mantener un equilibrio saludable.",
       icon: <Rabbit className="w-10 h-10 text-primary" />,
-    },
-  ];
-
-  const helpTips = [
-    {
-      title: "No los alimentes",
-      description: "Alimentar a la fauna silvestre altera su comportamiento natural, puede causarles enfermedades y generar dependencia.",
-      icon: <Heart className="w-8 h-8 text-primary" />,
-    },
-    {
-      title: "Mantén la distancia",
-      description: "Observa a los animales desde lejos. Si te acercas, pueden sentirse amenazados y reaccionar de forma impredecible.",
-      icon: <ShieldCheck className="w-8 h-8 text-primary" />,
-    },
-    {
-      title: "Crea un jardín amigable",
-      description: "Planta especies nativas. Ofrecen alimento y refugio a la fauna local, atrayendo aves y polinizadores beneficiosos.",
-      icon: <Leaf className="w-8 h-8 text-primary" />,
-    },
-    {
-      title: "Mascotas bajo control",
-      description: "Mantén a tus mascotas con correa en áreas naturales. Incluso el perro más amigable puede estresar o dañar a la fauna.",
-      icon: <AlertTriangle className="w-8 h-8 text-primary" />,
     },
   ];
 
@@ -79,6 +90,62 @@ export default function FaunaSilvestrePage() {
           Aprende a convivir en armonía con la vida silvestre que nos rodea, protegiendo su bienestar y nuestros ecosistemas.
         </p>
       </section>
+      
+      {/* --- Experto con IA --- */}
+      <section className="mb-16">
+        <form action={formAction} className="space-y-6">
+            <Card className="max-w-2xl mx-auto shadow-lg border-0 bg-primary/10">
+              <CardHeader className="text-center">
+                <CardTitle className="flex items-center justify-center gap-3 text-2xl">
+                    <Sparkles className="h-6 w-6 text-accent"/>
+                    Pregúntale a nuestro experto en Fauna Chilena
+                </CardTitle>
+                <CardDescription>
+                  ¿Tienes curiosidad sobre un animal? ¿No sabes qué hacer en una situación? Escribe tu pregunta y nuestra IA te ayudará.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid w-full gap-2">
+                  <Label htmlFor="wildlifeQuery" className="sr-only">Tu pregunta</Label>
+                  <Textarea
+                    id="wildlifeQuery"
+                    name="wildlifeQuery"
+                    placeholder="Ej: '¿Qué come el zorro culpeo?' o '¿Cómo puedo atraer picaflores a mi jardín?'"
+                    rows={3}
+                    required
+                  />
+                  {state?.errors?.wildlifeQuery && (
+                      <p className="text-sm font-medium text-destructive mt-2">{state.errors.wildlifeQuery}</p>
+                  )}
+                </div>
+                 <SubmitButton />
+              </CardContent>
+            </Card>
+          </form>
+
+          {state?.message && !state.wildlifeInfo && (
+            <Alert variant="destructive" className="max-w-2xl mx-auto mt-6">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{state.message}</AlertDescription>
+            </Alert>
+          )}
+
+          {state?.wildlifeInfo && (
+            <Card className="max-w-2xl mx-auto mt-6 animate-in fade-in-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Leaf className="h-6 w-6 text-primary" />
+                  Respuesta del Experto
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-foreground/80 whitespace-pre-wrap">{state.wildlifeInfo}</p>
+              </CardContent>
+            </Card>
+          )}
+      </section>
+
 
       {/* --- Conoce la Fauna Local --- */}
       <section className="mb-16">
@@ -97,22 +164,6 @@ export default function FaunaSilvestrePage() {
               </CardContent>
             </Card>
           ))}
-        </div>
-      </section>
-
-      {/* --- Cómo Ayudar --- */}
-      <section className="bg-muted/40 py-16 rounded-3xl">
-        <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-10">Principios para una Convivencia Respetuosa</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {helpTips.map((tip) => (
-                    <Card key={tip.title} className="p-6 text-center flex flex-col items-center bg-background/50 border-0 shadow-sm">
-                        <div className="mb-4">{tip.icon}</div>
-                        <CardTitle className="text-lg font-semibold mb-2">{tip.title}</CardTitle>
-                        <p className="text-sm text-foreground/70">{tip.description}</p>
-                    </Card>
-                ))}
-            </div>
         </div>
       </section>
       
