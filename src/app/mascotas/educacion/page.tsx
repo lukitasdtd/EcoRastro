@@ -266,7 +266,7 @@ export default function PetEducationPage() {
                 <Link href="/adoption">Ver Mascotas en Adopción</Link>
             </Button>
             <Button variant="default" asChild>
-                <Link href="/report-pet">Reportar una Mascota</Link>
+                <Link href="/reportar-mascota">Reportar una Mascota</Link>
             </Button>
         </div>
       </footer>

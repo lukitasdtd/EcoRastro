@@ -19,7 +19,7 @@ export const navItems: NavItem[] = [
     subItems: [
       {
         label: 'Reportar Mascota',
-        href: '/report-pet',
+        href: '/reportar-mascota',
       },
       {
         label: 'Redes de Apoyo',

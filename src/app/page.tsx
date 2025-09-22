@@ -21,12 +21,12 @@ export default function Home() {
             <div className="relative h-72 md:h-96 overflow-hidden rounded-tl-[3rem] rounded-br-[3rem] shadow-lg">
               {heroHuerta && (
                 <Image
-                  src={heroHuerta.imageUrl}
-                  alt={heroHuerta.description}
+                  src={heroHuenta.imageUrl}
+                  alt={heroHuenta.description}
                   fill
                   style={{ objectFit: 'cover' }}
                   className="brightness-75"
-                  data-ai-hint={heroHuerta.imageHint}
+                  data-ai-hint={heroHuenta.imageHint}
                   priority
                 />
               )}
@@ -60,7 +60,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg">
-                  <Link href="/report-pet">Reportar una Mascota</Link>
+                  <Link href="/reportar-mascota">Reportar una Mascota</Link>
               </Button>
               <Button asChild variant="secondary" size="lg">
                   <Link href="/gardens">Explorar Huertas</Link>
