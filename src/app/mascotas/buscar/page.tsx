@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Search, ListFilter } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 export default function SearchPetsPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -63,7 +65,7 @@ export default function SearchPetsPage() {
       </section>
 
       {/* Barra de Búsqueda y Filtros */}
-      <Card className="p-4 md:p-6 mb-12 shadow-lg sticky top-20 z-30 bg-background/90 backdrop-blur-sm">
+      <Card className="p-4 md:p-6 mb-12 shadow-lg">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
           <div className="lg:col-span-2">
             <Label htmlFor="search">Palabra clave</Label>
@@ -146,7 +148,3 @@ export default function SearchPetsPage() {
     </div>
   );
 }
-
-// Para evitar un error de 'Card no definido', importamos los componentes necesarios de shadcn
-import { Card } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
