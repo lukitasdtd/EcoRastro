@@ -20,7 +20,7 @@ export default function LeafletMap() {
   useEffect(() => {
     if (typeof window === 'undefined' || !mapRef.current || mapInstance.current) return;
 
-    // Importa Leaflet dinámicamente solo en el cliente
+    // Importa Leaflet y sus CSS dinámicamente solo en el cliente
     Promise.all([
         import('leaflet'),
         import('leaflet-defaulticon-compatibility'),
@@ -43,11 +43,11 @@ export default function LeafletMap() {
 
       // Marcadores de ejemplo
       const points = [
-        { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: <PawPrint className="text-red-500" /> },
-        { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: <Sprout className="text-green-500" /> },
-        { lat: -33.50, lng: -70.68, title: 'Punto de Adopción', desc: 'Adopta un amigo fiel.', icon: <Heart className="text-blue-500" /> },
+        { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: 'paw' },
+        { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: 'sprout' },
+        { lat: -33.50, lng: -70.68, title: 'Punto de Adopción', desc: 'Adopta un amigo fiel.', icon: 'heart' },
       ];
-
+      
       points.forEach(point => {
         const marker = L.marker([point.lat, point.lng]).addTo(mapInstance.current!);
         marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
