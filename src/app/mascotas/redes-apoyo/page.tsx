@@ -104,31 +104,31 @@ export default function SupportNetworksPage() {
               Explora refugios y organizaciones de rescate con animales listos para encontrar un hogar.
             </p>
           </div>
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="relative w-full h-[70vh] min-h-[500px]">
-              <Map />
-            </div>
-            <div className="relative flex items-center justify-center px-8">
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                className="w-full max-w-sm"
-              >
-                <CarouselContent>
-                  {featuredShelters.map((shelter) => (
-                    <CarouselItem key={shelter.id}>
-                      <div className="p-1">
-                        <ShelterCard shelter={shelter} />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2" />
-                <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2" />
-              </Carousel>
-            </div>
+          
+          <div className="relative flex justify-center mb-12">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full max-w-6xl"
+            >
+              <CarouselContent className="-ml-4">
+                {featuredShelters.map((shelter) => (
+                  <CarouselItem key={shelter.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                    <div className="p-1 h-full">
+                      <ShelterCard shelter={shelter} className="h-full"/>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2" />
+              <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2" />
+            </Carousel>
+          </div>
+
+          <div className="relative w-full h-[70vh] min-h-[500px]">
+            <Map />
           </div>
         </div>
       </section>
