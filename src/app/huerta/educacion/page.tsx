@@ -143,11 +143,11 @@ export default function HuertaEducationPage() {
     </Card>
   )
   
-  const expertAICard = (title: string, description: string) => (
+  const premiumCard = (title: string, description: string) => (
     <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-primary/5 border-dashed border-primary/20 h-full shadow-none">
         <CardHeader>
             <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
-              <Wand2 className="h-8 w-8 text-primary" />
+              <Sparkles className="h-8 w-8 text-primary" />
             </div>
             <CardTitle className="text-2xl text-foreground">{title}</CardTitle>
         </CardHeader>
@@ -155,7 +155,9 @@ export default function HuertaEducationPage() {
             <p className="text-muted-foreground">{description}</p>
         </CardContent>
         <CardFooter>
-            <Button variant="secondary" disabled>Próximamente</Button>
+            <Button variant="default" disabled>
+                Accede a la Plataforma Premium por $2.990 CLP
+            </Button>
         </CardFooter>
     </Card>
   )
@@ -175,9 +177,9 @@ export default function HuertaEducationPage() {
 
       {/* --- Experto con IA --- */}
       <section className="mb-16">
-        {expertAICard(
+        {premiumCard(
             "Experto de IA para tu Huerta",
-            "Próximamente podrás hacer tus preguntas a nuestro experto virtual para obtener consejos personalizados sobre tu huerta."
+            "Resuelve tus dudas con nuestro experto virtual para obtener consejos personalizados sobre tu huerta."
         )}
       </section>
 
