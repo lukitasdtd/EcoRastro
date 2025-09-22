@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useFormContext } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import IMask from 'imask';
 import { useDropzone } from 'react-dropzone';
@@ -21,10 +21,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { FormControl } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { LoaderCircle, Upload, Trash2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+
+import { useFormContext } from "react-hook-form";
 
 // Setup de Firebase Storage
 const storage = getStorage(app);
@@ -88,34 +91,26 @@ interface FileUpload {
   preview: string;
 }
 
-// Componente de input enmascarado para el teléfono
 const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
     (props, ref) => {
       const { getValues, setValue } = useFormContext();
       const internalRef = React.useRef<HTMLInputElement>(null);
-      
       React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
-      
       const maskOptions = React.useMemo(() => ({ mask: "+{56} 9 0000 0000" }), []);
-
       React.useEffect(() => {
         if (typeof window === "undefined" || !internalRef.current) return;
         const mask = IMask(internalRef.current, maskOptions);
-        
         mask.on("accept", () => {
           if (getValues("telefono") !== mask.value) {
             setValue("telefono", mask.value, { shouldValidate: true, shouldDirty: true });
           }
         });
-        
         return () => mask.destroy();
       }, [maskOptions, getValues, setValue]);
-
       return <Input ref={internalRef} inputMode="tel" autoComplete="tel" {...props} />;
     }
   );
-MaskedInput.displayName = "MaskedInput";
-
+  MaskedInput.displayName = "MaskedInput";
 
 export function ReportarMascotaForm() {
   const router = useRouter();
