@@ -4,20 +4,12 @@ import Link from 'next/link';
 import { Instagram, Facebook, Copyright } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
 
 export function Footer() {
   const pathname = usePathname();
-  const [showFooter, setShowFooter] = useState(false);
   const currentYear = new Date().getFullYear();
 
-  useEffect(() => {
-    // This logic runs only on the client, after hydration.
-    // It prevents a mismatch between server and client render.
-    setShowFooter(pathname !== '/');
-  }, [pathname]);
-
-  if (!showFooter) {
+  if (pathname === '/') {
     return null;
   }
 
