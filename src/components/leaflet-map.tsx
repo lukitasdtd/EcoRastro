@@ -132,7 +132,7 @@ export default function LeafletMap() {
   };
 
   return (
-    <Card className="w-full h-full rounded-2xl shadow-lg border-[10px] border-[#1F3D2A] overflow-hidden">
+    <Card className="w-full h-full rounded-2xl shadow-lg border-4 border-muted overflow-hidden">
       <CardContent className="p-0 h-full relative">
         <div ref={mapRef} className="w-full h-full z-0" role="region" aria-label="Mapa interactivo de la comunidad" />
         
