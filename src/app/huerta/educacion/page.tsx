@@ -95,15 +95,34 @@ export default function HuertaEducationPage() {
   ]
 
   const checklistItems = [
-    "Sustrato y Compost de buena calidad", 
-    "Macetas, jardineras o contenedores con buen drenaje", 
-    "Semillas o almácigos de tus cultivos preferidos", 
-    "Pala y rastrillo pequeños", 
-    "Regadera o manguera con pistola de riego suave", 
-    "Guantes de jardinería para proteger tus manos", 
+    "Sustrato de buena calidad (tierra de hojas, turba)",
+    "Compost o humus de lombriz para nutrir la tierra",
+    "Macetas, jardineras o contenedores con buen drenaje",
+    "Semillas o almácigos de tus cultivos preferidos",
+    "Pala y rastrillo de mano",
+    "Regadera o manguera con pistola de riego suave",
+    "Guantes de jardinería",
     "Tijeras de podar para mantenimiento y cosecha",
-    "Etiquetas para identificar lo que siembras"
+    "Etiquetas para identificar lo que siembras",
+    "Pulverizador para plagas o riego foliar",
+    "Tutores o estacas para plantas trepadoras (ej. tomates)",
   ];
+
+  const handleDownload = () => {
+    const title = "Checklist del Hortelano - EcoRastro\n";
+    const divider = "========================================\n\n";
+    const content = checklistItems.map(item => `[ ] ${item}`).join("\n");
+    const textToSave = title + divider + content;
+    const blob = new Blob([textToSave], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "checklist-huerta.txt";
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const comingSoonCard = (title: string, description: string) => (
     <Card className="text-center p-8 flex flex-col items-center justify-center bg-muted/50 border-dashed h-full">
@@ -229,8 +248,8 @@ export default function HuertaEducationPage() {
                                         </div>
                                     ))}
                                 </div>
-                                <Button className="w-full mt-6">
-                                    Descargar Checklist PDF
+                                <Button className="w-full mt-6" onClick={handleDownload}>
+                                    Descargar Checklist
                                 </Button>
                             </AccordionContent>
                         </AccordionItem>
