@@ -54,6 +54,12 @@
       "description": "Una exuberante huerta comunitaria con varias plantas.",
       "imageUrl": "https://picsum.photos/seed/garden1/600/400",
       "imageHint": "community garden"
+    },
+    {
+      "id": "calendario-huerta",
+      "description": "Una imagen ilustrativa del calendario de siembra.",
+      "imageUrl": "https://picsum.photos/seed/calendario/600/400",
+      "imageHint": "gardening calendar"
     }
   ]
 }

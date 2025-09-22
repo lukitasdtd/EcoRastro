@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { MapFeatures } from '@/components/home/map-features';
+import { PlantingCalendar } from '@/components/home/planting-calendar';
 
 export default function Home() {
   const heroHuerta = PlaceHolderImages.find(img => img.id === 'hero-huerta');
@@ -69,6 +70,9 @@ export default function Home() {
       
       {/* Nueva sección del mapa interactivo */}
       <MapFeatures />
+
+      {/* Nueva sección de Calendario de Siembra */}
+      <PlantingCalendar />
 
     </div>
   );
