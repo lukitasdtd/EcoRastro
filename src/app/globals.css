@@ -14,9 +14,8 @@
     --popover-foreground: 222.2 84% 4.9%;
     
     /* Paleta de colores EcoRastro */
-    --primary: 160 25% 12%; /* #182722 */
-    --primary-hover: 160 25% 10%; /* Lighter version for hover */
-    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --primary: 142.1 76.2% 36.3%; /* Green from original theme */
+    --primary-foreground: 210 40% 98%;
     --accent: 38 92% 50%; /* #F59E0B */
     --accent-foreground: 240 10% 3.9%;
     
@@ -43,9 +42,8 @@
     --popover-foreground: 210 40% 98%;
     
     /* Paleta Dark Mode */
-    --primary: 160 25% 12%;
-    --primary-hover: 160 25% 15%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 210 40% 98%;
     --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
 
@@ -66,5 +64,11 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+  }
+  h1.text-foreground, h2.text-foreground, h3.text-foreground, h4.text-foreground {
+    color: #182722;
+  }
+  .dark h1.text-foreground, .dark h2.text-foreground, .dark h3.text-foreground, .dark h4.text-foreground {
+    color: hsl(var(--foreground));
   }
 }
