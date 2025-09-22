@@ -1,55 +1,37 @@
 
+
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, ArrowRight, MapPin, CalendarDays, Search, BookOpen, Tractor, Microscope, Wind, Heart, Calculator, Bell, Gamepad, Users, Leaf, CheckSquare, Flower2
+  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, MapPin, Search, BookOpen, Tractor, Users, Leaf, CheckSquare, Heart
 } from 'lucide-react';
 
 export default function HuertaEducationPage() {
 
-  const firstSteps = [
-    {
-      icon: <MapPin className="h-8 w-8 text-primary" />,
-      title: '1. Elige el Lugar Correcto',
-      text: 'Busca el lugar con más horas de sol. Puede ser un balcón, una terraza o un rincón de tu patio. ¡Incluso una ventana funciona!',
-    },
-    {
-      icon: <Search className="h-8 w-8 text-primary" />,
-      title: '2. Decide Qué Plantar',
-      text: 'Comienza con cultivos fáciles y rápidos como lechugas, rábanos o hierbas aromáticas. Consulta nuestro calendario de siembra.',
-    },
-     {
-      icon: <BookOpen className="h-8 w-8 text-primary" />,
-      title: '3. Prepara el Contenedor y Suelo',
-      text: 'Puedes usar macetas, cajones de madera o jardineras. Llénalos con una mezcla de tierra de hojas y compost.',
-    },
-  ];
-  
   const gardenTypes = [
     {
       title: "Huerta Urbana",
-      description: "Aprovecha al máximo los espacios pequeños en la ciudad, como balcones, terrazas o patios.",
+      description: "Aprovecha al máximo los espacios pequeños en la ciudad, como balcones, terrazas o patios. Ideal para cultivar en macetas, jardineras o mesas de cultivo.",
       icon: <Tractor className="w-10 h-10 text-primary" />,
     },
     {
       title: "Huerta Vertical",
-      description: "Cultiva hacia arriba usando paredes o estructuras para maximizar tu producción en espacios limitados.",
+      description: "Cultiva hacia arriba usando paredes o estructuras para maximizar tu producción en espacios limitados. Perfecto para hierbas aromáticas y hortalizas de hoja.",
       icon: <Sprout className="w-10 h-10 text-primary" />,
     },
     {
       title: "Hidroponía",
-      description: "Cultiva plantas sin suelo, usando soluciones minerales en agua. Ideal para interiores y control total del ambiente.",
+      description: "Cultiva plantas sin suelo, usando soluciones minerales en agua. Es una técnica de alta eficiencia ideal para interiores y para un control total del ambiente.",
       icon: <Droplets className="w-10 h-10 text-primary" />,
     },
     {
       title: "Huerta Comunitaria",
-      description: "Únete a un espacio colectivo para cultivar alimentos, compartir conocimientos y fortalecer la comunidad.",
+      description: "Únete a un espacio colectivo para cultivar alimentos, compartir conocimientos y fortalecer lazos con tus vecinos. Una gran forma de aprender en grupo.",
       icon: <Users className="w-10 h-10 text-primary" />,
     },
   ];
@@ -57,22 +39,22 @@ export default function HuertaEducationPage() {
   const gardenBenefits = [
       {
         title: "Nutrición y Salud",
-        description: "Consume alimentos frescos, sin pesticidas y llenos de nutrientes.",
+        description: "Consume alimentos frescos, sin pesticidas y llenos de nutrientes. Sabrás exactamente qué estás comiendo.",
         icon: <Heart className="w-8 h-8 text-primary" />,
       },
       {
         title: "Bienestar Mental",
-        description: "Reduce el estrés, mejora el ánimo y conecta con la naturaleza.",
+        description: "La jardinería es una terapia probada. Reduce el estrés, mejora el ánimo y te conecta con la naturaleza y sus ciclos.",
         icon: <Sun className="w-8 h-8 text-primary" />,
       },
       {
         title: "Economía y Ahorro",
-        description: "Ahorra dinero en el supermercado cultivando tus propias verduras y hierbas.",
+        description: "Ahorra dinero en el supermercado cultivando tus propias verduras y hierbas. ¡Y el sabor no tiene comparación!",
         icon: <Recycle className="w-8 h-8 text-primary" />,
       },
       {
         title: "Biodiversidad",
-        description: "Atrae polinizadores como abejas y mariposas, creando un pequeño ecosistema.",
+        description: "Atrae polinizadores como abejas y mariposas, creando un pequeño ecosistema que beneficia al entorno urbano.",
         icon: <Bug className="w-8 h-8 text-primary" />,
       }
   ]
@@ -90,7 +72,7 @@ export default function HuertaEducationPage() {
         id: "suelo", 
         title: "Preparación del suelo", 
         icon: <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><Leaf className="w-6 h-6 text-primary"/></div>,
-        content: "Un buen suelo es la base de todo. Mezcla tierra de hojas con compost o humus de lombriz para asegurar una base rica en nutrientes. Un buen drenaje es clave; puedes agregar perlita o arena gruesa."
+        content: "Un buen suelo es la base de todo. Mezcla tierra de hojas con compost o humus de lombriz para asegurar una base rica en nutrientes. Un buen drenaje es clave; puedes agregar perlita o arena gruesa. El pH ideal suele estar entre 6 y 7."
     },
     { 
         id: "siembra", 
@@ -102,35 +84,29 @@ export default function HuertaEducationPage() {
         id: "cuidados", 
         title: "Cuidado de las plantas", 
         icon: <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><Droplets className="w-6 h-6 text-primary"/></div>,
-        content: "Riega de forma profunda pero no tan frecuente. La poda ayuda a dar fuerza a la planta y a mejorar la ventilación. Para plagas, empieza con remedios naturales como jabón potásico o aceite de neem."
+        content: "Riega de forma profunda pero no tan frecuente, preferiblemente por la mañana. La poda ayuda a dar fuerza a la planta y a mejorar la ventilación. Para plagas, empieza con remedios naturales como jabón potásico o aceite de neem."
     },
     { 
         id: "cosecha", 
         title: "Cosecha y almacenamiento", 
         icon: <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><Tractor className="w-6 h-6 text-primary"/></div>,
-        content: "Cosecha por la mañana para obtener productos más frescos y crujientes. Investiga cómo se ve cada vegetal cuando está maduro. Almacena en lugares frescos y secos para prolongar su duración."
+        content: "Cosecha por la mañana para obtener productos más frescos y crujientes. Investiga cómo se ve cada vegetal cuando está maduro. Almacena en lugares frescos y secos para prolongar su duración. Algunas hierbas se pueden secar."
     },
   ]
 
-  const interactiveTools = [
-      { title: "Calculadora de Siembra", icon: <Calculator />, description: "Descubre qué y cuándo plantar según tu zona." },
-      { title: "Recordatorios de Cuidado", icon: <Bell />, description: "Recibe notificaciones para regar, fertilizar y más." },
-      { title: "Seguimiento de Huerta", icon: <BookOpen />, description: "Registra tu progreso con fotos y notas." },
-      { title: "Logros y Recompensas", icon: <Gamepad />, description: "Completa tareas y gana insignias por tus logros." },
-  ]
-  
-  const advancedContent = [
-    { id: "permacultura", title: "Permacultura y Sostenibilidad", content: "Diseña ecosistemas agrícolas sostenibles, eficientes y resilientes. Aprende sobre la rotación de cultivos, asociación de plantas y el uso eficiente del agua." },
-    { id: "microorganismos", title: "Microorganismos y Salud del Suelo", content: "Descubre el universo bajo tus pies. Hongos micorrícicos, bacterias fijadoras de nitrógeno y lombrices son tus mejores aliados para un suelo vivo y fértil." },
-    { id: "medicinales", title: "Huertas Medicinales y Aromáticas", content: "Cultiva tu propia farmacia natural. Plantas como lavanda, menta, manzanilla o romero tienen propiedades curativas y repelen plagas." },
-    { id: "impacto", title: "Impacto Ambiental de la Agricultura", content: "Entiende cómo la agricultura a pequeña escala reduce la huella de carbono, disminuye el uso de pesticidas y fomenta la biodiversidad local." },
-  ];
-
-  const communityContent = [
-      { title: "Foro de Hortelanos", icon: <Users />, description: "Comparte tus éxitos y dudas con otros miembros." },
-      { title: "Intercambio de Semillas", icon: <Recycle />, description: "Encuentra y comparte semillas con tu comunidad." },
-      { title: "Retos Mensuales", icon: <Gamepad />, description: "Únete a desafíos de cultivo y gana premios." },
-  ]
+  const comingSoonCard = (title: string, description: string) => (
+    <Card className="text-center p-8 flex flex-col items-center justify-center bg-muted/50 border-dashed">
+        <CardHeader>
+            <CardTitle className="text-2xl text-muted-foreground">{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <p className="text-muted-foreground">{description}</p>
+        </CardContent>
+        <CardFooter>
+            <Button variant="secondary" disabled>Próximamente</Button>
+        </CardFooter>
+    </Card>
+  )
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -231,7 +207,7 @@ export default function HuertaEducationPage() {
                                 <CardDescription>Todo lo que necesitas para empezar tu huerta con el pie derecho.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-3">
-                                {["Sustrato y Compost", "Macetas o Contenedores", "Semillas o Almácigos", "Pala y Rastrillo pequeños", "Regadera o Manguera"].map(item => (
+                                {["Sustrato y Compost", "Macetas o Contenedores", "Semillas o Almácigos", "Pala y Rastrillo pequeños", "Regadera o Manguera", "Guantes de Jardinería", "Tijeras de Podar"].map(item => (
                                     <div key={item} className="flex items-center gap-3">
                                         <CheckSquare className="w-5 h-5 text-primary" />
                                         <span className="text-foreground/90">{item}</span>
@@ -251,61 +227,28 @@ export default function HuertaEducationPage() {
 
         {/* --- HERRAMIENTAS --- */}
         <TabsContent value="tools" className="mt-8 text-center">
-            <h2 className="text-3xl font-bold mb-4">Herramientas Interactivas</h2>
-            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mb-10">
-                Potencia tu experiencia de cultivo con estas herramientas inteligentes.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {interactiveTools.map(tool => (
-                    <Card key={tool.title} className="p-6 flex flex-col items-center justify-center text-center bg-muted/30">
-                        <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 text-primary">
-                            {React.cloneElement(tool.icon, { className: "w-8 h-8" })}
-                        </div>
-                        <h3 className="font-bold text-lg mb-2">{tool.title}</h3>
-                        <p className="text-sm text-muted-foreground flex-grow">{tool.description}</p>
-                        <Button variant="outline" className="mt-4 w-full" disabled>Próximamente</Button>
-                    </Card>
-                ))}
-            </div>
+             {comingSoonCard(
+                "Herramientas Interactivas",
+                "Estamos construyendo herramientas como una calculadora de siembra y notificaciones para ayudarte a tener éxito en tu huerta."
+            )}
         </TabsContent>
         
         {/* --- CONTENIDO AVANZADO --- */}
         <TabsContent value="advanced" className="mt-8">
-            <h2 className="text-3xl font-bold text-center mb-10">Contenido Avanzado</h2>
-            <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto space-y-4">
-                {advancedContent.map(item => (
-                    <AccordionItem key={item.id} value={item.id} className="bg-muted/50 rounded-2xl px-6 border-b-0">
-                        <AccordionTrigger className="text-left font-semibold text-lg hover:no-underline">{item.title}</AccordionTrigger>
-                        <AccordionContent className="text-base text-foreground/80 pb-6">
-                            {item.content}
-                        </AccordionContent>
-                    </AccordionItem>
-                ))}
-            </Accordion>
+             {comingSoonCard(
+                "Contenido Avanzado",
+                "Pronto encontrarás guías sobre permacultura, salud del suelo, huertas medicinales y mucho más para llevar tu conocimiento al siguiente nivel."
+            )}
         </TabsContent>
         
         {/* --- COMUNIDAD --- */}
         <TabsContent value="community" className="mt-8 text-center">
-            <h2 className="text-3xl font-bold mb-4">Únete a la Comunidad</h2>
-             <p className="max-w-2xl mx-auto text-lg text-foreground/60 mb-10">
-                Conecta, comparte y aprende con otros apasionados por las huertas.
-            </p>
-             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                {communityContent.map(item => (
-                    <Card key={item.title} className="p-6 flex flex-col items-center justify-center text-center bg-muted/30">
-                        <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 text-primary">
-                            {React.cloneElement(item.icon, { className: "w-8 h-8" })}
-                        </div>
-                        <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground flex-grow">{item.description}</p>
-                        <Button variant="secondary" className="mt-4 w-full" disabled>Ir</Button>
-                    </Card>
-                ))}
-            </div>
+            {comingSoonCard(
+                "Comunidad EcoRastro",
+                "Estamos creando un espacio para que puedas conectar con otros hortelanos, compartir tus logros y resolver dudas en comunidad."
+            )}
         </TabsContent>
       </Tabs>
     </div>
   );
 }
-
-    
