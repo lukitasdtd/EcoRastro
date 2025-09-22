@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useFormContext } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
@@ -51,7 +51,7 @@ const reportSchema = z.object({
     temperamento: z.array(z.string()).optional(),
     recompensa: z.boolean().default(false),
     montoRecompensa: z.preprocess(
-      (val) => (val === "" ? undefined : Number(val)),
+      (val) => (val === "" ? undefined : Number(String(val).replace(/\D/g, ''))),
       z.number().positive("El monto debe ser un número positivo.").optional()
     ),
     fechaPerdida: z.date({ required_error: "La fecha es requerida." }).max(new Date(), "La fecha no puede ser en el futuro."),
@@ -83,28 +83,36 @@ interface FileUpload {
   preview: string;
 }
 
-const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
+const MaskedInput = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps<typeof Input>, 'ref'>>(
   (props, ref) => {
     const { getValues, setValue } = useFormContext();
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const maskOptions = useMemo(() => ({
       mask: '+{56} 9 0000 0000'
     }), []);
     
     useEffect(() => {
-        if (!ref || typeof ref !== 'object' || !ref.current) return;
-        const mask = IMask(ref.current, maskOptions);
+        if (!inputRef.current) return;
+        const mask = IMask(inputRef.current, maskOptions);
         
-        mask.on('accept', () => {
+        const handleAccept = () => {
             if (getValues('telefono') !== mask.value) {
                 setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
             }
-        });
-        
-        return () => mask.destroy();
-    }, [ref, maskOptions, setValue, getValues]);
+        };
 
-    return <Input ref={ref} {...props} />;
+        mask.on('accept', handleAccept);
+        
+        return () => {
+          mask.off('accept', handleAccept);
+          mask.destroy();
+        };
+    }, [maskOptions, setValue, getValues]);
+    
+    React.useImperativeHandle(ref, () => inputRef.current!);
+
+    return <Input ref={inputRef} {...props} />;
   }
 );
 MaskedInput.displayName = 'MaskedInput';
@@ -199,41 +207,45 @@ export function ReportarMascotaForm() {
     });
   };
 
-  const startUpload = async (fileUpload: FileUpload) => {
+  const startUpload = useCallback(async (fileUpload: FileUpload) => {
     const { file, id } = fileUpload;
 
     const compressImage = (file: File): Promise<Blob> => {
         return new Promise(async (resolve, reject) => {
             console.log('Comprimiendo...');
-            const bmp = await createImageBitmap(file);
-            const { width, height } = bmp;
-            const max_size = 1600;
-            let newWidth = width;
-            let newHeight = height;
-    
-            if (width > height) {
-                if (width > max_size) {
-                    newHeight = Math.round((height * max_size) / width);
-                    newWidth = max_size;
+            try {
+                const bmp = await createImageBitmap(file);
+                const { width, height } = bmp;
+                const max_size = 1600;
+                let newWidth = width;
+                let newHeight = height;
+        
+                if (width > height) {
+                    if (width > max_size) {
+                        newHeight = Math.round((height * max_size) / width);
+                        newWidth = max_size;
+                    }
+                } else {
+                    if (height > max_size) {
+                        newWidth = Math.round((width * max_size) / height);
+                        newHeight = max_size;
+                    }
                 }
-            } else {
-                if (height > max_size) {
-                    newWidth = Math.round((width * max_size) / height);
-                    newHeight = max_size;
-                }
+        
+                const canvas = document.createElement('canvas');
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return reject(new Error('No se pudo obtener el contexto del canvas'));
+                ctx.drawImage(bmp, 0, 0, newWidth, newHeight);
+        
+                canvas.toBlob((blob) => {
+                    if (!blob) return reject(new Error('La compresión del canvas falló'));
+                    resolve(blob);
+                }, 'image/jpeg', 0.8);
+            } catch (error) {
+                reject(error);
             }
-    
-            const canvas = document.createElement('canvas');
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return reject(new Error('No se pudo obtener el contexto del canvas'));
-            ctx.drawImage(bmp, 0, 0, newWidth, newHeight);
-    
-            canvas.toBlob((blob) => {
-                if (!blob) return reject(new Error('La compresión del canvas falló'));
-                resolve(blob);
-            }, 'image/jpeg', 0.8);
         });
     };
     
@@ -249,27 +261,26 @@ export function ReportarMascotaForm() {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
                 uploadTask.cancel();
-                toast({ variant: 'destructive', title: 'Error de subida', description: `La subida de ${file.name} tardó demasiado.` });
-                setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, status: 'error' } : f));
-            }, 15000);
+            }, 15000); // 15s timeout
         };
         
         uploadTask.on('state_changed',
             (snapshot) => {
                 resetTimeout();
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log(`Subiendo (${progress.toFixed(0)}%)...`);
                 setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, progress } : f));
             },
             (error) => {
                 clearTimeout(timeout);
-                console.error("Error de subida:", error);
-                toast({ variant: 'destructive', title: 'Error de subida', description: `No se pudo subir ${file.name}.` });
+                if (error.code === 'storage/canceled') {
+                     toast({ variant: 'default', title: 'Subida cancelada', description: `La subida de ${file.name} se canceló.` });
+                } else {
+                    toast({ variant: 'destructive', title: 'Error de subida', description: `No se pudo subir ${file.name}.` });
+                }
                 setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, status: 'error' } : f));
             },
             async () => {
                 clearTimeout(timeout);
-                console.log('Completado');
                 const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                 form.setValue('fotos', [...(form.getValues('fotos') || []), downloadURL]);
                 setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, status: 'success', progress: 100 } : f));
@@ -277,52 +288,55 @@ export function ReportarMascotaForm() {
         );
         resetTimeout();
     } catch(error) {
-        toast({ variant: 'destructive', title: 'Error de Compresión', description: 'No se pudo procesar la imagen.' });
+        toast({ variant: 'destructive', title: 'Error de Compresión', description: `No se pudo procesar la imagen ${file.name}.` });
         setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, status: 'error' } : f));
     }
-  };
+  }, [form, toast]);
 
-  const uploadAllFiles = async () => {
+  const uploadAllFiles = useCallback(async () => {
     const pendingFiles = filesToUpload.filter(f => f.status === 'pending');
-    for (const file of pendingFiles) {
-        await startUpload(file);
-    }
-  };
+    await Promise.all(pendingFiles.map(startUpload));
+  }, [filesToUpload, startUpload]);
 
   async function onSubmit(data: ReportFormValues) {
     setIsSubmitting(true);
     await uploadAllFiles();
 
-    // Esperar a que todas las subidas terminen
-    const checkUploads = setInterval(() => {
-      const uploading = filesToUpload.some(f => f.status === 'uploading' || f.status === 'pending');
-      if (!uploading) {
-        clearInterval(checkUploads);
+    const checkUploads = () => new Promise<void>((resolve, reject) => {
+        const interval = setInterval(() => {
+            const stillUploading = filesToUpload.some(f => f.status === 'uploading' || f.status === 'pending');
+            if (!stillUploading) {
+                clearInterval(interval);
+                const hasErrors = filesToUpload.some(f => f.status === 'error');
+                if (hasErrors) {
+                    reject(new Error("Algunas imágenes no se subieron. Por favor, revisa y vuelve a intentar."));
+                } else {
+                    resolve();
+                }
+            }
+        }, 500);
+    });
+
+    try {
+        await checkUploads();
         const finalData = form.getValues();
-        const success = filesToUpload.every(f => f.status === 'success' || f.status === 'error');
-
-        if (filesToUpload.length > 0 && !success) {
-            toast({ variant: 'destructive', title: "Publicación fallida", description: "Algunas imágenes no se subieron. Por favor, revisa y vuelve a intentar." });
-            setIsSubmitting(false);
-            return;
-        }
-
         console.log("Datos finales a enviar a Firestore:", finalData);
         // Aquí iría la lógica para guardar en Firestore
-        // const docRef = await addDoc(collection(db, "mascotas_reportes"), { ... });
+        // const docRef = await addDoc(collection(db, "mascotas_reportes"), { ...finalData });
         toast({
           title: "¡Gracias! Publicamos tu reporte.",
           description: "La información ha sido guardada con éxito.",
           action: <Button variant="outline" onClick={() => router.push('/mapa')}>Ver en el mapa</Button>
         });
-        
+        // router.push('/mascotas/gracias'); // O a donde corresponda
+    } catch(error: any) {
+        toast({ variant: 'destructive', title: "Publicación fallida", description: error.message });
+    } finally {
         setIsSubmitting(false);
-        // router.push('/mascotas');
-      }
-    }, 500);
+    }
   }
 
-  const isUploading = filesToUpload.some(f => f.status === 'uploading');
+  const isUploading = filesToUpload.some(f => f.status === 'uploading' || f.status === 'pending');
   const isFormInvalid = !form.formState.isValid;
   const isPublishDisabled = isSubmitting || isUploading || isFormInvalid || !form.getValues('consentimiento');
 
@@ -339,11 +353,11 @@ export function ReportarMascotaForm() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField control={form.control} name="nombreMascota" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la mascota</FormLabel> <FormControl> <Input placeholder="Ej: 'Rocky' o 'Desconocido'" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="especie" render={({ field }) => ( <FormItem> <FormLabel>Especie</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Selecciona una especie" /> </SelectTrigger> </FormControl> <SelectContent> <SelectItem value="Perro">Perro</SelectItem> <SelectItem value="Gato">Gato</SelectItem> <SelectItem value="Ave">Ave</SelectItem> <SelectItem value="Roedor">Roedor</SelectItem> <SelectItem value="Reptil">Reptil</SelectItem> <SelectItem value="Otro">Otro</SelectItem> </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
+            <FormField control={form.control} name="especie" render={({ field }) => ( <FormItem> <FormLabel>Especie</FormLabel> <Select onValueChange={field.onChange} value={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Selecciona una especie" /> </SelectTrigger> </FormControl> <SelectContent> <SelectItem value="Perro">Perro</SelectItem> <SelectItem value="Gato">Gato</SelectItem> <SelectItem value="Ave">Ave</SelectItem> <SelectItem value="Roedor">Roedor</SelectItem> <SelectItem value="Reptil">Reptil</SelectItem> <SelectItem value="Otro">Otro</SelectItem> </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
             {especieValue === 'Otro' && ( <FormField control={form.control} name="especieOtra" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Especifique la especie</FormLabel> <FormControl> <Input placeholder="Ej: Conejo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
             <FormField control={form.control} name="raza" render={({ field }) => ( <FormItem> <FormLabel>Raza (opcional)</FormLabel> <FormControl> <Input placeholder="Ej: Quiltro" {...field} /> </FormControl> </FormItem> )}/>
             <FormField control={form.control} name="colorPrincipal" render={({ field }) => ( <FormItem> <FormLabel>Color principal</FormLabel> <FormControl> <Input placeholder="Ej: Café, Negro con blanco" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="tamano" render={({ field }) => ( <FormItem> <FormLabel>Tamaño</FormLabel> <Select onValueChange={field.onChange} defaultValue={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Selecciona un tamaño" /> </SelectTrigger> </FormControl> <SelectContent> <SelectItem value="Pequeño">Pequeño (hasta 10kg)</SelectItem> <SelectItem value="Mediano">Mediano (10 a 25kg)</SelectItem> <SelectItem value="Grande">Grande (más de 25kg)</SelectItem> </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
+            <FormField control={form.control} name="tamano" render={({ field }) => ( <FormItem> <FormLabel>Tamaño</FormLabel> <Select onValueChange={field.onChange} value={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Selecciona un tamaño" /> </SelectTrigger> </FormControl> <SelectContent> <SelectItem value="Pequeño">Pequeño (hasta 10kg)</SelectItem> <SelectItem value="Mediano">Mediano (10 a 25kg)</SelectItem> <SelectItem value="Grande">Grande (más de 25kg)</SelectItem> </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
             <FormField control={form.control} name="microchip" render={({ field }) => ( <FormItem> <FormLabel>N° de microchip (opcional)</FormLabel> <FormControl> <Input placeholder="Si lo conoces, ingrésalo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
         </Card>
@@ -356,10 +370,10 @@ export function ReportarMascotaForm() {
                     <FormField control={form.control} name="llevaCollar" render={({ field }) => ( <FormItem className="flex flex-row items-center space-x-3 space-y-0"> <FormControl> <Checkbox checked={field.value} onCheckedChange={field.onChange} /> </FormControl> <FormLabel className="font-normal">¿Llevaba collar o placa?</FormLabel> </FormItem> )}/>
                     {llevaCollarValue && ( <FormField control={form.control} name="collarDescripcion" render={({ field }) => ( <FormItem> <FormLabel>Color/Descripción del collar</FormLabel> <FormControl> <Input placeholder="Ej: Collar rojo con una patita" {...field} /> </FormControl> </FormItem> )}/> )}
                 </div>
-                <FormField control={form.control} name="temperamento" render={() => ( <FormItem> <div className="mb-4"> <FormLabel>Temperamento (opcional)</FormLabel> <FormDescription>Marca las opciones que apliquen.</FormDescription> </div> <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> {['Tímida/o', 'Sociable', 'Nerviosa/o', 'Puede morder'].map((item) => ( <FormField key={item} control={form.control} name="temperamento" render={({ field }) => { return ( <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0"> <FormControl> <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => { return checked ? field.onChange([...(field.value || []), item]) : field.onChange( field.value?.filter( (value) => value !== item ) ) }} /> </FormControl> <FormLabel className="font-normal"> {item} </FormLabel> </FormItem> ) }}/> ))} </div> <FormMessage /> </FormItem> )}/>
+                <FormField control={form.control} name="temperamento" render={() => ( <FormItem> <div className="mb-4"> <FormLabel>Temperamento (opcional)</FormLabel> <FormDescription>Marca las opciones que apliquen.</FormDescription> </div> <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> {['Tímida/o', 'Sociable', 'Nerviosa/o', 'Puede morder'].map((item) => ( <FormField key={item} control={form.control} name="temperamento" render={({ field }) => { return ( <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0"> <FormControl> <Checkbox id={`temp-${item}`} checked={field.value?.includes(item)} onCheckedChange={(checked) => { return checked ? field.onChange([...(field.value || []), item]) : field.onChange( field.value?.filter( (value) => value !== item ) ) }} /> </FormControl> <FormLabel htmlFor={`temp-${item}`} className="font-normal"> {item} </FormLabel> </FormItem> ) }}/> ))} </div> <FormMessage /> </FormItem> )}/>
                 <div className="space-y-4">
                      <FormField control={form.control} name="recompensa" render={({ field }) => ( <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4"> <div className="space-y-0.5"> <FormLabel>¿Se ofrece recompensa?</FormLabel> <FormDescription>Activa si ofreces una recompensa monetaria.</FormDescription> </div> <FormControl> <Switch checked={field.value} onCheckedChange={field.onChange} /> </FormControl> </FormItem> )}/>
-                    {recompensaValue && ( <FormField control={form.control} name="montoRecompensa" render={({ field }) => ( <FormItem> <FormLabel>Monto estimado (CLP)</FormLabel> <FormControl> <Input type="number" placeholder="50000" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
+                    {recompensaValue && ( <FormField control={form.control} name="montoRecompensa" render={({ field }) => ( <FormItem> <FormLabel>Monto estimado (CLP)</FormLabel> <FormControl> <Input type="number" placeholder="50000" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
                 </div>
             </CardContent>
         </Card>
@@ -400,7 +414,7 @@ export function ReportarMascotaForm() {
                   )}
                 />
                 <FormField control={form.control} name="correo" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Correo electrónico (opcional)</FormLabel> <FormControl><Input type="email" placeholder="tu@correo.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                <FormField control={form.control} name="medioPreferido" render={({ field }) => ( <FormItem className="space-y-3 md:col-span-2"> <FormLabel>Medio de contacto preferido</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="telefono" /></FormControl> <FormLabel className="font-normal">Teléfono</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="whatsapp" /></FormControl> <FormLabel className="font-normal">WhatsApp</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="correo" /></FormControl> <FormLabel className="font-normal">Correo</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
+                <FormField control={form.control} name="medioPreferido" render={({ field }) => ( <FormItem className="space-y-3 md:col-span-2"> <FormLabel>Medio de contacto preferido</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="telefono" id="mp-telefono" /></FormControl> <FormLabel htmlFor="mp-telefono" className="font-normal">Teléfono</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="whatsapp" id="mp-whatsapp"/></FormControl> <FormLabel htmlFor="mp-whatsapp" className="font-normal">WhatsApp</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="correo" id="mp-correo"/></FormControl> <FormLabel htmlFor="mp-correo" className="font-normal">Correo</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
             </CardContent>
         </Card>
 
@@ -420,17 +434,17 @@ export function ReportarMascotaForm() {
             {filesToUpload.length > 0 && (
                 <div className="mt-4 space-y-2">
                     {filesToUpload.map(f => (
-                        <div key={f.id} className="flex items-center gap-3 p-2 border rounded-md">
+                        <div key={f.id} className="flex items-center gap-3 p-2 border rounded-md bg-muted/50">
                            <img src={f.preview} alt={f.file.name} className="h-12 w-12 rounded-md object-cover"/>
                            <div className="flex-1 space-y-1">
                                 <p className="text-sm font-medium truncate">{f.file.name}</p>
                                 {f.status === 'uploading' && <Progress value={f.progress} className="h-2" />}
                                 {f.status === 'success' && <p className="text-xs text-green-600">¡Subido!</p>}
                                 {f.status === 'error' && <p className="text-xs text-red-600">Error en la subida</p>}
+                                {f.status === 'pending' && <p className="text-xs text-muted-foreground">Pendiente de subida</p>}
                            </div>
-                           {f.status === 'pending' && <Button type="button" size="sm" onClick={() => startUpload(f)}>Subir</Button>}
-                           {(f.status === 'uploading' || f.status === 'error') && <Button type="button" size="sm" variant="destructive" onClick={() => removeFile(f.id)}><X className="h-4 w-4"/></Button>}
-                           {f.status === 'success' && <Button type="button" size="sm" variant="ghost" onClick={() => removeFile(f.id)}><Trash2 className="h-4 w-4"/></Button>}
+                           {(f.status === 'pending' || f.status === 'error') && <Button type="button" size="sm" onClick={() => startUpload(f)}>{f.status === 'error' ? 'Reintentar' : 'Subir'}</Button>}
+                           <Button type="button" size="icon" variant="ghost" className="h-8 w-8" onClick={() => removeFile(f.id)}><Trash2 className="h-4 w-4"/></Button>
                         </div>
                     ))}
                 </div>
@@ -450,7 +464,7 @@ export function ReportarMascotaForm() {
               Cancelar
             </Button>
             <Button type="submit" disabled={isPublishDisabled}>
-              {isSubmitting || isUploading ? <LoaderCircle className="animate-spin" /> : 'Publicar Reporte'}
+              {isSubmitting || isUploading ? <><LoaderCircle className="animate-spin mr-2" /> Publicando...</> : 'Publicar Reporte'}
             </Button>
           </CardFooter>
         </Card>
