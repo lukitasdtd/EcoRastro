@@ -20,44 +20,24 @@ const initialState: WildlifeInfoState = {
   message: null,
 };
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" disabled={pending} className="w-full">
-      {pending ? (
-        <>
-          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-          Generando respuesta...
-        </>
-      ) : (
-        <>
-         <Wand2 className="mr-2 h-4 w-4" />
-          Preguntar al experto
-        </>
-      )}
-    </Button>
-  );
-}
-
+const comingSoonCard = (title: string, description: string) => (
+    <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-muted/50 border-dashed h-full shadow-none">
+        <CardHeader>
+            <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
+              <Wand2 className="h-8 w-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl text-muted-foreground">{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <p className="text-muted-foreground">{description}</p>
+        </CardContent>
+        <CardFooter>
+            <Button variant="secondary" disabled>Próximamente</Button>
+        </CardFooter>
+    </Card>
+  )
 
 export default function FaunaSilvestrePage() {
-  const [state, formAction] = useActionState(getWildlifeInfo, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleLearnMoreClick = (question: string) => {
-    if (textAreaRef.current && formRef.current) {
-      textAreaRef.current.value = question;
-      // Trigger a change event for React Hook Form if it's being used
-      const event = new Event('input', { bubbles: true });
-      textAreaRef.current.dispatchEvent(event);
-
-      formRef.current.scrollIntoView({ behavior: 'smooth' });
-      textAreaRef.current.focus();
-    }
-  };
-
   const localFauna = [
     {
       name: "Aves Nativas",
@@ -115,58 +95,10 @@ export default function FaunaSilvestrePage() {
       
       {/* --- Experto con IA --- */}
       <section className="mb-16">
-        <form ref={formRef} action={formAction} className="space-y-6">
-            <Card className="max-w-2xl mx-auto shadow-lg border-0 bg-primary/10">
-              <CardHeader className="text-center">
-                <CardTitle className="flex items-center justify-center gap-3 text-2xl">
-                    <Sparkles className="h-6 w-6 text-accent"/>
-                    Pregúntale a nuestro experto en Fauna Chilena
-                </CardTitle>
-                <CardDescription>
-                  ¿Tienes curiosidad sobre un animal? ¿No sabes qué hacer en una situación? Escribe tu pregunta y nuestra IA te ayudará.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid w-full gap-2">
-                  <Label htmlFor="wildlifeQuery" className="sr-only">Tu pregunta</Label>
-                  <Textarea
-                    id="wildlifeQuery"
-                    name="wildlifeQuery"
-                    ref={textAreaRef}
-                    placeholder="Ej: '¿Qué come el zorro culpeo?' o '¿Cómo puedo atraer picaflores a mi jardín?'"
-                    rows={3}
-                    required
-                  />
-                  {state?.errors?.wildlifeQuery && (
-                      <p className="text-sm font-medium text-destructive mt-2">{state.errors.wildlifeQuery}</p>
-                  )}
-                </div>
-                 <SubmitButton />
-              </CardContent>
-            </Card>
-          </form>
-
-          {state?.message && !state.wildlifeInfo && (
-            <Alert variant="destructive" className="max-w-2xl mx-auto mt-6">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{state.message}</AlertDescription>
-            </Alert>
-          )}
-
-          {state?.wildlifeInfo && (
-            <Card className="max-w-2xl mx-auto mt-6 animate-in fade-in-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Leaf className="h-6 w-6 text-primary" />
-                  Respuesta del Experto
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-foreground/80 whitespace-pre-wrap">{state.wildlifeInfo}</p>
-              </CardContent>
-            </Card>
-          )}
+        {comingSoonCard(
+            "Experto de IA en Fauna Chilena",
+            "Pronto podrás hacer tus preguntas a nuestro experto virtual para obtener información al instante sobre la fauna de Chile."
+        )}
       </section>
 
 
@@ -194,7 +126,7 @@ export default function FaunaSilvestrePage() {
               <CardContent className="p-6 flex flex-col flex-grow">
                 <CardTitle className="text-xl mb-2">{fauna.name}</CardTitle>
                 <p className="text-foreground/80 flex-grow mb-4">{fauna.description}</p>
-                 <Button variant="link" className="p-0 h-auto text-primary font-semibold mt-auto" onClick={() => handleLearnMoreClick(fauna.question)}>
+                 <Button variant="link" className="p-0 h-auto text-primary font-semibold mt-auto" disabled>
                     Aprender más <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </CardContent>

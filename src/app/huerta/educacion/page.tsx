@@ -1,60 +1,15 @@
-
-
 'use client';
 
 import React, { useRef } from 'react';
-import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, MapPin, Search, BookOpen, Tractor, Users, Leaf, CheckSquare, Heart, LoaderCircle, Wand2, Sparkles, AlertTriangle, ArrowRight
 } from 'lucide-react';
-import { getGardeningInfo, type GardeningInfoState } from '@/ai/flows/gardening-expert';
-
-const initialState: GardeningInfoState = {
-  message: null,
-};
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending} className="w-full">
-      {pending ? (
-        <>
-          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-          Generando respuesta...
-        </>
-      ) : (
-        <>
-         <Wand2 className="mr-2 h-4 w-4" />
-          Preguntar al experto
-        </>
-      )}
-    </Button>
-  );
-}
 
 export default function HuertaEducationPage() {
-  const [state, formAction] = useActionState(getGardeningInfo, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleLearnMoreClick = (question: string) => {
-    if (textAreaRef.current && formRef.current) {
-      textAreaRef.current.value = question;
-      const event = new Event('input', { bubbles: true });
-      textAreaRef.current.dispatchEvent(event);
-      formRef.current.scrollIntoView({ behavior: 'smooth' });
-      textAreaRef.current.focus();
-    }
-  };
-
   const gardenTypes = [
     {
       title: "Huerta Urbana",
@@ -187,6 +142,24 @@ export default function HuertaEducationPage() {
         </CardFooter>
     </Card>
   )
+  
+  const expertAICard = (title: string, description: string) => (
+    <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-primary/5 border-dashed border-primary/20 h-full shadow-none">
+        <CardHeader>
+            <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
+              <Wand2 className="h-8 w-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl text-foreground">{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <p className="text-muted-foreground">{description}</p>
+        </CardContent>
+        <CardFooter>
+            <Button variant="secondary" disabled>Próximamente</Button>
+        </CardFooter>
+    </Card>
+  )
+
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -202,58 +175,10 @@ export default function HuertaEducationPage() {
 
       {/* --- Experto con IA --- */}
       <section className="mb-16">
-        <form ref={formRef} action={formAction} className="space-y-6">
-            <Card className="max-w-2xl mx-auto shadow-lg border-0 bg-primary/10">
-              <CardHeader className="text-center">
-                <CardTitle className="flex items-center justify-center gap-3 text-2xl">
-                    <Sparkles className="h-6 w-6 text-accent"/>
-                    Pregúntale a nuestro Experto en Huertas
-                </CardTitle>
-                <CardDescription>
-                  ¿No sabes qué plantar? ¿Tienes una plaga? Escribe tu pregunta y nuestra IA te ayudará.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid w-full gap-2">
-                  <Label htmlFor="gardeningQuery" className="sr-only">Tu pregunta</Label>
-                  <Textarea
-                    id="gardeningQuery"
-                    name="gardeningQuery"
-                    ref={textAreaRef}
-                    placeholder="Ej: '¿Cómo puedo hacer compost en mi departamento?' o '¿Qué plaga son unos bichos blancos pequeños en mis tomates?'"
-                    rows={3}
-                    required
-                  />
-                  {state?.errors?.gardeningQuery && (
-                      <p className="text-sm font-medium text-destructive mt-2">{state.errors.gardeningQuery}</p>
-                  )}
-                </div>
-                 <SubmitButton />
-              </CardContent>
-            </Card>
-          </form>
-
-          {state?.message && !state.gardeningInfo && (
-            <Alert variant="destructive" className="max-w-2xl mx-auto mt-6">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{state.message}</AlertDescription>
-            </Alert>
-          )}
-
-          {state?.gardeningInfo && (
-            <Card className="max-w-2xl mx-auto mt-6 animate-in fade-in-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sprout className="h-6 w-6 text-primary" />
-                  Respuesta del Experto
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-foreground/80 whitespace-pre-wrap">{state.gardeningInfo}</p>
-              </CardContent>
-            </Card>
-          )}
+        {expertAICard(
+            "Experto de IA para tu Huerta",
+            "Próximamente podrás hacer tus preguntas a nuestro experto virtual para obtener consejos personalizados sobre tu huerta."
+        )}
       </section>
 
       <Tabs defaultValue="essentials" className="w-full">
@@ -283,7 +208,7 @@ export default function HuertaEducationPage() {
                               <p className="text-foreground/80">{type.description}</p>
                           </CardContent>
                           <CardFooter>
-                              <Button variant="link" className="p-0 h-auto text-primary font-semibold w-full" onClick={() => handleLearnMoreClick(type.question)}>
+                              <Button variant="link" className="p-0 h-auto text-primary font-semibold w-full" disabled>
                                   Aprender más <ArrowRight className="ml-1 h-4 w-4" />
                               </Button>
                           </CardFooter>
@@ -301,7 +226,7 @@ export default function HuertaEducationPage() {
                                 <div className="mb-4">{benefit.icon}</div>
                                 <CardTitle className="text-lg font-semibold mb-2">{benefit.title}</CardTitle>
                                 <p className="text-sm text-foreground/70 flex-grow">{benefit.description}</p>
-                                <Button variant="link" className="p-0 h-auto text-primary font-semibold mt-4" onClick={() => handleLearnMoreClick(benefit.question)}>
+                                <Button variant="link" className="p-0 h-auto text-primary font-semibold mt-4" disabled>
                                   Saber más
                                 </Button>
                             </Card>
