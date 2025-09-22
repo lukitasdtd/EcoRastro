@@ -30,10 +30,6 @@ export const navItems: NavItem[] = [
         href: '/mascotas/redes-apoyo',
       },
       {
-        label: 'Educación sobre Mascotas',
-        href: '/mascotas/educacion',
-      },
-       {
         label: 'Ver en Adopción',
         href: '/adoption',
       },
@@ -44,18 +40,36 @@ export const navItems: NavItem[] = [
     href: '/gardens',
     subItems: [
       {
-        label: 'Educación sobre Cultivo',
-        href: '/huerta/educacion',
+        label: 'Encontrar Huerta',
+        href: '/gardens#finder',
       },
       {
         label: 'Calendario de Siembra',
         href: '/calendar',
       },
-      {
-        label: 'Encontrar Huerta',
-        href: '/gardens#finder',
-      },
     ],
+  },
+  {
+    label: 'Educación',
+    href: '#',
+    subItems: [
+      {
+        label: 'Cuidado de Mascotas',
+        href: '/mascotas/educacion',
+      },
+      {
+        label: 'Cultivo y Huertas',
+        href: '/huerta/educacion',
+      },
+      {
+        label: 'Fauna Silvestre',
+        href: '/fauna-silvestre',
+      },
+      {
+        label: 'Prácticas Verdes',
+        href: '/practicas-verdes',
+      },
+    ]
   },
   {
     label: 'Acerca de Nosotros',

@@ -13,12 +13,12 @@ const educationalTopics = [
     {
       title: 'Fauna Silvestre',
       description: 'Cómo proteger y convivir con ella',
-      href: '/about',
+      href: '/fauna-silvestre',
     },
     {
       title: 'Prácticas Verdes',
       description: 'Acciones sostenibles para tu día a día',
-      href: '/about',
+      href: '/practicas-verdes',
     },
     {
       title: 'Mascotas Felices',
