@@ -24,7 +24,7 @@ export function Footer() {
 
   return (
     <footer className={cn('bg-primary text-primary-foreground font-sans mt-auto')}>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
           {/* Columna del Logo */}
           <div className="flex justify-center md:justify-start">
