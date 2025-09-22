@@ -22,7 +22,7 @@ export default function MascotasPage() {
           />
         )}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Todo por Nuestras Mascotas
           </h1>
           <p className="max-w-2xl mx-auto text-lg md:text-xl mb-8">

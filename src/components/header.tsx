@@ -152,7 +152,7 @@ export function Header() {
 
         {/* Navegación Desktop */}
         <nav className="hidden md:flex flex-1 items-center justify-center">
-          <ul className="flex items-center gap-6">
+          <ul className="flex items-center gap-2 lg:gap-6">
             {navItems.map(item =>
               item.subItems ? (
                 <DropdownMenu key={item.label} item={item} />

@@ -53,7 +53,7 @@ export default function SupportNetworksPage() {
         />
         <div className="relative z-10 text-white container mx-auto px-4">
            <div className="max-w-xl">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 !leading-tight text-shadow-md">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 !leading-tight text-shadow-md">
                   Conecta con refugios y adopta cerca de ti
                 </h1>
                 <p className="text-lg md:text-xl mb-8 text-primary-foreground/90 text-shadow">

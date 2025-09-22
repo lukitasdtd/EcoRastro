@@ -1,18 +1,12 @@
 'use client';
 
-import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Bird, Bug, Rabbit, Phone, ShieldCheck, Leaf, HelpCircle, AlertTriangle, LoaderCircle, Sparkles, Wand2, ArrowRight } from 'lucide-react';
+import { Phone, HelpCircle, ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { useRef } from 'react';
 
 const premiumCard = (title: string, description: string) => (
     <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-primary/5 border-dashed border-primary/20 h-full shadow-none">
@@ -38,21 +32,18 @@ export default function FaunaSilvestrePage() {
     {
       name: "Aves Nativas",
       description: "Chile alberga una increíble diversidad de aves. Desde el majestuoso cóndor hasta el pequeño picaflor de Arica.",
-      icon: <Bird className="w-10 h-10 text-primary" />,
       imageId: "wildlife-bird",
       question: "Háblame sobre las aves nativas más comunes en Chile y cómo proteger sus hábitats."
     },
     {
       name: "Insectos Polinizadores",
       description: "Las abejas, mariposas y otros insectos son vitales para nuestros ecosistemas y la producción de alimentos.",
-      icon: <Bug className="w-10 h-10 text-primary" />,
       imageId: "wildlife-insect",
       question: "Explícame la importancia de los insectos polinizadores en Chile y qué flores nativas puedo plantar para ayudarlos."
     },
     {
       name: "Pequeños Mamíferos",
       description: "Zorros, conejos y roedores nativos como el degú cumplen roles importantes en el ecosistema.",
-      icon: <Rabbit className="w-10 h-10 text-primary" />,
       imageId: "wildlife-mammal",
       question: "Quiero saber sobre los pequeños mamíferos comunes en Chile, como el zorro culpeo, y las precauciones que debo tener."
     },
@@ -178,7 +169,3 @@ export default function FaunaSilvestrePage() {
       </section>
     </div>
   );
-
-    
-
-

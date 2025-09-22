@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, MapPin, Search, BookOpen, Tractor, Users, Leaf, CheckSquare, Heart, LoaderCircle, Wand2, Sparkles, AlertTriangle, ArrowRight
+  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, Tractor, Users, Leaf, CheckSquare, Heart, Sparkles, ArrowRight
 } from 'lucide-react';
 
 export default function HuertaEducationPage() {
