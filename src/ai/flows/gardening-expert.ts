@@ -9,7 +9,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-// Zod schema for input validation, used by both the Action and the Flow.
+// Zod schema for input validation
 const GardeningInputSchema = z.object({
   gardeningQuery: z.string().min(5, { message: 'Por favor, escribe una pregunta más detallada.' }),
 });
@@ -18,8 +18,7 @@ const GardeningOutputSchema = z.object({
     response: z.string() 
 });
 
-
-// Define the structure for the action's state, including potential errors and the final data.
+// Define the structure for the action's state
 export type GardeningInfoState = {
   message: string | null;
   gardeningInfo?: string | null;
@@ -27,6 +26,18 @@ export type GardeningInfoState = {
     gardeningQuery?: string[];
   };
 };
+
+// Define the Genkit prompt
+const gardeningPrompt = ai.definePrompt({
+  name: 'gardeningExpertPrompt',
+  input: { schema: GardeningInputSchema },
+  output: { schema: GardeningOutputSchema },
+  prompt: `Eres un experto en horticultura y agricultura urbana sostenible en Chile. Tu misión es proporcionar consejos prácticos, claros y amigables para principiantes. Un usuario tiene la siguiente pregunta:
+
+  "{{{gardeningQuery}}}"
+
+  Responde de manera completa pero concisa. Enfócate en soluciones que se puedan aplicar en un entorno doméstico o comunitario (balcones, patios, etc.). Si la pregunta es sobre plagas o enfermedades, recomienda primero soluciones orgánicas y caseras. Proporciona la información en pasos si es aplicable.`,
+});
 
 /**
  * Server Action to get information about gardening.
@@ -51,42 +62,22 @@ export async function getGardeningInfo(
     };
   }
 
-  // 3. If validation is successful, call the Genkit flow
+  // 3. If validation is successful, call the Genkit prompt directly
   try {
-    const info = await gardeningInfoFlow({ gardeningQuery: validatedFields.data.gardeningQuery });
+    const { output } = await gardeningPrompt(validatedFields.data);
+    
+    if (!output) {
+        throw new Error("La IA no generó una respuesta.");
+    }
+    
     return {
       message: '¡Respuesta generada!',
-      gardeningInfo: info.response,
+      gardeningInfo: output.response,
     };
   } catch (error) {
-    console.error('Error in gardeningInfoFlow:', error);
+    console.error('Error in gardeningPrompt:', error);
     return {
       message: 'Ocurrió un error al consultar a nuestro experto de IA. Por favor, intenta de nuevo.',
     };
   }
 }
-
-// Define the Genkit prompt
-const gardeningPrompt = ai.definePrompt({
-  name: 'gardeningExpertPrompt',
-  input: { schema: GardeningInputSchema },
-  output: { schema: GardeningOutputSchema },
-  prompt: `Eres un experto en horticultura y agricultura urbana sostenible en Chile. Tu misión es proporcionar consejos prácticos, claros y amigables para principiantes. Un usuario tiene la siguiente pregunta:
-
-  "{{{gardeningQuery}}}"
-
-  Responde de manera completa pero concisa. Enfócate en soluciones que se puedan aplicar en un entorno doméstico o comunitario (balcones, patios, etc.). Si la pregunta es sobre plagas o enfermedades, recomienda primero soluciones orgánicas y caseras. Proporciona la información en pasos si es aplicable.`,
-});
-
-// Define the Genkit flow
-const gardeningInfoFlow = ai.defineFlow(
-  {
-    name: 'gardeningInfoFlow',
-    inputSchema: GardeningInputSchema,
-    outputSchema: GardeningOutputSchema,
-  },
-  async (input) => {
-    const { output } = await gardeningPrompt(input);
-    return output!;
-  }
-);

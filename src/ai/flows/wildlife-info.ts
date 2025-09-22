@@ -17,7 +17,7 @@ const WildlifeInfoInputSchema = z.object({
 const WildlifeInfoOutputSchema = z.object({ response: z.string() });
 
 
-// Define the structure for the action's state, including potential errors and the final data.
+// Define the structure for the action's state
 export type WildlifeInfoState = {
   message: string | null;
   wildlifeInfo?: string | null;
@@ -25,6 +25,19 @@ export type WildlifeInfoState = {
     wildlifeQuery?: string[];
   };
 };
+
+// Define the Genkit prompt
+const wildlifePrompt = ai.definePrompt({
+  name: 'wildlifeExpertPrompt',
+  input: { schema: WildlifeInfoInputSchema },
+  output: { schema: WildlifeInfoOutputSchema },
+  prompt: `Eres un experto en fauna silvestre y ecosistemas de Chile. Tu misión es proporcionar información educativa, clara y precisa. Un usuario tiene la siguiente pregunta:
+
+  "{{{wildlifeQuery}}}"
+
+  Responde de manera amigable y completa, pero concisa. Enfócate en aspectos como el hábitat, alimentación, comportamiento, estado de conservación y cómo las personas pueden ayudar a proteger a la especie. Si la pregunta es sobre una situación, da consejos prácticos y seguros, siempre recomendando contactar a la autoridad competente (SAG en Chile) si es necesario.`,
+});
+
 
 /**
  * Server Action to get information about Chilean wildlife.
@@ -49,42 +62,22 @@ export async function getWildlifeInfo(
     };
   }
 
-  // 3. If validation is successful, call the Genkit flow
+  // 3. If validation is successful, call the Genkit prompt directly
   try {
-    const info = await wildlifeInfoFlow({ wildlifeQuery: validatedFields.data.wildlifeQuery });
+    const { output } = await wildlifePrompt(validatedFields.data);
+
+    if (!output) {
+      throw new Error("La IA no generó una respuesta.");
+    }
+
     return {
       message: '¡Respuesta generada!',
-      wildlifeInfo: info.response,
+      wildlifeInfo: output.response,
     };
   } catch (error) {
-    console.error('Error in wildlifeInfoFlow:', error);
+    console.error('Error in wildlifePrompt:', error);
     return {
       message: 'Ocurrió un error al consultar a nuestro experto de IA. Por favor, intenta de nuevo.',
     };
   }
 }
-
-// Define the Genkit prompt
-const wildlifePrompt = ai.definePrompt({
-  name: 'wildlifeExpertPrompt',
-  input: { schema: WildlifeInfoInputSchema },
-  output: { schema: WildlifeInfoOutputSchema },
-  prompt: `Eres un experto en fauna silvestre y ecosistemas de Chile. Tu misión es proporcionar información educativa, clara y precisa. Un usuario tiene la siguiente pregunta:
-
-  "{{{wildlifeQuery}}}"
-
-  Responde de manera amigable y completa, pero concisa. Enfócate en aspectos como el hábitat, alimentación, comportamiento, estado de conservación y cómo las personas pueden ayudar a proteger a la especie. Si la pregunta es sobre una situación, da consejos prácticos y seguros, siempre recomendando contactar a la autoridad competente (SAG en Chile) si es necesario.`,
-});
-
-// Define the Genkit flow
-const wildlifeInfoFlow = ai.defineFlow(
-  {
-    name: 'wildlifeInfoFlow',
-    inputSchema: WildlifeInfoInputSchema,
-    outputSchema: WildlifeInfoOutputSchema,
-  },
-  async (input) => {
-    const { output } = await wildlifePrompt(input);
-    return output!;
-  }
-);
