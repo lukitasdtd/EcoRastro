@@ -128,20 +128,6 @@ export default function HuertaEducationPage() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
-
-  const comingSoonCard = (title: string, description: string) => (
-    <Card className="text-center p-8 flex flex-col items-center justify-center bg-muted/50 border-dashed h-full">
-        <CardHeader>
-            <CardTitle className="text-2xl text-muted-foreground">{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <p className="text-muted-foreground">{description}</p>
-        </CardContent>
-        <CardFooter>
-            <Button variant="secondary" disabled>Próximamente</Button>
-        </CardFooter>
-    </Card>
-  )
   
   const premiumCard = (title: string, description: string) => (
     <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-primary/5 border-dashed border-primary/20 h-full shadow-none">
@@ -300,26 +286,26 @@ export default function HuertaEducationPage() {
         </TabsContent>
 
         {/* --- HERRAMIENTAS --- */}
-        <TabsContent value="tools" className="mt-8 text-center grid place-items-center">
-             {comingSoonCard(
-                "Herramientas Interactivas",
-                "Estamos construyendo herramientas como una calculadora de siembra y notificaciones para ayudarte a tener éxito en tu huerta."
+        <TabsContent value="tools" className="mt-8 grid place-items-center">
+             {premiumCard(
+                "Herramientas Interactivas Premium",
+                "Accede a nuestra calculadora de siembra, notificaciones de riego y más para optimizar tu huerta."
             )}
         </TabsContent>
         
         {/* --- CONTENIDO AVANZADO --- */}
         <TabsContent value="advanced" className="mt-8 grid place-items-center">
-             {comingSoonCard(
-                "Contenido Avanzado",
-                "Pronto encontrarás guías sobre permacultura, salud del suelo, huertas medicinales y mucho más para llevar tu conocimiento al siguiente nivel."
+             {premiumCard(
+                "Contenido Avanzado Premium",
+                "Desbloquea guías sobre permacultura, salud del suelo y huertas medicinales con tu suscripción."
             )}
         </TabsContent>
         
         {/* --- COMUNIDAD --- */}
-        <TabsContent value="community" className="mt-8 text-center grid place-items-center">
-            {comingSoonCard(
-                "Comunidad EcoRastro",
-                "Estamos creando un espacio para que puedas conectar con otros hortelanos, compartir tus logros y resolver dudas en comunidad."
+        <TabsContent value="community" className="mt-8 grid place-items-center">
+            {premiumCard(
+                "Comunidad Premium EcoRastro",
+                "Únete a foros exclusivos, participa en talleres y conecta con otros hortelanos expertos."
             )}
         </TabsContent>
       </Tabs>
