@@ -21,12 +21,12 @@ export default function Home() {
             <div className="relative h-72 md:h-96 overflow-hidden rounded-tl-[3rem] rounded-br-[3rem] shadow-lg">
               {heroHuerta && (
                 <Image
-                  src={heroHuenta.imageUrl}
-                  alt={heroHuenta.description}
+                  src={heroHuerta.imageUrl}
+                  alt={heroHuerta.description}
                   fill
                   style={{ objectFit: 'cover' }}
                   className="brightness-75"
-                  data-ai-hint={heroHuenta.imageHint}
+                  data-ai-hint={heroHuerta.imageHint}
                   priority
                 />
               )}
