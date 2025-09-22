@@ -3,6 +3,7 @@ import { Quicksand, Roboto } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header';
 import { Toaster } from '@/components/ui/toaster';
+import { Footer } from '@/components/footer';
 
 const quicksand = Quicksand({
   subsets: ['latin'],
@@ -33,6 +34,7 @@ export default function RootLayout({
         <div className="flex min-h-screen w-full flex-col">
           <Header />
           <main className="flex-1 pt-8">{children}</main>
+          <Footer />
         </div>
         <Toaster />
       </body>
