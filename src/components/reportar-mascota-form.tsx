@@ -11,6 +11,7 @@ import IMask from 'imask';
 import { useDropzone } from 'react-dropzone';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
 import { app } from '@/lib/firebase/config';
+import { useFormContext } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,8 +27,6 @@ import { FormControl } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { LoaderCircle, Upload, Trash2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-
-import { useFormContext } from "react-hook-form";
 
 // Setup de Firebase Storage
 const storage = getStorage(app);
@@ -92,25 +91,25 @@ interface FileUpload {
 }
 
 const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
-    (props, ref) => {
-      const { getValues, setValue } = useFormContext();
-      const internalRef = React.useRef<HTMLInputElement>(null);
-      React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
-      const maskOptions = React.useMemo(() => ({ mask: "+{56} 9 0000 0000" }), []);
-      React.useEffect(() => {
-        if (typeof window === "undefined" || !internalRef.current) return;
-        const mask = IMask(internalRef.current, maskOptions);
-        mask.on("accept", () => {
-          if (getValues("telefono") !== mask.value) {
-            setValue("telefono", mask.value, { shouldValidate: true, shouldDirty: true });
-          }
-        });
-        return () => mask.destroy();
-      }, [maskOptions, getValues, setValue]);
-      return <Input ref={internalRef} inputMode="tel" autoComplete="tel" {...props} />;
-    }
-  );
-  MaskedInput.displayName = "MaskedInput";
+  (props, ref) => {
+    const { getValues, setValue } = useFormContext();
+    const internalRef = React.useRef<HTMLInputElement>(null);
+    React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
+    const maskOptions = React.useMemo(() => ({ mask: "+{56} 9 0000 0000" }), []);
+    React.useEffect(() => {
+      if (typeof window === "undefined" || !internalRef.current) return;
+      const mask = IMask(internalRef.current, maskOptions);
+      mask.on("accept", () => {
+        if (getValues("telefono") !== mask.value) {
+          setValue("telefono", mask.value, { shouldValidate: true, shouldDirty: true });
+        }
+      });
+      return () => mask.destroy();
+    }, [maskOptions, getValues, setValue]);
+    return <Input ref={internalRef} inputMode="tel" autoComplete="tel" {...props} />;
+  }
+);
+MaskedInput.displayName = "MaskedInput";
 
 export function ReportarMascotaForm() {
   const router = useRouter();
@@ -404,34 +403,37 @@ export function ReportarMascotaForm() {
                     <FormField control={form.control} name="llevaCollar" render={({ field }) => ( <FormItem className="flex flex-row items-center space-x-3 space-y-0"> <FormControl> <Checkbox checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /> </FormControl> <FormLabel className="font-normal">¿Llevaba collar o placa?</FormLabel> </FormItem> )}/>
                     {llevaCollarValue && ( <FormField control={form.control} name="collarDescripcion" render={({ field }) => ( <FormItem> <FormLabel>Color/Descripción del collar</FormLabel> <FormControl> <Input placeholder="Ej: Collar rojo con una patita" {...field} /> </FormControl> </FormItem> )}/> )}
                 </div>
-                <FormField control={form.control} name="temperamento" render={() => ( 
-                  <FormItem> 
-                    <div className="mb-4"> 
-                      <FormLabel>Temperamento (opcional)</FormLabel> 
-                      <FormDescription>Marca las opciones que apliquen.</FormDescription> 
-                    </div> 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> 
-                      {['Tímida/o', 'Sociable', 'Nerviosa/o', 'Puede morder'].map((item) => ( 
-                        <FormField key={item} control={form.control} name="temperamento" render={({ field }) => { 
-                          return ( 
-                            <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0"> 
-                                <FormControl>
-                                  <Checkbox id={`temp-${item}`} checked={field.value?.includes(item)} onCheckedChange={(checked) => { 
-                                    const isChecked = Boolean(checked);
-                                    return isChecked 
-                                      ? field.onChange([...(field.value || []), item]) 
-                                      : field.onChange( field.value?.filter( (value) => value !== item ) ) 
-                                  }} />
-                                </FormControl>
-                              <FormLabel htmlFor={`temp-${item}`} className="font-normal"> {item} </FormLabel> 
-                            </FormItem> 
-                          );
-                        }}/> 
-                      ))} 
-                    </div> 
-                    <FormMessage /> 
-                  </FormItem> 
-                )}/>
+                <FormField
+                  control={form.control}
+                  name="temperamento"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="mb-4">
+                        <FormLabel>Temperamento (opcional)</FormLabel>
+                        <FormDescription>Marca las opciones que apliquen.</FormDescription>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {['Tímida/o', 'Sociable', 'Nerviosa/o', 'Puede morder'].map((item) => (
+                          <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(item)}
+                                onCheckedChange={(checked) => {
+                                  const isChecked = Boolean(checked);
+                                  return isChecked
+                                    ? field.onChange([...(field.value || []), item])
+                                    : field.onChange(field.value?.filter((value) => value !== item));
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">{item}</FormLabel>
+                          </FormItem>
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <div className="space-y-4">
                      <FormField control={form.control} name="recompensa" render={({ field }) => ( <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4"> <div className="space-y-0.5"> <FormLabel>¿Se ofrece recompensa?</FormLabel> <FormDescription>Activa si ofreces una recompensa monetaria.</FormDescription> </div> <FormControl> <Switch checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /> </FormControl> </FormItem> )}/>
                     {recompensaValue && ( <FormField control={form.control} name="montoRecompensa" render={({ field }) => ( <FormItem> <FormLabel>Monto estimado (CLP)</FormLabel> <FormControl> <Input type="number" placeholder="50000" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
@@ -477,34 +479,42 @@ export function ReportarMascotaForm() {
               )}
             />
             <FormField control={form.control} name="correo" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Correo electrónico (opcional)</FormLabel> <FormControl><Input type="email" placeholder="tu@correo.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="medioPreferido" render={({ field }) => ( 
-              <FormItem className="space-y-3 md:col-span-2">
-                <FormLabel>Medio de contacto preferido</FormLabel>
-                <FormControl>
-                  <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
-                    <FormItem className="flex items-center space-x-3 space-y-0">
+            <FormField
+              control={form.control}
+              name="medioPreferido"
+              render={({ field }) => (
+                <FormItem className="space-y-3 md:col-span-2">
+                  <FormLabel>Medio de contacto preferido</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                            <RadioGroupItem value="telefono" id="mp-telefono" />
+                          <RadioGroupItem value="telefono" />
                         </FormControl>
-                      <FormLabel htmlFor="mp-telefono" className="font-normal">Teléfono</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormLabel className="font-normal">Teléfono</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                            <RadioGroupItem value="whatsapp" id="mp-whatsapp"/>
+                          <RadioGroupItem value="whatsapp" />
                         </FormControl>
-                      <FormLabel htmlFor="mp-whatsapp" className="font-normal">WhatsApp</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormLabel className="font-normal">WhatsApp</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                            <RadioGroupItem value="correo" id="mp-correo"/>
+                          <RadioGroupItem value="correo" />
                         </FormControl>
-                      <FormLabel htmlFor="mp-correo" className="font-normal">Correo</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem> 
-            )}/>
+                        <FormLabel className="font-normal">Correo</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
 
