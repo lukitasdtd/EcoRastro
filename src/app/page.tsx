@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { MapFeatures } from '@/components/home/map-features';
 import { PlantingCalendar } from '@/components/home/planting-calendar';
+import { EnvironmentalEducation } from '@/components/home/environmental-education';
 
 export default function Home() {
   const heroHuerta = PlaceHolderImages.find(img => img.id === 'hero-huerta');
@@ -68,11 +69,11 @@ export default function Home() {
         </div>
       </header>
       
-      {/* Nueva sección del mapa interactivo */}
       <MapFeatures />
 
-      {/* Nueva sección de Calendario de Siembra */}
       <PlantingCalendar />
+
+      <EnvironmentalEducation />
 
     </div>
   );
