@@ -14,57 +14,57 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center bg-background">
-      <header className="relative w-full py-16 md:py-24 px-4 bg-muted/30">
-        <div className="max-w-6xl mx-auto">
-          {/* Contenedor de las imágenes */}
-          <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-            <div className="relative h-72 md:h-96 overflow-hidden rounded-tl-[3rem] rounded-br-[3rem] shadow-lg">
-              {heroHuerta && (
-                <Image
-                  src={heroHuerta.imageUrl}
-                  alt={heroHuerta.description}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="brightness-75"
-                  data-ai-hint={heroHuerta.imageHint}
-                  priority
-                />
-              )}
+      <header className="relative w-full overflow-hidden bg-muted/30">
+        <div className="container mx-auto px-4 pt-12 md:py-24">
+          <div className="md:grid md:grid-cols-2 md:gap-8 items-center">
+            {/* --- Columna de Texto --- */}
+            <div className="text-center md:text-left mb-12 md:mb-0">
+               <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                Conectando comunidades,
+                <br />
+                <span className="text-primary">protegiendo ecosistemas.</span>
+              </h1>
+              <p className="max-w-2xl mx-auto md:mx-0 text-lg md:text-xl text-foreground/70 mb-8">
+                Encontramos mascotas, regeneramos la tierra, educamos para el futuro. Únete a EcoRastro.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <Button asChild size="lg">
+                    <Link href="/reportar-mascota">Reportar una Mascota</Link>
+                </Button>
+                <Button asChild variant="secondary" size="lg">
+                    <Link href="/gardens">Explorar Huertas</Link>
+                </Button>
+              </div>
             </div>
-            <div className="relative h-72 md:h-96 overflow-hidden rounded-tr-[3rem] rounded-bl-[3rem] shadow-lg">
-              {heroMascotas && (
-                <Image
-                  src={heroMascotas.imageUrl}
-                  alt={heroMascotas.description}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="brightness-75"
-                  data-ai-hint={heroMascotas.imageHint}
-                  priority
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Contenedor del texto superpuesto */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <div className="bg-black/50 backdrop-blur-sm p-6 md:p-8 rounded-lg">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-              Conectando comunidades,
-              <br />
-              <span className="text-primary-foreground/90">protegiendo ecosistemas.</span>
-            </h1>
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-primary-foreground/80 mb-8">
-              Encontramos mascotas, regeneramos la tierra, educamos para el futuro. Únete a EcoRastro.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg">
-                  <Link href="/reportar-mascota">Reportar una Mascota</Link>
-              </Button>
-              <Button asChild variant="secondary" size="lg">
-                  <Link href="/gardens">Explorar Huertas</Link>
-              </Button>
+            
+            {/* --- Columna de Imágenes --- */}
+            <div className="relative h-[350px] md:h-[450px]">
+                {heroHuerta && (
+                     <div className="absolute w-[60%] h-[70%] top-0 left-0 rounded-tl-[3rem] rounded-br-[3rem] overflow-hidden shadow-lg transform -rotate-6">
+                        <Image
+                            src={heroHuerta.imageUrl}
+                            alt={heroHuerta.description}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            data-ai-hint={heroHuerta.imageHint}
+                            priority
+                            className="transform-gpu scale-125"
+                        />
+                     </div>
+                )}
+                {heroMascotas && (
+                     <div className="absolute w-[60%] h-[70%] bottom-0 right-0 rounded-tr-[3rem] rounded-bl-[3rem] overflow-hidden shadow-lg transform rotate-3">
+                         <Image
+                            src={heroMascotas.imageUrl}
+                            alt={heroMascotas.description}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            data-ai-hint={heroMascotas.imageHint}
+                            priority
+                            className="transform-gpu scale-125"
+                        />
+                     </div>
+                )}
             </div>
           </div>
         </div>
