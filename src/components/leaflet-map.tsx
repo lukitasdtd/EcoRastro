@@ -1,10 +1,11 @@
 'use client';
 
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LocateFixed, Plus, Minus, Home, Sprout, PawPrint, Heart } from 'lucide-react';
+import { LocateFixed, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Map, Marker } from 'leaflet';
 
@@ -18,42 +19,43 @@ export default function LeafletMap() {
   const initialZoom = 11;
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !mapRef.current || mapInstance.current) return;
+    let isMounted = true;
+    if (typeof window === 'undefined' || !mapRef.current) return;
 
     // Importa Leaflet y sus CSS dinámicamente solo en el cliente
     Promise.all([
         import('leaflet'),
         import('leaflet-defaulticon-compatibility'),
-        import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css')
     ]).then(([L]) => {
-      if (mapRef.current && !mapInstance.current) { // <-- Condición para inicializar solo una vez
-        // Crea la instancia del mapa
-        mapInstance.current = L.map(mapRef.current!, {
-          center: initialCenter,
-          zoom: initialZoom,
-          zoomControl: false, // Desactivamos el control por defecto para poner el nuestro
-        });
+      if (!isMounted || !mapRef.current || mapInstance.current) return;
 
-        // Añade la capa de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }).addTo(mapInstance.current!);
+      // Crea la instancia del mapa
+      mapInstance.current = L.map(mapRef.current, {
+        center: initialCenter,
+        zoom: initialZoom,
+        zoomControl: false, // Desactivamos el control por defecto para poner el nuestro
+      });
 
-        // Añade control de zoom en la posición deseada
-        L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current!);
+      // Añade la capa de OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(mapInstance.current);
 
-        // Marcadores de ejemplo
-        const points = [
-          { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: 'paw' },
-          { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: 'sprout' },
-          { lat: -33.50, lng: -70.68, title: 'Punto de Adopción', desc: 'Adopta un amigo fiel.', icon: 'heart' },
-        ];
-        
-        points.forEach(point => {
-          const marker = L.marker([point.lat, point.lng]).addTo(mapInstance.current!);
-          marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
-        });
-      }
+      // Añade control de zoom en la posición deseada
+      L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current);
+
+      // Marcadores de ejemplo
+      const points = [
+        { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: 'paw' },
+        { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: 'sprout' },
+        { lat: -33.50, lng: -70.68, title: 'Punto de Adopción', desc: 'Adopta un amigo fiel.', icon: 'heart' },
+      ];
+      
+      points.forEach(point => {
+        const marker = L.marker([point.lat, point.lng]).addTo(mapInstance.current!);
+        marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
+      });
+      
     }).catch(error => {
       console.error("Error al cargar Leaflet:", error);
       toast({
@@ -65,6 +67,7 @@ export default function LeafletMap() {
 
     // Limpieza al desmontar el componente
     return () => {
+      isMounted = false;
       if (mapInstance.current) {
         mapInstance.current.remove();
         mapInstance.current = null;
@@ -111,9 +114,6 @@ export default function LeafletMap() {
   const handleRecenter = () => {
     mapInstance.current?.flyTo(initialCenter, initialZoom);
   };
-  
-  const handleZoomIn = () => mapInstance.current?.zoomIn();
-  const handleZoomOut = () => mapInstance.current?.zoomOut();
 
   return (
     <Card className="w-full h-full rounded-2xl shadow-lg border-[10px] border-[#1F3D2A] overflow-hidden">
@@ -127,14 +127,6 @@ export default function LeafletMap() {
            </Button>
            <Button size="icon" onClick={handleRecenter} aria-label="Recentrar mapa a la vista inicial">
                 <Home className="w-5 h-5"/>
-           </Button>
-        </div>
-        <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-10">
-           <Button size="icon" onClick={handleZoomIn} aria-label="Acercar mapa">
-                <Plus className="w-5 h-5"/>
-           </Button>
-           <Button size="icon" onClick={handleZoomOut} aria-label="Alejar mapa">
-                <Minus className="w-5 h-5"/>
            </Button>
         </div>
       </CardContent>
