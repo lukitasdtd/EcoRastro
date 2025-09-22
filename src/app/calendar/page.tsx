@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, eachDayOfInterval, isToday, isSameWeek, startOfWeek } from 'date-fns';
+import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, eachDayOfInterval, isToday, isSameWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Search, Sprout } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,25 +23,25 @@ const CalendarHeader = ({ currentDate, setCurrentDate }: { currentDate: Date, se
 
   return (
     <div className="bg-[#1F3D2A] text-white p-4 rounded-t-2xl">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex items-center gap-2">
           <button onClick={handlePrevMonth} aria-label="Mes anterior"><ChevronLeft className="h-6 w-6" /></button>
-          <span className="text-xl font-bold w-40 text-center capitalize">{format(currentDate, 'MMMM yyyy', { locale: es })}</span>
+          <span className="text-lg md:text-xl font-bold w-32 md:w-40 text-center capitalize">{format(currentDate, 'MMMM yyyy', { locale: es })}</span>
           <button onClick={handleNextMonth} aria-label="Mes siguiente"><ChevronRight className="h-6 w-6" /></button>
         </div>
-        <div className="hidden md:flex items-center gap-2 bg-[#2A5237] p-1 rounded-full">
+        <div className="flex items-center gap-2 bg-[#2A5237] p-1 rounded-full flex-wrap justify-center">
           {categories.map(cat => (
             <Button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               variant={activeCategory === cat ? 'secondary' : 'ghost'}
-              className={`rounded-full h-8 px-4 text-sm ${activeCategory === cat ? 'bg-white text-[#1F3D2A]' : 'text-white hover:bg-white/10 hover:text-white'}`}
+              className={`rounded-full h-8 px-3 text-xs md:px-4 md:text-sm ${activeCategory === cat ? 'bg-white text-[#1F3D2A]' : 'text-white hover:bg-white/10 hover:text-white'}`}
             >
               {cat}
             </Button>
           ))}
         </div>
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hidden sm:inline-flex">
           <Search className="h-5 w-5" />
         </Button>
       </div>
@@ -55,13 +55,13 @@ const SeasonFilters = () => {
   const seasons = ['Primavera', 'Verano', 'Otoño', 'Invierno'];
   
   return (
-    <div className="flex items-center justify-start gap-2 p-4">
+    <div className="flex items-center justify-start gap-2 p-4 flex-wrap">
       {seasons.map(season => (
         <Badge
           key={season}
           onClick={() => setActiveSeason(season)}
           variant={activeSeason === season ? 'default' : 'secondary'}
-          className={`cursor-pointer transition-colors px-4 py-1.5 rounded-full text-sm font-medium ${activeSeason === season ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
+          className={`cursor-pointer transition-colors px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-medium ${activeSeason === season ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
         >
           {season}
         </Badge>
@@ -111,8 +111,8 @@ export default function CalendarPage() {
 
   const daysOfWeek = useMemo(() => {
     const days = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-    return days.map(day => (
-      <div key={day} className="text-center font-bold text-muted-foreground text-sm">
+    return days.map((day, index) => (
+      <div key={`${day}-${index}`} className="text-center font-bold text-muted-foreground text-sm">
         {day}
       </div>
     ));
@@ -127,7 +127,7 @@ export default function CalendarPage() {
 
     // Días del mes anterior para rellenar
     for (let i = 0; i < firstDayOfWeek; i++) {
-      days.push(<div key={`empty-start-${i}`} className="p-2"></div>);
+      days.push(<div key={`empty-start-${i}`} className="p-1 md:p-2"></div>);
     }
 
     // Días del mes actual
@@ -138,12 +138,12 @@ export default function CalendarPage() {
         <div
           key={day.toString()}
           onClick={() => setSelectedDate(day)}
-          className={`text-center p-2 rounded-full cursor-pointer transition-colors ${
+          className={`text-center p-1 md:p-2 aspect-square flex flex-col justify-center items-center rounded-full cursor-pointer transition-colors text-sm ${
             isToday(day) ? 'bg-primary text-primary-foreground font-bold' : 'hover:bg-primary/10'
-          } ${isSameWeek(day, selectedDate, { weekStartsOn: 0 }) ? 'bg-primary/20' : ''}`}
+          } ${isSameWeek(day, selectedDate, { weekStartsOn: 1 }) ? 'bg-primary/20' : ''}`}
         >
           <span>{format(day, 'd')}</span>
-          {isPlantingDay && <Sprout className="h-4 w-4 mx-auto text-primary/80 mt-1" />}
+          {isPlantingDay && <Sprout className="h-3 w-3 md:h-4 md:w-4 mx-auto text-primary/80 mt-1" />}
         </div>
       );
     });
