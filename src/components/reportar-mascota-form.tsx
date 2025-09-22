@@ -11,7 +11,7 @@ import IMask from 'imask';
 import { useDropzone } from 'react-dropzone';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
 import { app } from '@/lib/firebase/config';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, FormProvider } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -89,27 +89,6 @@ interface FileUpload {
   source: UploadTask | null; 
   preview: string;
 }
-
-const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
-  (props, ref) => {
-    const { getValues, setValue } = useFormContext();
-    const internalRef = React.useRef<HTMLInputElement>(null);
-    React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
-    const maskOptions = React.useMemo(() => ({ mask: "+{56} 9 0000 0000" }), []);
-    React.useEffect(() => {
-      if (typeof window === "undefined" || !internalRef.current) return;
-      const mask = IMask(internalRef.current, maskOptions);
-      mask.on("accept", () => {
-        if (getValues("telefono") !== mask.value) {
-          setValue("telefono", mask.value, { shouldValidate: true, shouldDirty: true });
-        }
-      });
-      return () => mask.destroy();
-    }, [maskOptions, getValues, setValue]);
-    return <Input ref={internalRef} inputMode="tel" autoComplete="tel" {...props} />;
-  }
-);
-MaskedInput.displayName = "MaskedInput";
 
 export function ReportarMascotaForm() {
   const router = useRouter();
@@ -339,7 +318,7 @@ export function ReportarMascotaForm() {
   const recompensaValue = form.watch('recompensa');
 
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {/* --- Datos principales --- */}
         <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
@@ -347,7 +326,7 @@ export function ReportarMascotaForm() {
             <CardTitle>Datos principales</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField control={form.control} name="nombreMascota" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la mascota</FormLabel> <FormControl> <Input placeholder="Ej: 'Rocky' o 'Desconocido'" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
+            <FormField control={form.control} name="nombreMascota" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la mascota</FormLabel> <FormControl><Input placeholder="Ej: 'Rocky' o 'Desconocido'" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             <FormField control={form.control} name="especie" render={({ field }) => ( 
               <FormItem> 
                 <FormLabel>Especie</FormLabel>
@@ -369,9 +348,9 @@ export function ReportarMascotaForm() {
                 <FormMessage /> 
               </FormItem> 
             )}/>
-            {especieValue === 'Otro' && ( <FormField control={form.control} name="especieOtra" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Especifique la especie</FormLabel> <FormControl> <Input placeholder="Ej: Conejo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
-            <FormField control={form.control} name="raza" render={({ field }) => ( <FormItem> <FormLabel>Raza (opcional)</FormLabel> <FormControl> <Input placeholder="Ej: Quiltro" {...field} /> </FormControl> </FormItem> )}/>
-            <FormField control={form.control} name="colorPrincipal" render={({ field }) => ( <FormItem> <FormLabel>Color principal</FormLabel> <FormControl> <Input placeholder="Ej: Café, Negro con blanco" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
+            {especieValue === 'Otro' && ( <FormField control={form.control} name="especieOtra" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Especifique la especie</FormLabel> <FormControl><Input placeholder="Ej: Conejo" {...field} /></FormControl> <FormMessage /> </FormItem> )}/> )}
+            <FormField control={form.control} name="raza" render={({ field }) => ( <FormItem> <FormLabel>Raza (opcional)</FormLabel> <FormControl><Input placeholder="Ej: Quiltro" {...field} /></FormControl> </FormItem> )}/>
+            <FormField control={form.control} name="colorPrincipal" render={({ field }) => ( <FormItem> <FormLabel>Color principal</FormLabel> <FormControl><Input placeholder="Ej: Café, Negro con blanco" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             <FormField
               control={form.control}
               name="tamano"
@@ -394,7 +373,7 @@ export function ReportarMascotaForm() {
                 </FormItem>
               )}
             />
-            <FormField control={form.control} name="microchip" render={({ field }) => ( <FormItem> <FormLabel>N° de microchip (opcional)</FormLabel> <FormControl> <Input placeholder="Si lo conoces, ingrésalo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
+            <FormField control={form.control} name="microchip" render={({ field }) => ( <FormItem> <FormLabel>N° de microchip (opcional)</FormLabel> <FormControl><Input placeholder="Si lo conoces, ingrésalo" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
         </Card>
 
@@ -402,10 +381,10 @@ export function ReportarMascotaForm() {
         <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
             <CardHeader> <CardTitle>Señales y características</CardTitle> </CardHeader>
             <CardContent className="space-y-6">
-                <FormField control={form.control} name="senas" render={({ field }) => ( <FormItem> <FormLabel>Señas distintivas (opcional)</FormLabel> <FormControl> <Textarea placeholder="Ej: oreja izquierda caída, cicatriz en pata trasera, mancha blanca en el pecho" {...field} /> </FormControl> </FormItem> )}/>
+                <FormField control={form.control} name="senas" render={({ field }) => ( <FormItem> <FormLabel>Señas distintivas (opcional)</FormLabel> <FormControl><Textarea placeholder="Ej: oreja izquierda caída, cicatriz en pata trasera, mancha blanca en el pecho" {...field} /></FormControl> </FormItem> )}/>
                 <div className="space-y-4">
-                    <FormField control={form.control} name="llevaCollar" render={({ field }) => ( <FormItem className="flex flex-row items-center space-x-3 space-y-0"> <FormControl> <Checkbox checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /> </FormControl> <FormLabel className="font-normal">¿Llevaba collar o placa?</FormLabel> </FormItem> )}/>
-                    {llevaCollarValue && ( <FormField control={form.control} name="collarDescripcion" render={({ field }) => ( <FormItem> <FormLabel>Color/Descripción del collar</FormLabel> <FormControl> <Input placeholder="Ej: Collar rojo con una patita" {...field} /> </FormControl> </FormItem> )}/> )}
+                    <FormField control={form.control} name="llevaCollar" render={({ field }) => ( <FormItem className="flex flex-row items-center space-x-3 space-y-0"> <FormControl><Checkbox checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /></FormControl> <FormLabel className="font-normal">¿Llevaba collar o placa?</FormLabel> </FormItem> )}/>
+                    {llevaCollarValue && ( <FormField control={form.control} name="collarDescripcion" render={({ field }) => ( <FormItem> <FormLabel>Color/Descripción del collar</FormLabel> <FormControl><Input placeholder="Ej: Collar rojo con una patita" {...field} /></FormControl> </FormItem> )}/> )}
                 </div>
                 <FormField
                   control={form.control}
@@ -439,8 +418,8 @@ export function ReportarMascotaForm() {
                   )}
                 />
                 <div className="space-y-4">
-                     <FormField control={form.control} name="recompensa" render={({ field }) => ( <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4"> <div className="space-y-0.5"> <FormLabel>¿Se ofrece recompensa?</FormLabel> <FormDescription>Activa si ofreces una recompensa monetaria.</FormDescription> </div> <FormControl> <Switch checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /> </FormControl> </FormItem> )}/>
-                    {recompensaValue && ( <FormField control={form.control} name="montoRecompensa" render={({ field }) => ( <FormItem> <FormLabel>Monto estimado (CLP)</FormLabel> <FormControl> <Input type="number" placeholder="50000" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
+                     <FormField control={form.control} name="recompensa" render={({ field }) => ( <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4"> <div className="space-y-0.5"> <FormLabel>¿Se ofrece recompensa?</FormLabel> <FormDescription>Activa si ofreces una recompensa monetaria.</FormDescription> </div> <FormControl><Switch checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /></FormControl> </FormItem> )}/>
+                    {recompensaValue && ( <FormField control={form.control} name="montoRecompensa" render={({ field }) => ( <FormItem> <FormLabel>Monto estimado (CLP)</FormLabel> <FormControl><Input type="number" placeholder="50000" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /></FormControl> <FormMessage /> </FormItem> )}/> )}
                 </div>
             </CardContent>
         </Card>
@@ -450,10 +429,10 @@ export function ReportarMascotaForm() {
             <CardHeader> <CardTitle>Última vez vista</CardTitle> </CardHeader>
             <CardContent className="space-y-6">
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField control={form.control} name="fechaPerdida" render={({ field }) => ( <FormItem> <FormLabel>Fecha</FormLabel> <FormControl> <Input type="date" {...field} value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''} onChange={(e) => field.onChange(e.target.valueAsDate ? new Date(e.target.valueAsDate.valueOf() + e.target.valueAsDate.getTimezoneOffset() * 60 * 1000) : undefined)} /> </FormControl> <FormMessage /> </FormItem> )}/>
-                    <FormField control={form.control} name="horaPerdida" render={({ field }) => ( <FormItem> <FormLabel>Hora aproximada (opcional)</FormLabel> <FormControl> <Input type="time" {...field} /> </FormControl> </FormItem> )}/>
+                    <FormField control={form.control} name="fechaPerdida" render={({ field }) => ( <FormItem> <FormLabel>Fecha</FormLabel> <FormControl><Input type="date" {...field} value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''} onChange={(e) => field.onChange(e.target.valueAsDate ? new Date(e.target.valueAsDate.valueOf() + e.target.valueAsDate.getTimezoneOffset() * 60 * 1000) : undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
+                    <FormField control={form.control} name="horaPerdida" render={({ field }) => ( <FormItem> <FormLabel>Hora aproximada (opcional)</FormLabel> <FormControl><Input type="time" {...field} /></FormControl> </FormItem> )}/>
                 </div>
-                <FormField control={form.control} name="direccion" render={({ field }) => ( <FormItem> <FormLabel>Dirección / Referencia del lugar</FormLabel> <FormControl> <Input placeholder="Ej: Av. Siempre Viva 123, plaza cercana, comuna" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
+                <FormField control={form.control} name="direccion" render={({ field }) => ( <FormItem> <FormLabel>Dirección / Referencia del lugar</FormLabel> <FormControl><Input placeholder="Ej: Av. Siempre Viva 123, plaza cercana, comuna" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                 <div>
                   <Label>Ubicación en el mapa</Label>
                   <div className="h-[400px] mt-2 w-full rounded-md overflow-hidden relative">
@@ -509,7 +488,7 @@ export function ReportarMascotaForm() {
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="correo" />
+                           <RadioGroupItem value="correo" />
                         </FormControl>
                         <FormLabel className="font-normal">Correo</FormLabel>
                       </FormItem>
@@ -575,6 +554,29 @@ export function ReportarMascotaForm() {
           </CardFooter>
         </Card>
       </form>
-    </Form>
+    </FormProvider>
   );
 }
+
+const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
+  (props, ref) => {
+    const { getValues, setValue } = useFormContext();
+    const internalRef = React.useRef<HTMLInputElement>(null);
+    React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
+    const maskOptions = React.useMemo(() => ({ mask: "+{56} 9 0000 0000" }), []);
+    React.useEffect(() => {
+      if (typeof window === "undefined" || !internalRef.current) return;
+      const mask = IMask(internalRef.current, maskOptions);
+      mask.on("accept", () => {
+        if (getValues("telefono") !== mask.value) {
+          setValue("telefono", mask.value, { shouldValidate: true, shouldDirty: true });
+        }
+      });
+      return () => mask.destroy();
+    }, [maskOptions, getValues, setValue]);
+    return <Input ref={internalRef} inputMode="tel" autoComplete="tel" {...props} />;
+  }
+);
+MaskedInput.displayName = "MaskedInput";
+
+    
