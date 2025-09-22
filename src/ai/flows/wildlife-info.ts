@@ -14,6 +14,9 @@ const WildlifeInfoInputSchema = z.object({
   wildlifeQuery: z.string().min(5, { message: 'Por favor, escribe una pregunta más detallada.' }),
 });
 
+const WildlifeInfoOutputSchema = z.object({ response: z.string() });
+
+
 // Define the structure for the action's state, including potential errors and the final data.
 export type WildlifeInfoState = {
   message: string | null;
@@ -48,7 +51,7 @@ export async function getWildlifeInfo(
 
   // 3. If validation is successful, call the Genkit flow
   try {
-    const info = await wildlifeInfoFlow({ query: validatedFields.data.wildlifeQuery });
+    const info = await wildlifeInfoFlow({ wildlifeQuery: validatedFields.data.wildlifeQuery });
     return {
       message: '¡Respuesta generada!',
       wildlifeInfo: info.response,
@@ -64,11 +67,11 @@ export async function getWildlifeInfo(
 // Define the Genkit prompt
 const wildlifePrompt = ai.definePrompt({
   name: 'wildlifeExpertPrompt',
-  input: { schema: z.object({ query: z.string() }) },
-  output: { schema: z.object({ response: z.string() }) },
+  input: { schema: WildlifeInfoInputSchema },
+  output: { schema: WildlifeInfoOutputSchema },
   prompt: `Eres un experto en fauna silvestre y ecosistemas de Chile. Tu misión es proporcionar información educativa, clara y precisa. Un usuario tiene la siguiente pregunta:
 
-  "{{{query}}}"
+  "{{{wildlifeQuery}}}"
 
   Responde de manera amigable y completa, pero concisa. Enfócate en aspectos como el hábitat, alimentación, comportamiento, estado de conservación y cómo las personas pueden ayudar a proteger a la especie. Si la pregunta es sobre una situación, da consejos prácticos y seguros, siempre recomendando contactar a la autoridad competente (SAG en Chile) si es necesario.`,
 });
@@ -77,8 +80,8 @@ const wildlifePrompt = ai.definePrompt({
 const wildlifeInfoFlow = ai.defineFlow(
   {
     name: 'wildlifeInfoFlow',
-    inputSchema: z.object({ query: z.string() }),
-    outputSchema: z.object({ response: z.string() }),
+    inputSchema: WildlifeInfoInputSchema,
+    outputSchema: WildlifeInfoOutputSchema,
   },
   async (input) => {
     const { output } = await wildlifePrompt(input);
