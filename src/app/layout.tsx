@@ -5,7 +5,6 @@ import './globals.css';
 import { Header } from '@/components/header';
 import { Toaster } from '@/components/ui/toaster';
 import { Footer } from '@/components/footer';
-import { headers } from 'next/headers';
 
 const quicksand = Quicksand({
   subsets: ['latin'],
@@ -30,16 +29,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = headers().get('x-next-pathname') || '/';
-  const showFooter = pathname !== '/';
-
   return (
     <html lang="es-CL" className={`${quicksand.variable} ${roboto.variable}`} suppressHydrationWarning>
       <body>
         <div className="flex min-h-screen w-full flex-col">
           <Header />
           <main className="flex-1 pt-8">{children}</main>
-          {showFooter && <Footer />}
+          <Footer />
         </div>
         <Toaster />
       </body>
