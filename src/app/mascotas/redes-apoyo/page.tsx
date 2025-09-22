@@ -118,7 +118,7 @@ export default function SupportNetworksPage() {
               >
                 <CarouselContent>
                   {featuredShelters.map((shelter) => (
-                    <CarouselItem key={shelter.id} className="md:basis-1/2 lg:basis-full">
+                    <CarouselItem key={shelter.id}>
                       <div className="p-1">
                         <ShelterCard shelter={shelter} />
                       </div>
