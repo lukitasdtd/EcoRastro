@@ -60,6 +60,12 @@
       "description": "Una imagen ilustrativa del calendario de siembra.",
       "imageUrl": "https://picsum.photos/seed/calendario/600/400",
       "imageHint": "gardening calendar"
+    },
+    {
+      "id": "footer-bg",
+      "description": "Ilustración de árboles y raíces para el footer de la página de inicio.",
+      "imageUrl": "https://picsum.photos/seed/footerbg/1920/400",
+      "imageHint": "trees roots illustration"
     }
   ]
 }

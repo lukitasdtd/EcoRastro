@@ -6,6 +6,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { MapFeatures } from '@/components/home/map-features';
 import { PlantingCalendar } from '@/components/home/planting-calendar';
 import { EnvironmentalEducation } from '@/components/home/environmental-education';
+import { HomeFooter } from '@/components/home/home-footer';
 
 export default function Home() {
   const heroHuerta = PlaceHolderImages.find(img => img.id === 'hero-huerta');
@@ -74,6 +75,8 @@ export default function Home() {
       <PlantingCalendar />
 
       <EnvironmentalEducation />
+
+      <HomeFooter />
 
     </div>
   );
