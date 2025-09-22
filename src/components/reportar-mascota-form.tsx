@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -57,7 +58,7 @@ const reportSchema = z.object({
     medioPreferido: z.enum(["telefono", "whatsapp", "correo"], { required_error: "Debes seleccionar un medio de contacto." }),
     fotos: z.array(z.instanceof(File)).max(5, "Puedes subir hasta 5 imágenes."),
     visibleMapa: z.boolean().default(true),
-    permitirComentarios: z.boolean().default(true),
+    permitirComentarios: zboolean().default(true),
     consentimiento: z.literal<boolean>(true, { errorMap: () => ({ message: "Debes aceptar las condiciones." }) }),
   }).refine(data => data.especie !== 'Otro' || (data.especie === 'Otro' && data.especieOtra && data.especieOtra.length > 0), {
     message: "Debes especificar la especie.",
@@ -66,12 +67,9 @@ const reportSchema = z.object({
 
 type ReportFormValues = z.infer<typeof reportSchema>;
 
-const MaskedInput = IMaskMixin(
-  forwardRef<HTMLInputElement, { onAccept: (value: any) => void }>((props, ref) => {
-    const { onAccept, ...rest } = props;
-    return <Input {...rest} inputRef={ref as React.Ref<HTMLInputElement>} />;
-  })
-);
+const MaskedInput = IMaskMixin(props => <Input {...props} />);
+const CTMaskedInput = forwardRef<HTMLInputElement, any>((props, ref) => <MaskedInput {...props} ref={ref} />)
+CTMaskedInput.displayName = 'CTMaskedInput'
 
 export function ReportarMascotaForm() {
   const router = useRouter();
@@ -485,15 +483,15 @@ export function ReportarMascotaForm() {
                  <FormField
                     control={form.control}
                     name="telefono"
-                    render={({ field }) => (
+                    render={({ field: { onChange, ...field }}) => (
                         <FormItem>
                             <FormLabel>Teléfono</FormLabel>
                             <FormControl>
-                              <MaskedInput
+                              <CTMaskedInput
                                 {...field}
                                 mask="+{56} 9 0000 0000"
                                 placeholder="+56 9 XXXX XXXX"
-                                onAccept={(value) => field.onChange(value)}
+                                onAccept={(value: any) => onChange(value)}
                               />
                             </FormControl>
                             <FormMessage />
@@ -637,5 +635,7 @@ export function ReportarMascotaForm() {
     </Form>
   );
 }
+
+    
 
     
