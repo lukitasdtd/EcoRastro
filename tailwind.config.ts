@@ -18,7 +18,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Quicksand', 'Roboto', ...fontFamily.sans],
+        sans: ['var(--font-quicksand)', 'var(--font-roboto)', ...fontFamily.sans],
         serif: ['"Lucida Bright"', 'Georgia', ...fontFamily.serif],
       },
       colors: {
