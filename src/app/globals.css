@@ -14,8 +14,8 @@
     --popover-foreground: 222.2 84% 4.9%;
     
     /* Paleta de colores EcoRastro */
-    --primary: 132 26% 48%; /* #5B9A68 */
-    --primary-hover: 132 26% 42%; /* #4b835b */
+    --primary: 160 25% 12%; /* #182722 */
+    --primary-hover: 160 25% 10%; /* Lighter version for hover */
     --primary-foreground: 0 0% 100%; /* #FFFFFF */
     --accent: 38 92% 50%; /* #F59E0B */
     --accent-foreground: 240 10% 3.9%;
@@ -43,8 +43,8 @@
     --popover-foreground: 210 40% 98%;
     
     /* Paleta Dark Mode */
-    --primary: 132 26% 48%;
-    --primary-hover: 132 26% 54%;
+    --primary: 160 25% 12%;
+    --primary-hover: 160 25% 15%;
     --primary-foreground: 0 0% 100%;
     --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
