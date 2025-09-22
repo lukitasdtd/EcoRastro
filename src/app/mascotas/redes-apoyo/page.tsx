@@ -26,12 +26,15 @@ export default function SupportNetworksPage() {
       <section className="relative w-full bg-primary/20 pt-12">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 py-12 md:py-24">
           {/* Columna de Texto y Botón */}
-          <div className="z-10 text-white text-center md:text-left">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 !leading-tight">
+          <div className="relative z-10 text-white text-center md:text-left">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 !leading-tight text-shadow-md">
               Conecta con refugios y adopta cerca de ti
             </h1>
+            <p className="max-w-md mx-auto md:mx-0 text-lg md:text-xl mb-8 text-primary-foreground/90 text-shadow">
+              Encuentra organizaciones, veterinarias y grupos de apoyo en tu comunidad.
+            </p>
             <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-10 py-6 text-lg font-semibold">
-              Buscar
+              Buscar Ahora
             </Button>
           </div>
         </div>
@@ -44,12 +47,12 @@ export default function SupportNetworksPage() {
               alt={heroImage.description}
               fill
               style={{ objectFit: 'cover' }}
-              className="brightness-90"
+              className="brightness-75"
               data-ai-hint={heroImage.imageHint}
               priority
             />
             {/* Overlay oscuro para la imagen */}
-            <div className="absolute inset-0 bg-primary/40"></div>
+            <div className="absolute inset-0 bg-primary/60"></div>
           </div>
         )}
 
