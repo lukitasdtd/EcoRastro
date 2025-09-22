@@ -1,5 +1,6 @@
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
@@ -7,18 +8,22 @@ const educationalTopics = [
     {
       title: 'Huertos Sostenibles',
       description: 'Tips para tu huerto y soberanía alimentaria',
+      href: '/huerta/educacion',
     },
     {
       title: 'Fauna Silvestre',
       description: 'Cómo proteger y convivir con ella',
+      href: '/about',
     },
     {
       title: 'Prácticas Verdes',
       description: 'Acciones sostenibles para tu día a día',
+      href: '/about',
     },
     {
       title: 'Mascotas Felices',
       description: 'Guías de cuidados y tenencia responsable',
+      href: '/mascotas/educacion',
     },
   ];
 
@@ -69,12 +74,14 @@ export function EnvironmentalEducation() {
             {/* Columna de las Tarjetas */}
             <div className="flex flex-col gap-6">
               {educationalTopics.map((topic, index) => (
-                <Card key={index} className="p-6 shadow-sm bg-accent/20 border-accent/30 hover:shadow-lg transition-shadow duration-300">
-                  <CardContent className="p-0">
-                      <h3 className="font-bold text-lg text-foreground">{topic.title}</h3>
-                      <p className="text-foreground/70">{topic.description}</p>
-                  </CardContent>
-                </Card>
+                <Link key={index} href={topic.href} className="block group">
+                  <Card className="p-6 shadow-sm bg-accent/20 border-accent/30 group-hover:shadow-lg group-hover:bg-accent/30 transition-shadow duration-300 h-full">
+                    <CardContent className="p-0">
+                        <h3 className="font-bold text-lg text-foreground">{topic.title}</h3>
+                        <p className="text-foreground/70">{topic.description}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>
