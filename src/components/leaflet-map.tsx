@@ -26,32 +26,34 @@ export default function LeafletMap() {
         import('leaflet-defaulticon-compatibility'),
         import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css')
     ]).then(([L]) => {
-      // Crea la instancia del mapa
-      mapInstance.current = L.map(mapRef.current!, {
-        center: initialCenter,
-        zoom: initialZoom,
-        zoomControl: false, // Desactivamos el control por defecto para poner el nuestro
-      });
+      if (mapRef.current && !mapInstance.current) { // <-- Condición para inicializar solo una vez
+        // Crea la instancia del mapa
+        mapInstance.current = L.map(mapRef.current!, {
+          center: initialCenter,
+          zoom: initialZoom,
+          zoomControl: false, // Desactivamos el control por defecto para poner el nuestro
+        });
 
-      // Añade la capa de OpenStreetMap
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(mapInstance.current!);
+        // Añade la capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(mapInstance.current!);
 
-      // Añade control de zoom en la posición deseada
-      L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current!);
+        // Añade control de zoom en la posición deseada
+        L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current!);
 
-      // Marcadores de ejemplo
-      const points = [
-        { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: 'paw' },
-        { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: 'sprout' },
-        { lat: -33.50, lng: -70.68, title: 'Punto de Adopción', desc: 'Adopta un amigo fiel.', icon: 'heart' },
-      ];
-      
-      points.forEach(point => {
-        const marker = L.marker([point.lat, point.lng]).addTo(mapInstance.current!);
-        marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
-      });
+        // Marcadores de ejemplo
+        const points = [
+          { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: 'paw' },
+          { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: 'sprout' },
+          { lat: -33.50, lng: -70.68, title: 'Punto de Adopción', desc: 'Adopta un amigo fiel.', icon: 'heart' },
+        ];
+        
+        points.forEach(point => {
+          const marker = L.marker([point.lat, point.lng]).addTo(mapInstance.current!);
+          marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
+        });
+      }
     }).catch(error => {
       console.error("Error al cargar Leaflet:", error);
       toast({
