@@ -105,16 +105,16 @@ export default function SupportNetworksPage() {
             </p>
           </div>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="relative w-full h-[70vh] min-h-[500px] lg:h-full">
+            <div className="relative w-full h-[70vh] min-h-[500px]">
               <Map />
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="relative flex items-center justify-center px-8">
               <Carousel
                 opts={{
                   align: "start",
                   loop: true,
                 }}
-                className="w-full"
+                className="w-full max-w-sm"
               >
                 <CarouselContent>
                   {featuredShelters.map((shelter) => (
@@ -125,8 +125,8 @@ export default function SupportNetworksPage() {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2" />
-                <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2" />
+                <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2" />
+                <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2" />
               </Carousel>
             </div>
           </div>
