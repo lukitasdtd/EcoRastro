@@ -270,10 +270,14 @@ export function ReportarMascotaForm() {
     await Promise.all(pendingFiles.map(startUpload));
   }, [filesToUpload, startUpload]);
 
+  // Esta función es el punto de entrada para la operación CREATE de CRUD.
+  // Recoge todos los datos validados del formulario, gestiona la subida de archivos,
+  // y finalmente (en un futuro) crea un nuevo documento en la base de datos (Firestore).
   async function onSubmit(data: ReportFormValues) {
     setIsSubmitting(true);
     await uploadAllFiles();
 
+    // Se asegura de que todas las cargas de archivos hayan terminado (con éxito o error)
     const checkUploads = () => new Promise<void>((resolve, reject) => {
         const interval = setInterval(() => {
             const stillUploading = filesToUpload.some(f => f.status === 'uploading' || f.status === 'pending');
@@ -292,9 +296,16 @@ export function ReportarMascotaForm() {
     try {
         await checkUploads();
         const finalData = form.getValues();
-        console.log("Datos finales a enviar a Firestore:", finalData);
-        // Aquí iría la lógica para guardar en Firestore
+        console.log("Datos finales a enviar (simulando CREATE en BBDD):", finalData);
+        
+        // **INICIO: Lógica de CREATE**
+        // Aquí es donde se realizaría la operación de "CREATE" en una base de datos real.
+        // Por ejemplo, con Firestore, sería algo como:
+        // import { collection, addDoc } from "firebase/firestore";
+        // import { db } from '@/lib/firebase/config';
         // const docRef = await addDoc(collection(db, "mascotas_reportes"), { ...finalData });
+        // **FIN: Lógica de CREATE**
+
         toast({
           title: "¡Gracias! Publicamos tu reporte.",
           description: "La información ha sido guardada con éxito.",
