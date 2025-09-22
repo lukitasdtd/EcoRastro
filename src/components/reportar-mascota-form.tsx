@@ -372,24 +372,28 @@ export function ReportarMascotaForm() {
             {especieValue === 'Otro' && ( <FormField control={form.control} name="especieOtra" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Especifique la especie</FormLabel> <FormControl> <Input placeholder="Ej: Conejo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
             <FormField control={form.control} name="raza" render={({ field }) => ( <FormItem> <FormLabel>Raza (opcional)</FormLabel> <FormControl> <Input placeholder="Ej: Quiltro" {...field} /> </FormControl> </FormItem> )}/>
             <FormField control={form.control} name="colorPrincipal" render={({ field }) => ( <FormItem> <FormLabel>Color principal</FormLabel> <FormControl> <Input placeholder="Ej: Café, Negro con blanco" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="tamano" render={({ field }) => ( 
-              <FormItem> 
-                <FormLabel>Tamaño</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un tamaño" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Pequeño">Pequeño (hasta 10kg)</SelectItem>
-                    <SelectItem value="Mediano">Mediano (10 a 25kg)</SelectItem>
-                    <SelectItem value="Grande">Grande (más de 25kg)</SelectItem>
-                  </SelectContent>
-                </Select> 
-                <FormMessage /> 
-              </FormItem> 
-            )}/>
+            <FormField
+              control={form.control}
+              name="tamano"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tamaño</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un tamaño" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Pequeño">Pequeño (hasta 10kg)</SelectItem>
+                      <SelectItem value="Mediano">Mediano (10 a 25kg)</SelectItem>
+                      <SelectItem value="Grande">Grande (más de 25kg)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField control={form.control} name="microchip" render={({ field }) => ( <FormItem> <FormLabel>N° de microchip (opcional)</FormLabel> <FormControl> <Input placeholder="Si lo conoces, ingrésalo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
         </Card>
