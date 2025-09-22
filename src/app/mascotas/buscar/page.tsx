@@ -108,7 +108,7 @@ export default function SearchPetsPage() {
               </SelectContent>
             </Select>
           </div>
-           <div>
+           <div className="sm:col-span-2 lg:col-span-1">
             <Label htmlFor="size">Tamaño</Label>
             <Select value={filters.size} onValueChange={handleSelectChange('size')}>
               <SelectTrigger id="size">
@@ -122,7 +122,7 @@ export default function SearchPetsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={handleSearchClick} className="w-full lg:hidden">
+          <Button onClick={handleSearchClick} className="w-full lg:hidden sm:col-span-2">
             <Search className="mr-2 h-4 w-4" /> Buscar
           </Button>
         </div>
