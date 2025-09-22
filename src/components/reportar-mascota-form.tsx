@@ -1,14 +1,16 @@
 'use client';
 
+import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller, useFormContext } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import IMask from 'imask';
 import { useDropzone } from 'react-dropzone';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
 import { app } from '@/lib/firebase/config';
 
 import { Button } from '@/components/ui/button';
@@ -22,9 +24,8 @@ import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Upload, X, Trash2 } from 'lucide-react';
+import { LoaderCircle, Upload, Trash2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import * as React from 'react';
 
 const storage = getStorage(app);
 
@@ -79,43 +80,41 @@ interface FileUpload {
   id: string;
   progress: number;
   status: 'pending' | 'uploading' | 'success' | 'error';
-  source: any; // UploadTask
+  source: UploadTask | null; 
   preview: string;
 }
 
-const MaskedInput = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps<typeof Input>, 'ref'>>(
-  (props, ref) => {
-    const { getValues, setValue } = useFormContext();
-    const inputRef = useRef<HTMLInputElement>(null);
+const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
+    (props, ref) => {
+      const { getValues, setValue } = useFormContext();
+      const internalRef = React.useRef<HTMLInputElement>(null);
+      
+      React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
+      
+      const maskOptions = React.useMemo(() => ({ mask: "+{56} 9 0000 0000" }), []);
 
-    const maskOptions = useMemo(() => ({
-      mask: '+{56} 9 0000 0000'
-    }), []);
-    
-    useEffect(() => {
-        if (!inputRef.current) return;
-        const mask = IMask(inputRef.current, maskOptions);
+      React.useEffect(() => {
+        if (typeof window === "undefined" || !internalRef.current) return;
+        const mask = IMask(internalRef.current, maskOptions);
         
         const handleAccept = () => {
-            if (getValues('telefono') !== mask.value) {
-                setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
-            }
+          if (getValues("telefono") !== mask.value) {
+            setValue("telefono", mask.value, { shouldValidate: true, shouldDirty: true });
+          }
         };
 
-        mask.on('accept', handleAccept);
+        mask.on("accept", handleAccept);
         
         return () => {
-          mask.off('accept', handleAccept);
+          mask.off("accept", handleAccept);
           mask.destroy();
         };
-    }, [maskOptions, setValue, getValues]);
-    
-    React.useImperativeHandle(ref, () => inputRef.current!);
+      }, [maskOptions, getValues, setValue]);
 
-    return <Input ref={inputRef} {...props} />;
-  }
-);
-MaskedInput.displayName = 'MaskedInput';
+      return <Input ref={internalRef} {...props} />;
+    }
+  );
+MaskedInput.displayName = "MaskedInput";
 
 
 export function ReportarMascotaForm() {
@@ -353,11 +352,48 @@ export function ReportarMascotaForm() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField control={form.control} name="nombreMascota" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la mascota</FormLabel> <FormControl> <Input placeholder="Ej: 'Rocky' o 'Desconocido'" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="especie" render={({ field }) => ( <FormItem> <FormLabel>Especie</FormLabel> <Select onValueChange={field.onChange} value={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Selecciona una especie" /> </SelectTrigger> </FormControl> <SelectContent> <SelectItem value="Perro">Perro</SelectItem> <SelectItem value="Gato">Gato</SelectItem> <SelectItem value="Ave">Ave</SelectItem> <SelectItem value="Roedor">Roedor</SelectItem> <SelectItem value="Reptil">Reptil</SelectItem> <SelectItem value="Otro">Otro</SelectItem> </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
+            <FormField control={form.control} name="especie" render={({ field }) => ( 
+              <FormItem> 
+                <FormLabel>Especie</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona una especie" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Perro">Perro</SelectItem>
+                      <SelectItem value="Gato">Gato</SelectItem>
+                      <SelectItem value="Ave">Ave</SelectItem>
+                      <SelectItem value="Roedor">Roedor</SelectItem>
+                      <SelectItem value="Reptil">Reptil</SelectItem>
+                      <SelectItem value="Otro">Otro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                <FormMessage /> 
+              </FormItem> 
+            )}/>
             {especieValue === 'Otro' && ( <FormField control={form.control} name="especieOtra" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Especifique la especie</FormLabel> <FormControl> <Input placeholder="Ej: Conejo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
             <FormField control={form.control} name="raza" render={({ field }) => ( <FormItem> <FormLabel>Raza (opcional)</FormLabel> <FormControl> <Input placeholder="Ej: Quiltro" {...field} /> </FormControl> </FormItem> )}/>
             <FormField control={form.control} name="colorPrincipal" render={({ field }) => ( <FormItem> <FormLabel>Color principal</FormLabel> <FormControl> <Input placeholder="Ej: Café, Negro con blanco" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="tamano" render={({ field }) => ( <FormItem> <FormLabel>Tamaño</FormLabel> <Select onValueChange={field.onChange} value={field.value}> <FormControl> <SelectTrigger> <SelectValue placeholder="Selecciona un tamaño" /> </SelectTrigger> </FormControl> <SelectContent> <SelectItem value="Pequeño">Pequeño (hasta 10kg)</SelectItem> <SelectItem value="Mediano">Mediano (10 a 25kg)</SelectItem> <SelectItem value="Grande">Grande (más de 25kg)</SelectItem> </SelectContent> </Select> <FormMessage /> </FormItem> )}/>
+            <FormField control={form.control} name="tamano" render={({ field }) => ( 
+              <FormItem> 
+                <FormLabel>Tamaño</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un tamaño" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Pequeño">Pequeño (hasta 10kg)</SelectItem>
+                    <SelectItem value="Mediano">Mediano (10 a 25kg)</SelectItem>
+                    <SelectItem value="Grande">Grande (más de 25kg)</SelectItem>
+                  </SelectContent>
+                </Select> 
+                <FormMessage /> 
+              </FormItem> 
+            )}/>
             <FormField control={form.control} name="microchip" render={({ field }) => ( <FormItem> <FormLabel>N° de microchip (opcional)</FormLabel> <FormControl> <Input placeholder="Si lo conoces, ingrésalo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
         </Card>
@@ -370,7 +406,33 @@ export function ReportarMascotaForm() {
                     <FormField control={form.control} name="llevaCollar" render={({ field }) => ( <FormItem className="flex flex-row items-center space-x-3 space-y-0"> <FormControl> <Checkbox checked={field.value} onCheckedChange={field.onChange} /> </FormControl> <FormLabel className="font-normal">¿Llevaba collar o placa?</FormLabel> </FormItem> )}/>
                     {llevaCollarValue && ( <FormField control={form.control} name="collarDescripcion" render={({ field }) => ( <FormItem> <FormLabel>Color/Descripción del collar</FormLabel> <FormControl> <Input placeholder="Ej: Collar rojo con una patita" {...field} /> </FormControl> </FormItem> )}/> )}
                 </div>
-                <FormField control={form.control} name="temperamento" render={() => ( <FormItem> <div className="mb-4"> <FormLabel>Temperamento (opcional)</FormLabel> <FormDescription>Marca las opciones que apliquen.</FormDescription> </div> <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> {['Tímida/o', 'Sociable', 'Nerviosa/o', 'Puede morder'].map((item) => ( <FormField key={item} control={form.control} name="temperamento" render={({ field }) => { return ( <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0"> <FormControl> <Checkbox id={`temp-${item}`} checked={field.value?.includes(item)} onCheckedChange={(checked) => { return checked ? field.onChange([...(field.value || []), item]) : field.onChange( field.value?.filter( (value) => value !== item ) ) }} /> </FormControl> <FormLabel htmlFor={`temp-${item}`} className="font-normal"> {item} </FormLabel> </FormItem> ) }}/> ))} </div> <FormMessage /> </FormItem> )}/>
+                <FormField control={form.control} name="temperamento" render={() => ( 
+                  <FormItem> 
+                    <div className="mb-4"> 
+                      <FormLabel>Temperamento (opcional)</FormLabel> 
+                      <FormDescription>Marca las opciones que apliquen.</FormDescription> 
+                    </div> 
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> 
+                      {['Tímida/o', 'Sociable', 'Nerviosa/o', 'Puede morder'].map((item) => ( 
+                        <FormField key={item} control={form.control} name="temperamento" render={({ field }) => { 
+                          return ( 
+                            <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0"> 
+                              <FormControl> 
+                                <Checkbox id={`temp-${item}`} checked={field.value?.includes(item)} onCheckedChange={(checked) => { 
+                                  return checked 
+                                    ? field.onChange([...(field.value || []), item]) 
+                                    : field.onChange( field.value?.filter( (value) => value !== item ) ) 
+                                }} />
+                              </FormControl> 
+                              <FormLabel htmlFor={`temp-${item}`} className="font-normal"> {item} </FormLabel> 
+                            </FormItem> 
+                          );
+                        }}/> 
+                      ))} 
+                    </div> 
+                    <FormMessage /> 
+                  </FormItem> 
+                )}/>
                 <div className="space-y-4">
                      <FormField control={form.control} name="recompensa" render={({ field }) => ( <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4"> <div className="space-y-0.5"> <FormLabel>¿Se ofrece recompensa?</FormLabel> <FormDescription>Activa si ofreces una recompensa monetaria.</FormDescription> </div> <FormControl> <Switch checked={field.value} onCheckedChange={field.onChange} /> </FormControl> </FormItem> )}/>
                     {recompensaValue && ( <FormField control={form.control} name="montoRecompensa" render={({ field }) => ( <FormItem> <FormLabel>Monto estimado (CLP)</FormLabel> <FormControl> <Input type="number" placeholder="50000" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /> </FormControl> <FormMessage /> </FormItem> )}/> )}
@@ -414,7 +476,34 @@ export function ReportarMascotaForm() {
                   )}
                 />
                 <FormField control={form.control} name="correo" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Correo electrónico (opcional)</FormLabel> <FormControl><Input type="email" placeholder="tu@correo.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                <FormField control={form.control} name="medioPreferido" render={({ field }) => ( <FormItem className="space-y-3 md:col-span-2"> <FormLabel>Medio de contacto preferido</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="telefono" id="mp-telefono" /></FormControl> <FormLabel htmlFor="mp-telefono" className="font-normal">Teléfono</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="whatsapp" id="mp-whatsapp"/></FormControl> <FormLabel htmlFor="mp-whatsapp" className="font-normal">WhatsApp</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="correo" id="mp-correo"/></FormControl> <FormLabel htmlFor="mp-correo" className="font-normal">Correo</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
+                <FormField control={form.control} name="medioPreferido" render={({ field }) => ( 
+                  <FormItem className="space-y-3 md:col-span-2">
+                    <FormLabel>Medio de contacto preferido</FormLabel>
+                    <FormControl>
+                      <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="telefono" id="mp-telefono" />
+                          </FormControl>
+                          <FormLabel htmlFor="mp-telefono" className="font-normal">Teléfono</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="whatsapp" id="mp-whatsapp"/>
+                          </FormControl>
+                          <FormLabel htmlFor="mp-whatsapp" className="font-normal">WhatsApp</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="correo" id="mp-correo"/>
+                          </FormControl>
+                          <FormLabel htmlFor="mp-correo" className="font-normal">Correo</FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem> 
+                )}/>
             </CardContent>
         </Card>
 
