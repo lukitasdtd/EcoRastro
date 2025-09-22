@@ -6,6 +6,13 @@ import {
   Card,
   CardContent,
 } from '@/components/ui/card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -95,8 +102,31 @@ export default function SupportNetworksPage() {
               Explora refugios y organizaciones de rescate con animales listos para encontrar un hogar.
             </p>
           </div>
-          <div className="min-h-[600px] lg:min-h-full">
-            <Map />
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="relative w-full h-[70vh] min-h-[500px] lg:h-full">
+              <Map />
+            </div>
+            <div className="flex flex-col justify-center">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {shelters.slice(0, 5).map((shelter) => (
+                    <CarouselItem key={shelter.id} className="md:basis-1/2 lg:basis-full">
+                      <div className="p-1">
+                        <ShelterCard shelter={shelter} />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2" />
+                <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2" />
+              </Carousel>
+            </div>
           </div>
         </div>
       </section>
