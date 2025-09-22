@@ -2,11 +2,11 @@
 
 import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import IMask from 'imask';
 import { useDropzone } from 'react-dropzone';
@@ -417,13 +417,11 @@ export function ReportarMascotaForm() {
                         <FormField key={item} control={form.control} name="temperamento" render={({ field }) => { 
                           return ( 
                             <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0"> 
-                              <FormControl> 
                                 <Checkbox id={`temp-${item}`} checked={field.value?.includes(item)} onCheckedChange={(checked) => { 
                                   return checked 
                                     ? field.onChange([...(field.value || []), item]) 
                                     : field.onChange( field.value?.filter( (value) => value !== item ) ) 
                                 }} />
-                              </FormControl> 
                               <FormLabel htmlFor={`temp-${item}`} className="font-normal"> {item} </FormLabel> 
                             </FormItem> 
                           );
@@ -459,52 +457,46 @@ export function ReportarMascotaForm() {
         </Card>
 
         <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
-            <CardHeader> <CardTitle>Contacto</CardTitle> </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField control={form.control} name="nombreContacto" render={({ field }) => ( <FormItem> <FormLabel>Nombre de contacto</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                <FormField
-                  control={form.control}
-                  name="telefono"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Teléfono</FormLabel>
-                      <FormControl>
-                        <MaskedInput type="tel" placeholder="+56 9 XXXX XXXX" {...field} />
-                      </FormControl>
-                      <FormMessage />
+          <CardHeader> <CardTitle>Contacto</CardTitle> </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField control={form.control} name="nombreContacto" render={({ field }) => ( <FormItem> <FormLabel>Nombre de contacto</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+            <FormField
+              control={form.control}
+              name="telefono"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Teléfono</FormLabel>
+                  <FormControl>
+                    <MaskedInput type="tel" placeholder="+56 9 XXXX XXXX" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField control={form.control} name="correo" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Correo electrónico (opcional)</FormLabel> <FormControl><Input type="email" placeholder="tu@correo.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+            <FormField control={form.control} name="medioPreferido" render={({ field }) => ( 
+              <FormItem className="space-y-3 md:col-span-2">
+                <FormLabel>Medio de contacto preferido</FormLabel>
+                <FormControl>
+                  <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="telefono" id="mp-telefono" />
+                      <FormLabel htmlFor="mp-telefono" className="font-normal">Teléfono</FormLabel>
                     </FormItem>
-                  )}
-                />
-                <FormField control={form.control} name="correo" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Correo electrónico (opcional)</FormLabel> <FormControl><Input type="email" placeholder="tu@correo.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                <FormField control={form.control} name="medioPreferido" render={({ field }) => ( 
-                  <FormItem className="space-y-3 md:col-span-2">
-                    <FormLabel>Medio de contacto preferido</FormLabel>
-                    <FormControl>
-                      <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="telefono" id="mp-telefono" />
-                          </FormControl>
-                          <FormLabel htmlFor="mp-telefono" className="font-normal">Teléfono</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="whatsapp" id="mp-whatsapp"/>
-                          </FormControl>
-                          <FormLabel htmlFor="mp-whatsapp" className="font-normal">WhatsApp</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="correo" id="mp-correo"/>
-                          </FormControl>
-                          <FormLabel htmlFor="mp-correo" className="font-normal">Correo</FormLabel>
-                        </FormItem>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem> 
-                )}/>
-            </CardContent>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="whatsapp" id="mp-whatsapp"/>
+                      <FormLabel htmlFor="mp-whatsapp" className="font-normal">WhatsApp</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="correo" id="mp-correo"/>
+                      <FormLabel htmlFor="mp-correo" className="font-normal">Correo</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem> 
+            )}/>
+          </CardContent>
         </Card>
 
         <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
