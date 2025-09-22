@@ -18,9 +18,11 @@ export default function AboutPage() {
 
   // Datos del equipo, idealmente vendrían de una API, pero aquí se definen localmente.
   const teamMembers = [
-    { name: 'Ana González', role: 'Desarrolladora Principal' },
-    { name: 'Carlos Valdés', role: 'Diseñador UI/UX' },
-    { name: 'Sofía Reyes', role: 'Especialista en Comunidad' },
+    { name: 'Javiera López', role: 'Miembro del Equipo' },
+    { name: 'Geraldine Garces', role: 'Miembro del Equipo' },
+    { name: 'Diego Alfaro', role: 'Miembro del Equipo' },
+    { name: 'Carolina Fernandez', role: 'Miembro del Equipo' },
+    { name: 'Angelo Jimenez', role: 'Miembro del Equipo' },
   ];
 
   // El retorno del componente utiliza JSX para describir la interfaz de usuario.
@@ -93,7 +95,7 @@ export default function AboutPage() {
           <p className="max-w-2xl mx-auto text-lg text-foreground/60 mb-12">
             Somos un grupo apasionado por la tecnología y el impacto social positivo.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {teamMembers.map((member) => (
               <Card key={member.name} className="text-center">
                 <CardHeader>
