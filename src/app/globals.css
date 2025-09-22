@@ -7,14 +7,14 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 165 27% 11%;
+    --foreground: 158 19% 12%; /* #182722 */
     --card: 0 0% 100%;
-    --card-foreground: 165 27% 11%;
+    --card-foreground: 158 19% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 165 27% 11%;
+    --popover-foreground: 158 19% 12%;
     
     /* Paleta de colores EcoRastro */
-    --primary: 142.1 76.2% 36.3%; /* Green from original theme */
+    --primary: 132 25% 48%; /* #5B9A68 */
     --primary-foreground: 210 40% 98%;
     --accent: 38 92% 50%; /* #F59E0B */
     --accent-foreground: 240 10% 3.9%;
@@ -42,7 +42,7 @@
     --popover-foreground: 210 40% 98%;
     
     /* Paleta Dark Mode */
-    --primary: 142.1 76.2% 36.3%;
+    --primary: 132 25% 48%;
     --primary-foreground: 210 40% 98%;
     --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
