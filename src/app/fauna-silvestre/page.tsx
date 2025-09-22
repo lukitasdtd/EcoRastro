@@ -2,17 +2,18 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Bird, Bug, Rabbit, Phone, ShieldCheck, Leaf, HelpCircle, AlertTriangle, LoaderCircle, Sparkles, Wand2 } from 'lucide-react';
+import { Bird, Bug, Rabbit, Phone, ShieldCheck, Leaf, HelpCircle, AlertTriangle, LoaderCircle, Sparkles, Wand2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { getWildlifeInfo, type WildlifeInfoState } from '@/ai/flows/wildlife-info';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useRef } from 'react';
 
 
 const initialState: WildlifeInfoState = {
@@ -41,27 +42,43 @@ function SubmitButton() {
 
 
 export default function FaunaSilvestrePage() {
-
   const [state, formAction] = useActionState(getWildlifeInfo, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleLearnMoreClick = (question: string) => {
+    if (textAreaRef.current && formRef.current) {
+      textAreaRef.current.value = question;
+      // Trigger a change event for React Hook Form if it's being used
+      const event = new Event('input', { bubbles: true });
+      textAreaRef.current.dispatchEvent(event);
+
+      formRef.current.scrollIntoView({ behavior: 'smooth' });
+      textAreaRef.current.focus();
+    }
+  };
 
   const localFauna = [
     {
       name: "Aves Nativas",
-      description: "Chile alberga una increíble diversidad de aves. Desde el majestuoso cóndor hasta el pequeño picaflor de Arica. Aprende a identificarlas y a proteger sus hábitats.",
+      description: "Chile alberga una increíble diversidad de aves. Desde el majestuoso cóndor hasta el pequeño picaflor de Arica.",
       icon: <Bird className="w-10 h-10 text-primary" />,
-      imageId: "wildlife-bird"
+      imageId: "wildlife-bird",
+      question: "Háblame sobre las aves nativas más comunes en Chile y cómo proteger sus hábitats."
     },
     {
       name: "Insectos Polinizadores",
-      description: "Las abejas, mariposas y otros insectos son vitales para nuestros ecosistemas y la producción de alimentos. Crear un jardín con flores nativas es una gran forma de ayudarlos.",
+      description: "Las abejas, mariposas y otros insectos son vitales para nuestros ecosistemas y la producción de alimentos.",
       icon: <Bug className="w-10 h-10 text-primary" />,
-      imageId: "wildlife-insect"
+      imageId: "wildlife-insect",
+      question: "Explícame la importancia de los insectos polinizadores en Chile y qué flores nativas puedo plantar para ayudarlos."
     },
     {
       name: "Pequeños Mamíferos",
-      description: "Zorros, conejos y roedores nativos como el degú cumplen roles importantes. Respeta su espacio y no los alimentes para mantener un equilibrio saludable.",
+      description: "Zorros, conejos y roedores nativos como el degú cumplen roles importantes en el ecosistema.",
       icon: <Rabbit className="w-10 h-10 text-primary" />,
-      imageId: "wildlife-mammal"
+      imageId: "wildlife-mammal",
+      question: "Quiero saber sobre los pequeños mamíferos comunes en Chile, como el zorro culpeo, y las precauciones que debo tener."
     },
   ];
 
@@ -98,7 +115,7 @@ export default function FaunaSilvestrePage() {
       
       {/* --- Experto con IA --- */}
       <section className="mb-16">
-        <form action={formAction} className="space-y-6">
+        <form ref={formRef} action={formAction} className="space-y-6">
             <Card className="max-w-2xl mx-auto shadow-lg border-0 bg-primary/10">
               <CardHeader className="text-center">
                 <CardTitle className="flex items-center justify-center gap-3 text-2xl">
@@ -115,6 +132,7 @@ export default function FaunaSilvestrePage() {
                   <Textarea
                     id="wildlifeQuery"
                     name="wildlifeQuery"
+                    ref={textAreaRef}
                     placeholder="Ej: '¿Qué come el zorro culpeo?' o '¿Cómo puedo atraer picaflores a mi jardín?'"
                     rows={3}
                     required
@@ -175,7 +193,10 @@ export default function FaunaSilvestrePage() {
               </CardHeader>
               <CardContent className="p-6 flex flex-col flex-grow">
                 <CardTitle className="text-xl mb-2">{fauna.name}</CardTitle>
-                <p className="text-foreground/80 flex-grow">{fauna.description}</p>
+                <p className="text-foreground/80 flex-grow mb-4">{fauna.description}</p>
+                 <Button variant="link" className="p-0 h-auto text-primary font-semibold mt-auto" onClick={() => handleLearnMoreClick(fauna.question)}>
+                    Aprender más <ArrowRight className="ml-1 h-4 w-4" />
+                </Button>
               </CardContent>
             </Card>
              )
@@ -229,4 +250,5 @@ export default function FaunaSilvestrePage() {
       </section>
     </div>
   );
-}
+
+    
