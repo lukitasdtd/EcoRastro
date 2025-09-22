@@ -257,7 +257,7 @@ export default function HuertaEducationPage() {
         
         {/* --- COMUNIDAD --- */}
         <TabsContent value="community" className="mt-8 text-center grid place-items-center">
-            {comingsoonCard(
+            {comingSoonCard(
                 "Comunidad EcoRastro",
                 "Estamos creando un espacio para que puedas conectar con otros hortelanos, compartir tus logros y resolver dudas en comunidad."
             )}
