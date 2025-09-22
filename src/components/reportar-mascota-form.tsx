@@ -1,10 +1,11 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, forwardRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useDropzone } from 'react-dropzone';
 import { IMaskMixin } from 'react-imask';
@@ -65,7 +66,12 @@ const reportSchema = z.object({
 
 type ReportFormValues = z.infer<typeof reportSchema>;
 
-const IMaskInput = IMaskMixin(({...props}) => <Input {...props} />);
+const MaskedInput = IMaskMixin(
+  forwardRef<HTMLInputElement, { onAccept: (value: any) => void }>((props, ref) => {
+    const { onAccept, ...rest } = props;
+    return <Input {...rest} inputRef={ref as React.Ref<HTMLInputElement>} />;
+  })
+);
 
 export function ReportarMascotaForm() {
   const router = useRouter();
@@ -413,7 +419,7 @@ export function ReportarMascotaForm() {
                                 <FormControl>
                                     <Input type="date" {...field} 
                                       value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
-                                      onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                                      onChange={(e) => field.onChange(e.target.valueAsDate ? new Date(e.target.valueAsDate.valueOf() + e.target.valueAsDate.getTimezoneOffset() * 60 * 1000) : undefined)}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -483,7 +489,7 @@ export function ReportarMascotaForm() {
                         <FormItem>
                             <FormLabel>Teléfono</FormLabel>
                             <FormControl>
-                              <IMaskInput
+                              <MaskedInput
                                 {...field}
                                 mask="+{56} 9 0000 0000"
                                 placeholder="+56 9 XXXX XXXX"
