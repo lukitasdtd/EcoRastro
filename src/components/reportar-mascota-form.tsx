@@ -12,6 +12,7 @@ import { useDropzone } from 'react-dropzone';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
 import { app } from '@/lib/firebase/config';
 import { useFormContext, FormProvider } from 'react-hook-form';
+import { chileanRegions } from '@/lib/chile-locations';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -62,7 +63,9 @@ const reportSchema = z.object({
     ),
     fechaPerdida: z.date({ required_error: "La fecha es requerida." }).max(new Date(), "La fecha no puede ser en el futuro."),
     horaPerdida: z.string().optional(),
-    direccion: z.string().min(1, "La dirección es requerida."),
+    region: z.string({ required_error: "La región es requerida." }),
+    comuna: z.string({ required_error: "La comuna es requerida." }),
+    calle: z.string().min(1, "La calle y número son requeridos."),
     lat: z.number({ required_error: "Debes seleccionar una ubicación en el mapa."}),
     lng: z.number({ required_error: "Debes seleccionar una ubicación en el mapa."}),
     nombreContacto: z.string().min(1, "El nombre de contacto es requerido."),
@@ -108,7 +111,7 @@ export function ReportarMascotaForm() {
       collarDescripcion: "",
       montoRecompensa: undefined,
       horaPerdida: "",
-      direccion: "",
+      calle: "",
       nombreContacto: "",
       telefono: "",
       correo: "",
@@ -327,6 +330,17 @@ export function ReportarMascotaForm() {
   const especieValue = form.watch('especie');
   const llevaCollarValue = form.watch('llevaCollar');
   const recompensaValue = form.watch('recompensa');
+  const regionValue = form.watch('region');
+
+  const comunas = useMemo(() => {
+    if (!regionValue) return [];
+    const selectedRegion = chileanRegions.find(r => r.name === regionValue);
+    return selectedRegion ? selectedRegion.communes : [];
+  }, [regionValue]);
+
+  useEffect(() => {
+    form.resetField('comuna');
+  }, [regionValue, form]);
 
   return (
     <FormProvider {...form}>
@@ -443,7 +457,46 @@ export function ReportarMascotaForm() {
                     <FormField control={form.control} name="fechaPerdida" render={({ field }) => ( <FormItem> <FormLabel>Fecha</FormLabel> <FormControl><Input type="date" {...field} value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''} onChange={(e) => field.onChange(e.target.valueAsDate ? new Date(e.target.valueAsDate.valueOf() + e.target.valueAsDate.getTimezoneOffset() * 60 * 1000) : undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
                     <FormField control={form.control} name="horaPerdida" render={({ field }) => ( <FormItem> <FormLabel>Hora aproximada (opcional)</FormLabel> <FormControl><Input type="time" {...field} /></FormControl> </FormItem> )}/>
                 </div>
-                <FormField control={form.control} name="direccion" render={({ field }) => ( <FormItem> <FormLabel>Dirección / Referencia del lugar</FormLabel> <FormControl><Input placeholder="Ej: Av. Siempre Viva 123, plaza cercana, comuna" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField control={form.control} name="region" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Región</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona una región" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {chileanRegions.map(region => (
+                                        <SelectItem key={region.name} value={region.name}>{region.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="comuna" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Comuna</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value} disabled={!regionValue}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={!regionValue ? "Selecciona una región primero" : "Selecciona una comuna"} />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {comunas.map(comuna => (
+                                        <SelectItem key={comuna} value={comuna}>{comuna}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                </div>
+                <FormField control={form.control} name="calle" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Calle y número / Referencia</FormLabel> <FormControl><Input placeholder="Ej: Av. Siempre Viva 123, plaza cercana" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                
                 <div>
                   <Label>Ubicación en el mapa</Label>
                   <div className="h-[400px] mt-2 w-full rounded-md overflow-hidden relative">
