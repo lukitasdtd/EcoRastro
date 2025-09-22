@@ -1,4 +1,4 @@
-import type { Pet, Garden, PlantingInfo, Shelter } from '@/lib/types';
+import type { Pet, Garden, PlantingInfo, Shelter, ReportedPet } from '@/lib/types';
 
 export interface Crop {
   id: string;
@@ -25,6 +25,15 @@ export const communityGardens: Garden[] = [
   { id: 'g2', name: 'Parcelas El Sol', location: 'Pasaje Las Flores 456, Pueblito', description: 'Parcelas individuales disponibles para arriendo. Ofrecemos herramientas y agua.', imageId: 'garden1' },
   { id: 'g3', name: 'El Huerto del Barrio', location: 'Calle Las Raíces 789, Metrópolis', description: 'Una huerta colaborativa donde todos comparten el trabajo y la cosecha.', imageId: 'garden1' },
 ];
+
+export const reportedPets: ReportedPet[] = [
+  { id: 'rp1', name: 'Max', species: 'Perro', breed: 'Labrador', status: 'Perdido', date: '2024-07-15', location: 'Ñuñoa, Santiago', description: 'Max es un labrador dorado muy amigable. Se perdió cerca del parque Bustamante.', imageId: 'reported-pet-1', size: 'Grande' },
+  { id: 'rp2', name: 'Milo', species: 'Gato', breed: 'Siamés', status: 'Encontrado', date: '2024-07-20', location: 'Providencia, Santiago', description: 'Gato siamés encontrado en la calle. Es muy cariñoso y parece bien cuidado.', imageId: 'reported-pet-2', size: 'Mediano' },
+  { id: 'rp3', name: 'Desconocido', species: 'Perro', breed: 'Quiltro', status: 'Encontrado', date: '2024-07-18', location: 'Maipú, Santiago', description: 'Perrita quiltra de tamaño mediano encontrada vagando sola. Tiene un collar rojo.', imageId: 'reported-pet-3', size: 'Mediano' },
+  { id: 'rp4', name: 'Pelusa', species: 'Gato', breed: 'Angora', status: 'Perdido', date: '2024-07-21', location: 'Las Condes, Santiago', description: 'Gata blanca muy peluda, responde al nombre de Pelusa. Es algo asustadiza.', imageId: 'reported-pet-4', size: 'Pequeño' },
+  { id: 'rp5', name: 'Toby', species: 'Perro', breed: 'Beagle', status: 'Perdido', date: '2024-07-19', location: 'La Florida, Santiago', description: 'Beagle tricolor con una mancha característica en el lomo. Muy juguetón.', imageId: 'reported-pet-5', size: 'Mediano' },
+  { id: 'rp6', name: 'Nube', species: 'Gato', breed: 'Común Europeo', status: 'Encontrado', date: '2024-07-22', location: 'Santiago Centro', description: 'Gatito gris y blanco encontrado en el barrio Lastarria. Maúlla mucho.', imageId: 'reported-pet-6', size: 'Pequeño' },
+]
 
 export const plantingData: Record<string, MonthlyPlantingData> = {
   enero: {

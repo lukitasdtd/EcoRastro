@@ -22,11 +22,15 @@ export const navItems: NavItem[] = [
         href: '/reportar-mascota',
       },
       {
+        label: 'Buscar Mascota Reportada',
+        href: '/mascotas/buscar',
+      },
+      {
         label: 'Redes de Apoyo',
         href: '/mascotas/redes-apoyo',
       },
       {
-        label: 'Educación Canina',
+        label: 'Educación sobre Mascotas',
         href: '/mascotas/educacion',
       },
        {

@@ -28,3 +28,16 @@ export interface Shelter {
   rating: number;
   reviewCount: number;
 }
+
+export interface ReportedPet {
+  id: string;
+  name: string;
+  species: 'Perro' | 'Gato' | 'Otro';
+  breed: string;
+  status: 'Perdido' | 'Encontrado';
+  date: string;
+  location: string;
+  description: string;
+  imageId: string;
+  size: 'Pequeño' | 'Mediano' | 'Grande';
+}

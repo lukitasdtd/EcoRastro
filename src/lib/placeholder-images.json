@@ -84,6 +84,12 @@
     { "id": "crop-corn", "description": "Una mazorca de maíz.", "imageUrl": "https://picsum.photos/seed/corn/400/400", "imageHint": "corn cob" },
     { "id": "crop-pumpkin", "description": "Una calabaza.", "imageUrl": "https://picsum.photos/seed/pumpkin/400/400", "imageHint": "pumpkin squash" },
     { "id": "crop-cauliflower", "description": "Una cabeza de coliflor.", "imageUrl": "https://picsum.photos/seed/cauliflower/400/400", "imageHint": "cauliflower head" },
-    { "id": "crop-pepper", "description": "Un pimiento.", "imageUrl": "https://picsum.photos/seed/pepper/400/400", "imageHint": "bell pepper" }
+    { "id": "crop-pepper", "description": "Un pimiento.", "imageUrl": "https://picsum.photos/seed/pepper/400/400", "imageHint": "bell pepper" },
+    { "id": "reported-pet-1", "description": "Un perro labrador dorado.", "imageUrl": "https://picsum.photos/seed/reported-pet-1/400/300", "imageHint": "golden labrador" },
+    { "id": "reported-pet-2", "description": "Un gato siamés.", "imageUrl": "https://picsum.photos/seed/reported-pet-2/400/300", "imageHint": "siamese cat" },
+    { "id": "reported-pet-3", "description": "Una perrita mestiza.", "imageUrl": "https://picsum.photos/seed/reported-pet-3/400/300", "imageHint": "mixed-breed dog" },
+    { "id": "reported-pet-4", "description": "Una gata blanca peluda.", "imageUrl": "https://picsum.photos/seed/reported-pet-4/400/300", "imageHint": "white fluffy cat" },
+    { "id": "reported-pet-5", "description": "Un perro beagle.", "imageUrl": "https://picsum.photos/seed/reported-pet-5/400/300", "imageHint": "beagle dog" },
+    { "id": "reported-pet-6", "description": "Un gatito gris y blanco.", "imageUrl": "https://picsum.photos/seed/reported-pet-6/400/300", "imageHint": "grey white kitten" }
   ]
 }
