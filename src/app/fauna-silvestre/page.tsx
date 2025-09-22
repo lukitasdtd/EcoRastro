@@ -11,6 +11,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Bird, Bug, Rabbit, Phone, ShieldCheck, Leaf, HelpCircle, AlertTriangle, LoaderCircle, Sparkles, Wand2 } from 'lucide-react';
 import Link from 'next/link';
 import { getWildlifeInfo, type WildlifeInfoState } from '@/ai/flows/wildlife-info';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const initialState: WildlifeInfoState = {
@@ -47,16 +49,19 @@ export default function FaunaSilvestrePage() {
       name: "Aves Nativas",
       description: "Chile alberga una increíble diversidad de aves. Desde el majestuoso cóndor hasta el pequeño picaflor de Arica. Aprende a identificarlas y a proteger sus hábitats.",
       icon: <Bird className="w-10 h-10 text-primary" />,
+      imageId: "wildlife-bird"
     },
     {
       name: "Insectos Polinizadores",
       description: "Las abejas, mariposas y otros insectos son vitales para nuestros ecosistemas y la producción de alimentos. Crear un jardín con flores nativas es una gran forma de ayudarlos.",
       icon: <Bug className="w-10 h-10 text-primary" />,
+      imageId: "wildlife-insect"
     },
     {
       name: "Pequeños Mamíferos",
       description: "Zorros, conejos y roedores nativos como el degú cumplen roles importantes. Respeta su espacio y no los alimentes para mantener un equilibrio saludable.",
       icon: <Rabbit className="w-10 h-10 text-primary" />,
+      imageId: "wildlife-mammal"
     },
   ];
 
@@ -151,19 +156,30 @@ export default function FaunaSilvestrePage() {
       <section className="mb-16">
         <h2 className="text-3xl font-bold text-center mb-10">Conoce la Fauna de tu Entorno</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {localFauna.map((fauna) => (
-            <Card key={fauna.name} className="text-center shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl">
-              <CardHeader>
-                <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-2">
-                  {fauna.icon}
+          {localFauna.map((fauna) => {
+             const image = PlaceHolderImages.find(img => img.id === fauna.imageId);
+             return (
+            <Card key={fauna.name} className="text-center shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl overflow-hidden flex flex-col">
+              <CardHeader className="p-0">
+                <div className="relative w-full aspect-video">
+                  {image && (
+                      <Image
+                        src={image.imageUrl}
+                        alt={fauna.name}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        data-ai-hint={image.imageHint}
+                      />
+                  )}
                 </div>
-                <CardTitle className="text-xl">{fauna.name}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-foreground/80">{fauna.description}</p>
+              <CardContent className="p-6 flex flex-col flex-grow">
+                <CardTitle className="text-xl mb-2">{fauna.name}</CardTitle>
+                <p className="text-foreground/80 flex-grow">{fauna.description}</p>
               </CardContent>
             </Card>
-          ))}
+             )
+            })}
         </div>
       </section>
       

@@ -90,6 +90,9 @@
     { "id": "reported-pet-3", "description": "Una perrita mestiza.", "imageUrl": "https://picsum.photos/seed/reported-pet-3/400/300", "imageHint": "mixed-breed dog" },
     { "id": "reported-pet-4", "description": "Una gata blanca peluda.", "imageUrl": "https://picsum.photos/seed/reported-pet-4/400/300", "imageHint": "white fluffy cat" },
     { "id": "reported-pet-5", "description": "Un perro beagle.", "imageUrl": "https://picsum.photos/seed/reported-pet-5/400/300", "imageHint": "beagle dog" },
-    { "id": "reported-pet-6", "description": "Un gatito gris y blanco.", "imageUrl": "https://picsum.photos/seed/reported-pet-6/400/300", "imageHint": "grey white kitten" }
+    { "id": "reported-pet-6", "description": "Un gatito gris y blanco.", "imageUrl": "https://picsum.photos/seed/reported-pet-6/400/300", "imageHint": "grey white kitten" },
+    { "id": "wildlife-bird", "description": "Un pájaro nativo posado en una rama.", "imageUrl": "https://picsum.photos/seed/wildlife-bird/400/300", "imageHint": "native bird" },
+    { "id": "wildlife-insect", "description": "Un insecto polinizador en una flor.", "imageUrl": "https://picsum.photos/seed/wildlife-insect/400/300", "imageHint": "pollinator insect" },
+    { "id": "wildlife-mammal", "description": "Un pequeño mamífero en su hábitat natural.", "imageUrl": "https://picsum.photos/seed/wildlife-mammal/400/300", "imageHint": "small mammal" }
   ]
 }
