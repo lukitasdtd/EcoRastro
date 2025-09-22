@@ -23,7 +23,7 @@ export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
               alt={`Foto de ${pet.name}`}
               fill
               style={{ objectFit: 'cover' }}
-              data-ai-hint={image.species.toLowerCase()}
+              data-ai-hint={pet.species.toLowerCase()}
             />
           )}
            <Badge 
