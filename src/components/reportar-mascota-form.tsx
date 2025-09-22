@@ -5,10 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState, useCallback, useMemo, forwardRef } from 'react';
+import { useState, useCallback, useMemo, forwardRef, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useDropzone } from 'react-dropzone';
-import { IMaskMixin } from 'react-imask';
+import IMask from 'imask';
 import { LoaderCircle, MapPin, UploadCloud, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -66,14 +66,41 @@ const reportSchema = z.object({
 
 type ReportFormValues = z.infer<typeof reportSchema>;
 
-const MaskedInput = forwardRef<
-  HTMLInputElement,
-  React.ComponentProps<typeof Input> & { mask: string; onAccept: (value: any) => void }
->(({ mask, onAccept, ...props }, ref) => {
-  const InputComponent = IMaskMixin(({...rest}) => <Input {...rest} />);
-  return <InputComponent {...props} mask={mask} onAccept={onAccept} inputRef={ref as React.Ref<HTMLInputElement>}/>;
-});
-MaskedInput.displayName = 'MaskedInput';
+const MaskedInput = ({ field, form }: { field: any, form: any }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!inputRef.current) return;
+
+    const mask = IMask(inputRef.current, {
+      mask: '+{56} 9 0000 0000'
+    });
+
+    mask.on('accept', () => {
+      form.setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
+    });
+    
+    // Set initial value
+    if (field.value) {
+      mask.value = field.value;
+    }
+
+    return () => {
+      mask.destroy();
+    };
+  }, [form, field.value]);
+
+  return (
+    <Input
+      {...field}
+      ref={inputRef}
+      placeholder="+56 9 XXXX XXXX"
+      onChange={() => {
+        // We let iMask handle the change
+      }}
+    />
+  );
+};
 
 
 export function ReportarMascotaForm() {
@@ -488,17 +515,11 @@ export function ReportarMascotaForm() {
                  <FormField
                     control={form.control}
                     name="telefono"
-                    render={({ field: { ref, ...field }}) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Teléfono</FormLabel>
                             <FormControl>
-                              <MaskedInput
-                                {...field}
-                                mask="+{56} 9 0000 0000"
-                                placeholder="+56 9 XXXX XXXX"
-                                onAccept={(value: any) => field.onChange(value)}
-                                ref={ref}
-                              />
+                              <MaskedInput field={field} form={form} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -641,3 +662,5 @@ export function ReportarMascotaForm() {
     </Form>
   );
 }
+
+    
