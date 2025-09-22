@@ -83,27 +83,30 @@ interface FileUpload {
   preview: string;
 }
 
-const MaskedInput = React.forwardRef<HTMLInputElement, any>(({ onChange, ...props }, ref) => {
-    const inputRef = useRef<HTMLInputElement>(null);
-    const { ref: hookFormRef, ...rest } = props;
+const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
+  (props, ref) => {
+    const { getValues, setValue } = useFormContext();
 
-    const maskOptions = useMemo(() => ({ mask: '+{56} 9 0000 0000' }), []);
-  
+    const maskOptions = useMemo(() => ({
+      mask: '+{56} 9 0000 0000'
+    }), []);
+    
     useEffect(() => {
-      if (!inputRef.current) return;
-      const mask = IMask(inputRef.current, maskOptions);
-      mask.on('accept', () => {
-        if(onChange) {
-            onChange({ target: { value: mask.value } });
-        }
-      });
-      return () => mask.destroy();
-    }, [maskOptions, onChange]);
+        if (!ref || typeof ref !== 'object' || !ref.current) return;
+        const mask = IMask(ref.current, maskOptions);
+        
+        mask.on('accept', () => {
+            if (getValues('telefono') !== mask.value) {
+                setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
+            }
+        });
+        
+        return () => mask.destroy();
+    }, [ref, maskOptions, setValue, getValues]);
 
-    React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
-  
-    return <Input ref={inputRef} {...rest} />;
-});
+    return <Input ref={ref} {...props} />;
+  }
+);
 MaskedInput.displayName = 'MaskedInput';
 
 
@@ -390,11 +393,7 @@ export function ReportarMascotaForm() {
                     <FormItem>
                       <FormLabel>Teléfono</FormLabel>
                       <FormControl>
-                        <MaskedInput
-                          {...field}
-                          type="tel"
-                          placeholder="+56 9 XXXX XXXX"
-                        />
+                        <MaskedInput type="tel" placeholder="+56 9 XXXX XXXX" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
