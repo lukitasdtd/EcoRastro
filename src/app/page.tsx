@@ -50,7 +50,7 @@ export default function Home() {
         {/* Contenedor del texto superpuesto */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
           <div className="bg-black/40 backdrop-blur-sm p-6 md:p-8 rounded-lg">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4 leading-tight">
               Conectando comunidades,
               <br />
               <span className="text-primary-foreground/90">protegiendo ecosistemas.</span>
