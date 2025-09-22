@@ -21,7 +21,7 @@ export default function SupportNetworksPage() {
   return (
     <div className="flex flex-col">
       {/* Sección Hero */}
-      <section className="relative w-full h-[500px] bg-primary/20 flex items-center justify-center text-center">
+      <section className="relative w-full h-[500px] bg-primary/20 flex items-center justify-start text-left">
         {/* Imagen de fondo */}
         <Image
           src="/gato-naranjo.jpg"
@@ -33,7 +33,7 @@ export default function SupportNetworksPage() {
         />
 
         {/* Contenido superpuesto */}
-        <div className="relative z-10 text-white p-4 max-w-4xl mx-auto">
+        <div className="relative z-10 text-white p-4 md:p-12 max-w-2xl">
            <h1 className="text-4xl md:text-6xl font-bold mb-4 !leading-tight text-shadow-md">
               Conecta con refugios y adopta cerca de ti
             </h1>
