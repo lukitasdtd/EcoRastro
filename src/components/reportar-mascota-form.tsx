@@ -1,4 +1,3 @@
-
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +8,8 @@ import { useState, useCallback, useMemo, forwardRef, useRef, useEffect } from 'r
 import dynamic from 'next/dynamic';
 import { useDropzone } from 'react-dropzone';
 import IMask from 'imask';
-import { LoaderCircle, MapPin, UploadCloud, X } from 'lucide-react';
+import { LoaderCircle, MapPin, UploadCloud, X, FileUp, AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,8 +23,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { Progress } from '@/components/ui/progress';
 import Image from 'next/image';
+import { storage } from '@/lib/firebase/config';
 
+// Esquema de validación y tipos...
 const phoneRegex = new RegExp(
   /^(\+?56)?(\s?)(9)(\s?)[987654321]\d{7}$/
 );
@@ -55,7 +58,7 @@ const reportSchema = z.object({
     telefono: z.string().regex(phoneRegex, "Número de teléfono inválido."),
     correo: z.string().email("Correo electrónico inválido.").optional().or(z.literal('')),
     medioPreferido: z.enum(["telefono", "whatsapp", "correo"], { required_error: "Debes seleccionar un medio de contacto." }),
-    fotos: z.array(z.instanceof(File)).max(5, "Puedes subir hasta 5 imágenes."),
+    fotos: z.array(z.string()).max(5, "Puedes subir hasta 5 imágenes.").default([]),
     visibleMapa: z.boolean().default(true),
     permitirComentarios: z.boolean().default(true),
     consentimiento: z.literal<boolean>(true, { errorMap: () => ({ message: "Debes aceptar las condiciones." }) }),
@@ -68,11 +71,10 @@ type ReportFormValues = z.infer<typeof reportSchema>;
 
 const MaskedInput = forwardRef<HTMLInputElement, { name: 'telefono' } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>>((props, ref) => {
   const { setValue } = useFormContext<ReportFormValues>();
-  const inputRef = useRef<HTMLInputElement>(null);
-
+  
   useEffect(() => {
-    if (!inputRef.current) return;
-    const mask = IMask(inputRef.current, {
+    if (typeof window === 'undefined' || !ref || !('current' in ref) || !ref.current) return;
+    const mask = IMask(ref.current, {
       mask: '+{56} 9 0000 0000',
     });
 
@@ -80,20 +82,28 @@ const MaskedInput = forwardRef<HTMLInputElement, { name: 'telefono' } & Omit<Rea
       setValue('telefono', mask.value, { shouldValidate: true, shouldDirty: true });
     });
 
-    return () => {
-      mask.destroy();
-    };
-  }, [setValue]);
+    return () => mask.destroy();
+  }, [ref, setValue]);
   
-  return <Input {...props} ref={inputRef} />;
+  return <Input {...props} ref={ref} />;
 });
 MaskedInput.displayName = 'MaskedInput';
+
+type FileUpload = {
+  file: File;
+  preview: string;
+  progress: number;
+  status: 'pending' | 'uploading' | 'success' | 'error';
+  error?: string;
+  uploadTask?: any;
+};
 
 
 export function ReportarMascotaForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploads, setUploads] = useState<FileUpload[]>([]);
 
   const form = useForm<ReportFormValues>({
     resolver: zodResolver(reportSchema),
@@ -122,24 +132,178 @@ export function ReportarMascotaForm() {
   const especieValue = form.watch('especie');
   const llevaCollarValue = form.watch('llevaCollar');
   const recompensaValue = form.watch('recompensa');
-  const files = form.watch('fotos');
+  
+  const compressImage = async (file: File): Promise<Blob> => {
+    console.log("Comprimiendo imagen...");
+    const bmp = await createImageBitmap(file);
+    const { width, height } = bmp;
+    const max_side = 1600;
+
+    let newWidth = width;
+    let newHeight = height;
+
+    if (width > height) {
+      if (width > max_side) {
+        newHeight = Math.round((height * max_side) / width);
+        newWidth = max_side;
+      }
+    } else {
+      if (height > max_side) {
+        newWidth = Math.round((width * max_side) / height);
+        newHeight = max_side;
+      }
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    const ctx = canvas.getContext('2d');
+    ctx?.drawImage(bmp, 0, 0, newWidth, newHeight);
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+             console.log("Compresión completada.");
+            resolve(blob);
+          } else {
+            reject(new Error('Error al comprimir la imagen.'));
+          }
+        },
+        'image/jpeg',
+        0.8
+      );
+    });
+  };
+  
+  const handleUpload = async (file: File, index: number) => {
+    try {
+      const compressedBlob = await compressImage(file);
+      const filePath = `reports/${Date.now()}-${file.name}`;
+      const fileStorageRef = storageRef(storage, filePath);
+      const uploadTask = uploadBytesResumable(fileStorageRef, compressedBlob, { contentType: 'image/jpeg' });
+      
+      setUploads(prev => {
+        const newUploads = [...prev];
+        newUploads[index].uploadTask = uploadTask;
+        newUploads[index].status = 'uploading';
+        return newUploads;
+      });
+
+      let timeoutId: NodeJS.Timeout;
+
+      const unsubscribe = uploadTask.on('state_changed',
+        (snapshot) => {
+          console.log(`Subiendo (${snapshot.bytesTransferred / snapshot.totalBytes * 100}%)...`);
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploads(prev => {
+            const newUploads = [...prev];
+            if (newUploads[index]) newUploads[index].progress = progress;
+            return newUploads;
+          });
+
+          // Reset timeout on progress
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => {
+            console.log("Cancelado por Timeout");
+            uploadTask.cancel();
+            toast({ variant: 'destructive', title: 'Error de subida', description: `La subida de ${file.name} ha tardado demasiado y fue cancelada.` });
+          }, 60000);
+        },
+        (error) => {
+           console.error("Error en la subida:", error.code);
+           clearTimeout(timeoutId);
+           setUploads(prev => {
+              const newUploads = [...prev];
+              if(newUploads[index]) {
+                newUploads[index].status = 'error';
+                newUploads[index].error = 'La subida falló. Intenta de nuevo.';
+              }
+              return newUploads;
+           });
+        },
+        async () => {
+          console.log("Completado");
+          clearTimeout(timeoutId);
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          form.setValue('fotos', [...form.getValues('fotos'), downloadURL]);
+          setUploads(prev => {
+             const newUploads = [...prev];
+             if(newUploads[index]) {
+                newUploads[index].status = 'success';
+             }
+             return newUploads;
+          });
+        }
+      );
+
+    } catch (error) {
+       console.error("Error al procesar la imagen:", error);
+       toast({ variant: 'destructive', title: 'Error de procesamiento', description: 'No se pudo procesar una de las imágenes.'});
+    }
+  };
+
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const currentFiles = form.getValues('fotos');
-    const newFiles = acceptedFiles.slice(0, 5 - currentFiles.length);
-    form.setValue('fotos', [...currentFiles, ...newFiles], { shouldValidate: true });
-  }, [form]);
+    const currentUploadsCount = uploads.length;
+    if (currentUploadsCount + acceptedFiles.length > 5) {
+      toast({ variant: 'destructive', title: 'Límite de archivos', description: 'Puedes subir un máximo de 5 imágenes.' });
+      return;
+    }
+
+    const newFileUploads: FileUpload[] = acceptedFiles.map(file => {
+      // Validación de tipo y tamaño
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        toast({ variant: 'destructive', title: 'Tipo de archivo no válido', description: `${file.name} no es una imagen JPG o PNG.` });
+        return null;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast({ variant: 'destructive', title: 'Archivo demasiado grande', description: `${file.name} supera los 5MB.` });
+        return null;
+      }
+      return {
+        file,
+        preview: URL.createObjectURL(file),
+        progress: 0,
+        status: 'pending',
+      };
+    }).filter((f): f is FileUpload => f !== null);
+
+    setUploads(prev => [...prev, ...newFileUploads]);
+    newFileUploads.forEach((upload, i) => handleUpload(upload.file, currentUploadsCount + i));
+
+  }, [uploads.length, toast, form]);
+
+  useEffect(() => {
+    return () => uploads.forEach(upload => URL.revokeObjectURL(upload.preview));
+  }, [uploads]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: { 'image/jpeg': [], 'image/png': [] },
-    maxSize: 5 * 1024 * 1024, // 5MB
     maxFiles: 5,
+    disabled: uploads.length >= 5
   });
 
-  const removeFile = (file: File) => {
-    const newFiles = form.getValues('fotos').filter(f => f !== file);
-    form.setValue('fotos', newFiles, { shouldValidate: true });
+  const removeFile = (indexToRemove: number) => {
+    const upload = uploads[indexToRemove];
+    if (upload.uploadTask && (upload.status === 'uploading' || upload.status === 'pending')) {
+        console.log("Cancelado");
+        upload.uploadTask.cancel();
+    }
+    
+    setUploads(prev => {
+        const newUploads = prev.filter((_, index) => index !== indexToRemove);
+        const successfulUrls = newUploads
+            .filter(u => u.status === 'success')
+            .map(u => {
+                const url = form.getValues('fotos').find(url => url.includes(u.file.name));
+                return url;
+            })
+            .filter((url): url is string => !!url);
+        form.setValue('fotos', successfulUrls);
+        return newUploads;
+    });
   };
   
   const Map = useMemo(() => dynamic(
@@ -152,13 +316,17 @@ export function ReportarMascotaForm() {
 
   async function onSubmit(data: ReportFormValues) {
     setIsSubmitting(true);
-    // Simular subida y procesamiento de datos
-    console.log("Datos del formulario:", data);
     
-    // Aquí iría la lógica para subir las imágenes a un storage
-    // y luego guardar los datos en Firestore.
+    if (uploads.some(u => u.status === 'uploading')) {
+        toast({ variant: 'destructive', title: 'Espera un momento', description: 'Algunos archivos aún se están subiendo.'});
+        setIsSubmitting(false);
+        return;
+    }
+    
+    // Aquí iría la lógica para guardar los datos en Firestore, usando data.fotos que ya contiene las URLs.
+    console.log("Datos finales a guardar en Firestore:", data);
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     toast({
       title: "¡Reporte enviado!",
@@ -562,36 +730,53 @@ export function ReportarMascotaForm() {
                 <CardDescription>Sube hasta 5 fotos (JPG, PNG, máx. 5MB cada una).</CardDescription>
             </CardHeader>
             <CardContent>
-                <div {...getRootProps()} className="flex items-center justify-center w-full p-6 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
+                <div {...getRootProps({ 'aria-disabled': uploads.length >= 5 })} className={`flex items-center justify-center w-full p-6 border-2 border-dashed rounded-lg ${uploads.length < 5 ? 'cursor-pointer hover:bg-muted' : 'bg-muted/50 cursor-not-allowed'}`}>
                     <input {...getInputProps()} />
                     <div className="text-center">
                         <UploadCloud className="w-10 h-10 mx-auto text-muted-foreground" />
-                        <p className="mt-2 text-sm text-muted-foreground">Arrastra tus fotos aquí, o haz clic para seleccionarlas</p>
+                        <p className="mt-2 text-sm text-muted-foreground">{uploads.length >= 5 ? 'Has alcanzado el límite de 5 fotos' : 'Arrastra tus fotos aquí, o haz clic para seleccionarlas'}</p>
                     </div>
                 </div>
-                 {files.length > 0 && (
+                 {uploads.length > 0 && (
                     <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {files.map((file, i) => (
+                        {uploads.map((upload, i) => (
                             <div key={i} className="relative aspect-square">
                                 <Image
-                                    src={URL.createObjectURL(file)}
+                                    src={upload.preview}
                                     alt={`Preview ${i}`}
                                     fill
                                     className="object-cover rounded-md"
-                                    onLoad={() => URL.revokeObjectURL(file.name)}
                                 />
-                                <button
+                                {upload.status === 'uploading' && (
+                                    <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-2 rounded-md">
+                                        <Progress value={upload.progress} className="w-full h-2" />
+                                        <p className="text-white text-xs mt-1">{Math.round(upload.progress)}%</p>
+                                    </div>
+                                )}
+                                {upload.status === 'success' && (
+                                    <div className="absolute top-1 left-1 bg-green-500 text-white rounded-full p-1">
+                                        <CheckCircle className="w-3 h-3" />
+                                    </div>
+                                )}
+                                {upload.status === 'error' && (
+                                    <div className="absolute inset-0 bg-red-900/70 flex flex-col items-center justify-center text-center p-2 rounded-md">
+                                        <AlertCircle className="w-6 h-6 text-white" />
+                                        <p className="text-white text-xs mt-1 leading-tight">{upload.error}</p>
+                                    </div>
+                                )}
+                                <Button
                                     type="button"
-                                    onClick={() => removeFile(file)}
-                                    className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1"
+                                    variant="destructive"
+                                    size="icon"
+                                    onClick={() => removeFile(i)}
+                                    className="absolute top-1 right-1 h-6 w-6"
                                 >
                                     <X className="w-3 h-3" />
-                                </button>
+                                </Button>
                             </div>
                         ))}
                     </div>
                 )}
-                <FormMessage>{form.formState.errors.fotos?.message}</FormMessage>
             </CardContent>
         </Card>
 
@@ -640,7 +825,7 @@ export function ReportarMascotaForm() {
             <Button type="button" variant="outline" onClick={() => router.back()}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || uploads.some(u => u.status === 'uploading')}>
               {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Publicar Reporte'}
             </Button>
           </CardFooter>
