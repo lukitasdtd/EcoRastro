@@ -9,10 +9,15 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-// Zod schema for input validation
-const GardeningInfoInputSchema = z.object({
+// Zod schema for input validation, used by both the Action and the Flow.
+const GardeningInputSchema = z.object({
   gardeningQuery: z.string().min(5, { message: 'Por favor, escribe una pregunta más detallada.' }),
 });
+
+const GardeningOutputSchema = z.object({ 
+    response: z.string() 
+});
+
 
 // Define the structure for the action's state, including potential errors and the final data.
 export type GardeningInfoState = {
@@ -34,7 +39,7 @@ export async function getGardeningInfo(
   formData: FormData
 ): Promise<GardeningInfoState> {
   // 1. Validate form data
-  const validatedFields = GardeningInfoInputSchema.safeParse({
+  const validatedFields = GardeningInputSchema.safeParse({
     gardeningQuery: formData.get('gardeningQuery'),
   });
 
@@ -48,7 +53,7 @@ export async function getGardeningInfo(
 
   // 3. If validation is successful, call the Genkit flow
   try {
-    const info = await gardeningInfoFlow({ query: validatedFields.data.gardeningQuery });
+    const info = await gardeningInfoFlow({ gardeningQuery: validatedFields.data.gardeningQuery });
     return {
       message: '¡Respuesta generada!',
       gardeningInfo: info.response,
@@ -61,9 +66,6 @@ export async function getGardeningInfo(
   }
 }
 
-const GardeningInputSchema = z.object({ query: z.string() });
-const GardeningOutputSchema = z.object({ response: z.string() });
-
 // Define the Genkit prompt
 const gardeningPrompt = ai.definePrompt({
   name: 'gardeningExpertPrompt',
@@ -71,7 +73,7 @@ const gardeningPrompt = ai.definePrompt({
   output: { schema: GardeningOutputSchema },
   prompt: `Eres un experto en horticultura y agricultura urbana sostenible en Chile. Tu misión es proporcionar consejos prácticos, claros y amigables para principiantes. Un usuario tiene la siguiente pregunta:
 
-  "{{{query}}}"
+  "{{{gardeningQuery}}}"
 
   Responde de manera completa pero concisa. Enfócate en soluciones que se puedan aplicar en un entorno doméstico o comunitario (balcones, patios, etc.). Si la pregunta es sobre plagas o enfermedades, recomienda primero soluciones orgánicas y caseras. Proporciona la información en pasos si es aplicable.`,
 });
