@@ -10,15 +10,10 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Bird, Bug, Rabbit, Phone, ShieldCheck, Leaf, HelpCircle, AlertTriangle, LoaderCircle, Sparkles, Wand2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { getWildlifeInfo, type WildlifeInfoState } from '@/ai/flows/wildlife-info';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useRef } from 'react';
 
-
-const initialState: WildlifeInfoState = {
-  message: null,
-};
 
 const comingSoonCard = (title: string, description: string) => (
     <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-muted/50 border-dashed h-full shadow-none">
@@ -144,7 +139,7 @@ export default function FaunaSilvestrePage() {
                     <Phone className="h-8 w-8" />
                 </div>
                 <CardTitle className="text-2xl md:text-3xl">¿Animal Herido o en Peligro?</CardTitle>
-                <CardDescription className="text-lg max-w-2xl mx-auto text-destructive-foreground/90">
+                <CardDescription className="text-lg max-w-2xl mx-auto text-foreground/80">
                     Si encuentras un animal silvestre que necesita ayuda, contacta a la autoridad competente. No intervengas directamente.
                 </CardDescription>
             </CardHeader>
@@ -184,3 +179,4 @@ export default function FaunaSilvestrePage() {
   );
 
     
+
