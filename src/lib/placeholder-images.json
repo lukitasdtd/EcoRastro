@@ -72,6 +72,18 @@
       "description": "La entrada de un refugio de animales.",
       "imageUrl": "https://picsum.photos/seed/shelter1/150/150",
       "imageHint": "animal shelter"
-    }
+    },
+    { "id": "crop-tomato", "description": "Tomates cherry maduros en la planta.", "imageUrl": "https://picsum.photos/seed/tomato/400/400", "imageHint": "cherry tomato" },
+    { "id": "crop-lettuce", "description": "Una cabeza fresca de lechuga.", "imageUrl": "https://picsum.photos/seed/lettuce/400/400", "imageHint": "lettuce head" },
+    { "id": "crop-carrot", "description": "Un manojo de zanahorias frescas.", "imageUrl": "https://picsum.photos/seed/carrot/400/400", "imageHint": "carrot bunch" },
+    { "id": "crop-basil", "description": "Hojas de albahaca fresca.", "imageUrl": "https://picsum.photos/seed/basil/400/400", "imageHint": "basil leaves" },
+    { "id": "crop-onion", "description": "Un bulbo de cebolla.", "imageUrl": "https://picsum.photos/seed/onion/400/400", "imageHint": "onion bulb" },
+    { "id": "crop-radish", "description": "Rábanos frescos.", "imageUrl": "https://picsum.photos/seed/radish/400/400", "imageHint": "radish vegetable" },
+    { "id": "crop-broccoli", "description": "Una cabeza de brócoli.", "imageUrl": "https://picsum.photos/seed/broccoli/400/400", "imageHint": "broccoli head" },
+    { "id": "crop-cucumber", "description": "Un pepino fresco.", "imageUrl": "https://picsum.photos/seed/cucumber/400/400", "imageHint": "cucumber fresh" },
+    { "id": "crop-corn", "description": "Una mazorca de maíz.", "imageUrl": "https://picsum.photos/seed/corn/400/400", "imageHint": "corn cob" },
+    { "id": "crop-pumpkin", "description": "Una calabaza.", "imageUrl": "https://picsum.photos/seed/pumpkin/400/400", "imageHint": "pumpkin squash" },
+    { "id": "crop-cauliflower", "description": "Una cabeza de coliflor.", "imageUrl": "https://picsum.photos/seed/cauliflower/400/400", "imageHint": "cauliflower head" },
+    { "id": "crop-pepper", "description": "Un pimiento.", "imageUrl": "https://picsum.photos/seed/pepper/400/400", "imageHint": "bell pepper" }
   ]
 }
