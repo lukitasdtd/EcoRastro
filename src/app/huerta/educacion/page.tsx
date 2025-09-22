@@ -2,37 +2,83 @@
 
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
-  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, MapPin, Search, BookOpen, Tractor, Users, Leaf, CheckSquare, Heart
+  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, MapPin, Search, BookOpen, Tractor, Users, Leaf, CheckSquare, Heart, LoaderCircle, Wand2, Sparkles, AlertTriangle, ArrowRight
 } from 'lucide-react';
+import { getGardeningInfo, type GardeningInfoState } from '@/ai/flows/gardening-expert';
+
+const initialState: GardeningInfoState = {
+  message: null,
+};
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} className="w-full">
+      {pending ? (
+        <>
+          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          Generando respuesta...
+        </>
+      ) : (
+        <>
+         <Wand2 className="mr-2 h-4 w-4" />
+          Preguntar al experto
+        </>
+      )}
+    </Button>
+  );
+}
 
 export default function HuertaEducationPage() {
+  const [state, formAction] = useActionState(getGardeningInfo, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleLearnMoreClick = (question: string) => {
+    if (textAreaRef.current && formRef.current) {
+      textAreaRef.current.value = question;
+      const event = new Event('input', { bubbles: true });
+      textAreaRef.current.dispatchEvent(event);
+      formRef.current.scrollIntoView({ behavior: 'smooth' });
+      textAreaRef.current.focus();
+    }
+  };
 
   const gardenTypes = [
     {
       title: "Huerta Urbana",
       description: "Aprovecha al máximo los espacios pequeños en la ciudad, como balcones, terrazas o patios. Ideal para cultivar en macetas, jardineras o mesas de cultivo. Es el punto de partida perfecto para principiantes.",
       icon: <Tractor className="w-10 h-10 text-primary" />,
+      question: "Dame consejos para empezar mi primera huerta urbana en un balcón pequeño."
     },
     {
       title: "Huerta Vertical",
       description: "Cultiva hacia arriba usando paredes o estructuras para maximizar tu producción en espacios limitados. Perfecto para hierbas aromáticas, frutillas y hortalizas de hoja como lechugas.",
       icon: <Sprout className="w-10 h-10 text-primary" />,
+      question: "¿Cuáles son las mejores plantas para una huerta vertical y qué estructura me recomiendas?"
     },
     {
       title: "Hidroponía",
       description: "Cultiva plantas sin suelo, usando soluciones minerales en agua. Es una técnica de alta eficiencia ideal para interiores y para un control total sobre los nutrientes y el ambiente de las plantas.",
       icon: <Droplets className="w-10 h-10 text-primary" />,
+      question: "Explícame los conceptos básicos de la hidroponía para un principiante."
     },
     {
       title: "Huerta Comunitaria",
       description: "Únete a un espacio colectivo para cultivar alimentos, compartir conocimientos y fortalecer lazos con tus vecinos. Una gran forma de aprender en grupo y acceder a un terreno más grande.",
       icon: <Users className="w-10 h-10 text-primary" />,
+      question: "¿Qué beneficios tiene unirme a una huerta comunitaria?"
     },
   ];
 
@@ -41,21 +87,25 @@ export default function HuertaEducationPage() {
         title: "Nutrición y Salud",
         description: "Consume alimentos frescos, sin pesticidas y llenos de nutrientes. Sabrás exactamente qué estás comiendo y mejorarás tu dieta.",
         icon: <Heart className="w-8 h-8 text-primary" />,
+        question: "Háblame sobre los beneficios nutricionales de cultivar mis propias verduras."
       },
       {
         title: "Bienestar Mental",
         description: "La jardinería es una terapia probada. Reduce el estrés, mejora el ánimo, aumenta la concentración y te conecta con la naturaleza y sus ciclos.",
         icon: <Sun className="w-8 h-8 text-primary" />,
+        question: "¿Cómo ayuda la jardinería a reducir el estrés y mejorar la salud mental?"
       },
       {
         title: "Economía y Ahorro",
         description: "Ahorra dinero en el supermercado cultivando tus propias verduras, hierbas y frutas. ¡Y el sabor de lo recién cosechado no tiene comparación!",
         icon: <Recycle className="w-8 h-8 text-primary" />,
+        question: "¿Cuánto dinero puedo ahorrar cultivando mis propias hortalizas básicas?"
       },
       {
         title: "Biodiversidad",
         description: "Atrae polinizadores como abejas y mariposas a tu jardín, creando un pequeño ecosistema que beneficia al entorno urbano y apoya la flora local.",
         icon: <Bug className="w-8 h-8 text-primary" />,
+        question: "¿Qué plantas puedo cultivar en mi balcón para atraer abejas y mariposas?"
       }
   ]
 
@@ -150,6 +200,62 @@ export default function HuertaEducationPage() {
         </p>
       </section>
 
+      {/* --- Experto con IA --- */}
+      <section className="mb-16">
+        <form ref={formRef} action={formAction} className="space-y-6">
+            <Card className="max-w-2xl mx-auto shadow-lg border-0 bg-primary/10">
+              <CardHeader className="text-center">
+                <CardTitle className="flex items-center justify-center gap-3 text-2xl">
+                    <Sparkles className="h-6 w-6 text-accent"/>
+                    Pregúntale a nuestro Experto en Huertas
+                </CardTitle>
+                <CardDescription>
+                  ¿No sabes qué plantar? ¿Tienes una plaga? Escribe tu pregunta y nuestra IA te ayudará.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid w-full gap-2">
+                  <Label htmlFor="gardeningQuery" className="sr-only">Tu pregunta</Label>
+                  <Textarea
+                    id="gardeningQuery"
+                    name="gardeningQuery"
+                    ref={textAreaRef}
+                    placeholder="Ej: '¿Cómo puedo hacer compost en mi departamento?' o '¿Qué plaga son unos bichos blancos pequeños en mis tomates?'"
+                    rows={3}
+                    required
+                  />
+                  {state?.errors?.gardeningQuery && (
+                      <p className="text-sm font-medium text-destructive mt-2">{state.errors.gardeningQuery}</p>
+                  )}
+                </div>
+                 <SubmitButton />
+              </CardContent>
+            </Card>
+          </form>
+
+          {state?.message && !state.gardeningInfo && (
+            <Alert variant="destructive" className="max-w-2xl mx-auto mt-6">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{state.message}</AlertDescription>
+            </Alert>
+          )}
+
+          {state?.gardeningInfo && (
+            <Card className="max-w-2xl mx-auto mt-6 animate-in fade-in-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sprout className="h-6 w-6 text-primary" />
+                  Respuesta del Experto
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-foreground/80 whitespace-pre-wrap">{state.gardeningInfo}</p>
+              </CardContent>
+            </Card>
+          )}
+      </section>
+
       <Tabs defaultValue="essentials" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
           <TabsTrigger value="essentials">Guías Esenciales</TabsTrigger>
@@ -166,16 +272,21 @@ export default function HuertaEducationPage() {
                     <h2 className="text-3xl font-bold text-center mb-10">Tipos de Huertas</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {gardenTypes.map((type) => (
-                        <Card key={type.title} className="text-center shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl">
-                        <CardHeader>
-                            <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-2">
-                                {type.icon}
-                            </div>
-                            <CardTitle className="text-xl">{type.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-foreground/80">{type.description}</p>
-                        </CardContent>
+                        <Card key={type.title} className="text-center shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl flex flex-col">
+                          <CardHeader>
+                              <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-2">
+                                  {type.icon}
+                              </div>
+                              <CardTitle className="text-xl">{type.title}</CardTitle>
+                          </CardHeader>
+                          <CardContent className="flex-grow">
+                              <p className="text-foreground/80">{type.description}</p>
+                          </CardContent>
+                          <CardFooter>
+                              <Button variant="link" className="p-0 h-auto text-primary font-semibold w-full" onClick={() => handleLearnMoreClick(type.question)}>
+                                  Aprender más <ArrowRight className="ml-1 h-4 w-4" />
+                              </Button>
+                          </CardFooter>
                         </Card>
                     ))}
                     </div>
@@ -189,7 +300,10 @@ export default function HuertaEducationPage() {
                             <Card key={benefit.title} className="p-6 text-center flex flex-col items-center shadow-sm bg-muted/50 border-0">
                                 <div className="mb-4">{benefit.icon}</div>
                                 <CardTitle className="text-lg font-semibold mb-2">{benefit.title}</CardTitle>
-                                <p className="text-sm text-foreground/70">{benefit.description}</p>
+                                <p className="text-sm text-foreground/70 flex-grow">{benefit.description}</p>
+                                <Button variant="link" className="p-0 h-auto text-primary font-semibold mt-4" onClick={() => handleLearnMoreClick(benefit.question)}>
+                                  Saber más
+                                </Button>
                             </Card>
                         ))}
                     </div>
