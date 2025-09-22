@@ -96,19 +96,28 @@ export default function AboutPage() {
             Somos un grupo apasionado por la tecnología y el impacto social positivo.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            {teamMembers.map((member) => (
-              <Card key={member.name} className="text-center">
-                <CardHeader>
-                  <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
-                    <Users className="h-10 w-10 text-primary" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardTitle className="text-xl">{member.name}</CardTitle>
-                  <p className="text-primary font-semibold">{member.role}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {teamMembers.map((member) => {
+              const nameParts = member.name.split(' ');
+              const firstName = nameParts[0];
+              const lastName = nameParts.slice(1).join(' ');
+              return (
+                <Card key={member.name} className="text-center">
+                  <CardHeader>
+                    <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
+                      <Users className="h-10 w-10 text-primary" />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <CardTitle className="text-xl leading-tight">
+                      {firstName}
+                      <br />
+                      {lastName}
+                    </CardTitle>
+                    <p className="text-primary font-semibold mt-1">{member.role}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
