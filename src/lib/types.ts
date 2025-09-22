@@ -25,4 +25,6 @@ export interface Shelter {
   name: string;
   location: string;
   imageId: string;
+  rating: number;
+  reviewCount: number;
 }
