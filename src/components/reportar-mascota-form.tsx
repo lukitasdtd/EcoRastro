@@ -558,25 +558,35 @@ export function ReportarMascotaForm() {
   );
 }
 
-const MaskedInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
-  (props, ref) => {
-    const { getValues, setValue } = useFormContext();
-    const internalRef = React.useRef<HTMLInputElement>(null);
-    React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
-    const maskOptions = React.useMemo(() => ({ mask: "+{56} 9 0000 0000" }), []);
-    React.useEffect(() => {
-      if (typeof window === "undefined" || !internalRef.current) return;
-      const mask = IMask(internalRef.current, maskOptions);
-      mask.on("accept", () => {
-        if (getValues("telefono") !== mask.value) {
-          setValue("telefono", mask.value, { shouldValidate: true, shouldDirty: true });
+const MaskedInput = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps<typeof Input>, 'onChange'>>((props, ref) => {
+  const { name, onBlur, ...rest } = props;
+  const { getValues, setValue, trigger } = useFormContext();
+  const [mask, setMask] = React.useState<IMask.Masked<any> | null>(null);
+
+  const internalRef = React.useRef<HTMLInputElement | null>(null);
+
+  React.useImperativeHandle(ref, () => internalRef.current as HTMLInputElement);
+
+  React.useEffect(() => {
+    if (!internalRef.current) return;
+    const masked = IMask(internalRef.current, { mask: "+{56} 9 0000 0000" });
+    setMask(masked);
+
+    return () => {
+      masked.destroy();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (mask && name) {
+      mask.on('accept', () => {
+        if (getValues(name) !== mask.value) {
+          setValue(name, mask.value, { shouldValidate: true, shouldDirty: true });
         }
       });
-      return () => mask.destroy();
-    }, [maskOptions, getValues, setValue]);
-    return <Input ref={internalRef} inputMode="tel" autoComplete="tel" {...props} />;
-  }
-);
-MaskedInput.displayName = "MaskedInput";
+    }
+  }, [mask, name, getValues, setValue]);
 
-    
+  return <Input ref={internalRef} onBlur={(e) => { onBlur?.(e); trigger(name); }} {...rest} />;
+});
+MaskedInput.displayName = 'MaskedInput';
