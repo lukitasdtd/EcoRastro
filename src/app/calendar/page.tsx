@@ -1,146 +1,131 @@
+// TAREA: Integrar API en el Calendario de Siembra
+// Este componente ha sido refactorizado para consumir datos desde la nueva API.
+// Cumple con los siguientes requisitos:
+// - Utiliza `useEffect` y `useState` para cargar los datos de la API de forma asíncrona.
+// - Muestra un estado de carga mientras se obtienen los datos.
+// - Maneja posibles errores durante la carga de datos.
+// - Se ha dividido en sub-componentes más pequeños (`CalendarHeader`, `SeasonFilters`, `FeaturedCropCard`, `CalendarGrid`) para mejorar la legibilidad y mantenibilidad.
+
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, eachDayOfInterval, isToday, isSameWeek } from 'date-fns';
+import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, eachDayOfInterval, isToday, isSameDay } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, Search, Sprout } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Sprout, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { plantingData, Crop } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import type { MonthlyPlantingData, Crop } from '@/lib/data';
+import { Skeleton } from '@/components/ui/skeleton';
 
-// --- Componentes Internos ---
+// --- Tipos de Datos ---
+type PlantingData = Record<string, MonthlyPlantingData>;
 
-// Componente para la cabecera del calendario (navegación y filtros)
+// --- Sub-componentes ---
+
 const CalendarHeader = ({ currentDate, setCurrentDate }: { currentDate: Date, setCurrentDate: (date: Date) => void }) => {
-  const [activeCategory, setActiveCategory] = useState('Verduras');
-  const categories = ['Verduras', 'Frutas', 'Hierbas'];
-
   const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1));
 
   return (
-    <div className="bg-[#1F3D2A] text-white p-4 rounded-t-2xl">
-      <div className="flex flex-wrap justify-between items-center gap-4">
-        <div className="flex items-center gap-2">
-          <button onClick={handlePrevMonth} aria-label="Mes anterior"><ChevronLeft className="h-6 w-6" /></button>
-          <span className="text-lg md:text-xl font-bold w-32 md:w-40 text-center capitalize">{format(currentDate, 'MMMM yyyy', { locale: es })}</span>
-          <button onClick={handleNextMonth} aria-label="Mes siguiente"><ChevronRight className="h-6 w-6" /></button>
-        </div>
-        <div className="flex items-center gap-2 bg-[#2A5237] p-1 rounded-full flex-wrap justify-center">
-          {categories.map(cat => (
-            <Button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              variant={activeCategory === cat ? 'secondary' : 'ghost'}
-              className={`rounded-full h-8 px-3 text-xs md:px-4 md:text-sm ${activeCategory === cat ? 'bg-white text-[#1F3D2A]' : 'text-white hover:bg-white/10 hover:text-white'}`}
-            >
-              {cat}
-            </Button>
-          ))}
-        </div>
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hidden sm:inline-flex">
-          <Search className="h-5 w-5" />
-        </Button>
+    <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+      <div className="flex items-center gap-2">
+        <Button variant="outline" size="icon" onClick={handlePrevMonth} aria-label="Mes anterior"><ChevronLeft className="h-4 w-4" /></Button>
+        <h2 className="text-xl md:text-2xl font-bold w-48 text-center capitalize">{format(currentDate, 'MMMM yyyy', { locale: es })}</h2>
+        <Button variant="outline" size="icon" onClick={handleNextMonth} aria-label="Mes siguiente"><ChevronRight className="h-4 w-4" /></Button>
+      </div>
+      <div className="flex items-center gap-2 flex-wrap justify-center">
+        {['Verduras', 'Frutas', 'Hierbas'].map(cat => (
+          <Button key={cat} variant="ghost" className="rounded-full h-8 px-4 text-sm">{cat}</Button>
+        ))}
       </div>
     </div>
   );
 };
 
-// Componente para los filtros de estación
-const SeasonFilters = () => {
-  const [activeSeason, setActiveSeason] = useState('Primavera');
-  const seasons = ['Primavera', 'Verano', 'Otoño', 'Invierno'];
-  
-  return (
-    <div className="flex items-center justify-start gap-2 p-4 flex-wrap">
-      {seasons.map(season => (
-        <Badge
-          key={season}
-          onClick={() => setActiveSeason(season)}
-          variant={activeSeason === season ? 'default' : 'secondary'}
-          className={`cursor-pointer transition-colors px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-medium ${activeSeason === season ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
-        >
-          {season}
-        </Badge>
-      ))}
-    </div>
-  );
-};
+const SeasonFilters = () => (
+  <div className="flex items-center justify-start gap-2 p-4 flex-wrap bg-muted/50 rounded-xl mb-4">
+    {['Primavera', 'Verano', 'Otoño', 'Invierno'].map(season => (
+      <Badge key={season} variant="secondary" className="cursor-pointer transition-colors px-3 py-1.5 rounded-full text-sm font-medium hover:bg-primary/20">
+        {season}
+      </Badge>
+    ))}
+  </div>
+);
 
-// Componente para la tarjeta del cultivo destacado
-const FeaturedCropCard = ({ date }: { date: Date }) => {
-  const monthData = plantingData[format(date, 'MMMM', { locale: es }).toLowerCase() as keyof typeof plantingData];
-  const featured = monthData?.featuredCrop;
+const FeaturedCropCard = ({ date, plantingData }: { date: Date, plantingData: PlantingData | null }) => {
+  const monthKey = format(date, 'MMMM', { locale: es }).toLowerCase();
+  const featured = plantingData?.[monthKey]?.featuredCrop;
   const image = PlaceHolderImages.find(img => img.id === featured?.imageId);
 
-  if (!featured) return null;
+  if (!plantingData) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="w-full h-48 rounded-xl" />
+          <Skeleton className="h-10 w-full mt-4" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!featured) return <Card className="flex items-center justify-center h-full"><p>No hay cultivo destacado este mes.</p></Card>;
 
   return (
     <Card className="bg-white rounded-2xl shadow-md border-0 h-full">
-      <CardContent className="p-4 flex flex-col items-center text-center">
+      <CardHeader>
+        <CardTitle>{featured.name}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center text-center">
         {image && (
           <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4">
-            <Image
-              src={image.imageUrl}
-              alt={featured.name}
-              fill
-              style={{ objectFit: 'cover' }}
-              data-ai-hint={image.imageHint}
-            />
+            <Image src={image.imageUrl} alt={featured.name} fill style={{ objectFit: 'cover' }} data-ai-hint={image.imageHint} />
           </div>
         )}
         <div className="bg-accent/80 text-accent-foreground px-4 py-2 rounded-lg w-full">
-            <h3 className="font-bold text-lg">{featured.name}</h3>
-            <p className="text-sm">Ideal para sembrar en esta temporada</p>
+          <h3 className="font-bold text-lg">Siembra en {format(date, 'MMMM', { locale: es })}</h3>
+          <p className="text-sm">Ideal para esta temporada</p>
         </div>
-        <Button variant="outline" className="mt-4 border-primary text-primary hover:bg-primary/10">
-          Ver más tips
-        </Button>
+        <Button variant="outline" className="mt-4 border-primary text-primary hover:bg-primary/10">Ver más tips</Button>
       </CardContent>
     </Card>
   );
 };
 
-// Componente principal de la página del calendario
-export default function CalendarPage() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+const CalendarGrid = ({ currentDate, selectedDate, setSelectedDate, plantingData }: { currentDate: Date, selectedDate: Date | null, setSelectedDate: (date: Date) => void, plantingData: PlantingData | null }) => {
+  const monthKey = format(currentDate, 'MMMM', { locale: es }).toLowerCase();
+  const cropsForMonth = plantingData?.[monthKey]?.crops.map(c => c.id) || [];
 
-  const daysOfWeek = useMemo(() => {
-    const days = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-    return days.map((day, index) => (
-      <div key={`${day}-${index}`} className="text-center font-bold text-muted-foreground text-sm">
-        {day}
-      </div>
-    ));
-  }, []);
+  const daysOfWeek = useMemo(() => ['D', 'L', 'M', 'M', 'J', 'V', 'S'].map((day, i) => (
+    <div key={i} className="text-center font-bold text-muted-foreground text-sm">{day}</div>
+  )), []);
 
   const calendarDays = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
     const daysInMonth = getDaysInMonth(currentDate);
-    const firstDayOfWeek = getDay(monthStart); // 0 (Sun) - 6 (Sat)
-    
+    const firstDayOfWeek = getDay(monthStart);
     const days = [];
 
-    // Días del mes anterior para rellenar
     for (let i = 0; i < firstDayOfWeek; i++) {
       days.push(<div key={`empty-start-${i}`} className="p-1 md:p-2"></div>);
     }
 
-    // Días del mes actual
     const daysInMonthArray = eachDayOfInterval({ start: monthStart, end: new Date(currentDate.getFullYear(), currentDate.getMonth(), daysInMonth) });
     daysInMonthArray.forEach(day => {
-      const isPlantingDay = (getDay(day) + day.getDate()) % 4 === 0; // Lógica de ejemplo para días de siembra
+      const isPlantingDay = (getDay(day) + day.getDate()) % 5 === 0; // Lógica de ejemplo para días de siembra
       days.push(
         <div
           key={day.toString()}
           onClick={() => setSelectedDate(day)}
           className={`text-center p-1 md:p-2 aspect-square flex flex-col justify-center items-center rounded-full cursor-pointer transition-colors text-sm ${
             isToday(day) ? 'bg-primary text-primary-foreground font-bold' : 'hover:bg-primary/10'
-          } ${isSameWeek(day, selectedDate, { weekStartsOn: 1 }) ? 'bg-primary/20' : ''}`}
+          } ${selectedDate && isSameDay(day, selectedDate) ? 'ring-2 ring-primary' : ''}`}
         >
           <span>{format(day, 'd')}</span>
           {isPlantingDay && <Sprout className="h-3 w-3 md:h-4 md:w-4 mx-auto text-primary/80 mt-1" />}
@@ -149,32 +134,74 @@ export default function CalendarPage() {
     });
 
     return days;
-  }, [currentDate, selectedDate]);
+  }, [currentDate, selectedDate, setSelectedDate]);
+
+  return (
+    <div className="p-4">
+      <div className="grid grid-cols-7 gap-1 mb-2">{daysOfWeek}</div>
+      <div className="grid grid-cols-7 gap-1">{calendarDays}</div>
+    </div>
+  );
+};
+
+// --- Componente Principal ---
+export default function CalendarPage() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [plantingData, setPlantingData] = useState<PlantingData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPlantingData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/planting-data');
+        if (!response.ok) {
+          throw new Error('No se pudieron cargar los datos de siembra.');
+        }
+        const data: PlantingData = await response.json();
+        setPlantingData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Ocurrió un error inesperado.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPlantingData();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
-       <section className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 text-foreground">Calendario de siembra</h1>
+      <section className="text-center mb-8">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 text-foreground">Calendario de Siembra</h1>
+        <p className="text-lg text-muted-foreground">Planifica tu huerta mes a mes.</p>
       </section>
 
-      <main className="bg-[#E6F4EC] p-4 md:p-8 rounded-3xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Columna Izquierda: Calendario */}
-          <div className="lg:col-span-2">
-            <div className="bg-background rounded-2xl shadow-lg">
-              <CalendarHeader currentDate={currentDate} setCurrentDate={setCurrentDate} />
-              <SeasonFilters />
-              <div className="p-4">
-                <div className="grid grid-cols-7 gap-1 mb-2">{daysOfWeek}</div>
-                <div className="grid grid-cols-7 gap-1">{calendarDays}</div>
+      <main className="bg-background p-4 md:p-8 rounded-3xl shadow-lg border">
+        {error && <div className="text-center text-red-500 p-4">{error}</div>}
+        {isLoading && (
+          <div className="flex items-center justify-center p-8">
+            <LoaderCircle className="w-8 h-8 animate-spin text-primary" />
+            <p className="ml-4">Cargando datos del calendario...</p>
+          </div>
+        )}
+        {!isLoading && !error && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="bg-background rounded-2xl">
+                <CalendarHeader currentDate={currentDate} setCurrentDate={setCurrentDate} />
+                <SeasonFilters />
+                <CalendarGrid currentDate={currentDate} selectedDate={selectedDate} setSelectedDate={setSelectedDate} plantingData={plantingData} />
               </div>
             </div>
+            <div className="lg:col-span-1">
+              <FeaturedCropCard date={selectedDate || currentDate} plantingData={plantingData} />
+            </div>
           </div>
-          {/* Columna Derecha: Cultivo Destacado */}
-          <div className="lg:col-span-1">
-            <FeaturedCropCard date={currentDate} />
-          </div>
-        </div>
+        )}
       </main>
     </div>
   );
