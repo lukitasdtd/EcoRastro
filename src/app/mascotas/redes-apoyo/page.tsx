@@ -86,42 +86,42 @@ export default function SupportNetworksPage() {
           </Card>
       </div>
 
-      {/* Sección Grid Principal */}
+      {/* Sección Lugares Destacados y Mapa */}
       <section className="py-16 lg:py-24 bg-muted/20">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-12">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Lugares Destacados</h2>
+            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
+              Explora refugios y organizaciones de rescate con animales listos para encontrar un hogar.
+            </p>
+          </div>
+          <div className="min-h-[600px] lg:min-h-full">
+            <Map />
+          </div>
+        </div>
+      </section>
 
-            {/* Columna Izquierda: Listado y Paginación */}
-            <div className="lg:col-span-1 flex flex-col gap-8">
-              <div className="space-y-6">
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Listado de lugares</h2>
-                {shelters.slice(0, 3).map(shelter => (
-                  <ShelterCard key={shelter.id} shelter={shelter} />
-                ))}
-              </div>
-              <div className="flex justify-center items-center gap-2 mt-auto">
-                  <Button variant="default" size="sm" className="w-9 h-9 p-0">1</Button>
-                  <Button variant="outline" size="sm" className="w-9 h-9 p-0">2</Button>
-                  <Button variant="outline" size="sm" className="w-9 h-9 p-0">3</Button>
-                  <span className="text-muted-foreground">...</span>
-                  <Button variant="outline" size="sm" className="w-9 h-9 p-0">7</Button>
-                  <Button variant="outline" size="sm" className="w-9 h-9 p-0">8</Button>
-              </div>
-            </div>
-
-            {/* Columna Derecha: Mapa y Destacados */}
-            <div className="lg:col-span-2 space-y-12">
-              <div className="text-left mb-4">
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Lugares Destacados</h2>
-                <p className="max-w-2xl text-lg text-foreground/60 mt-2">
-                  Explora refugios y organizaciones de rescate con animales listos para encontrar un hogar.
-                </p>
-              </div>
-              <div className="min-h-[600px] lg:min-h-full">
-                <Map />
-              </div>
-            </div>
-
+      {/* Sección Listado de Lugares */}
+      <section className="py-16 lg:py-24">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Listado de lugares</h2>
+            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
+                Encuentra el refugio perfecto para apoyar o encontrar a tu próximo compañero.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {shelters.map(shelter => (
+              <ShelterCard key={shelter.id} shelter={shelter} />
+            ))}
+          </div>
+          <div className="flex justify-center items-center gap-2 mt-12">
+              <Button variant="default" size="sm" className="w-9 h-9 p-0">1</Button>
+              <Button variant="outline" size="sm" className="w-9 h-9 p-0">2</Button>
+              <Button variant="outline" size="sm" className="w-9 h-9 p-0">3</Button>
+              <span className="text-muted-foreground">...</span>
+              <Button variant="outline" size="sm" className="w-9 h-9 p-0">7</Button>
+              <Button variant="outline" size="sm" className="w-9 h-9 p-0">8</Button>
           </div>
         </div>
       </section>
