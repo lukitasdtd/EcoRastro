@@ -19,3 +19,10 @@ export interface PlantingInfo {
   month: string;
   crops: string[];
 }
+
+export interface Shelter {
+  id: string;
+  name: string;
+  location: string;
+  imageId: string;
+}

@@ -66,6 +66,12 @@
       "description": "Ilustración de árboles y raíces para el footer de la página de inicio.",
       "imageUrl": "https://picsum.photos/seed/footerbg/1920/400",
       "imageHint": "trees roots illustration"
+    },
+    {
+      "id": "shelter1",
+      "description": "La entrada de un refugio de animales.",
+      "imageUrl": "https://picsum.photos/seed/shelter1/150/150",
+      "imageHint": "animal shelter"
     }
   ]
 }

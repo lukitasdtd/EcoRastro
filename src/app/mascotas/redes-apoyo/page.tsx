@@ -15,14 +15,25 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search, List } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { useMemo } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { shelters } from '@/lib/shelter-data';
+import ShelterCard from '@/components/shelter-card';
 
 export default function SupportNetworksPage() {
+  const Map = useMemo(() => dynamic(
+    () => import('@/components/leaflet-map'),
+    { 
+      loading: () => <Skeleton className="w-full h-full rounded-2xl" />,
+      ssr: false 
+    }
+  ), []);
 
   return (
     <div className="flex flex-col">
       {/* Sección Hero */}
       <section className="relative w-full h-[500px] bg-primary/20 flex items-center justify-start text-left">
-        {/* Imagen de fondo */}
         <Image
           src="/gato-naranjo.jpg"
           alt="Un adorable gato naranjo mirando hacia arriba, sentado en un sillón"
@@ -31,18 +42,18 @@ export default function SupportNetworksPage() {
           className="brightness-50"
           priority
         />
-
-        {/* Contenido superpuesto */}
-        <div className="relative z-10 text-white p-4 md:p-12 max-w-2xl">
-           <h1 className="text-4xl md:text-6xl font-bold mb-4 !leading-tight text-shadow-md">
-              Conecta con refugios y adopta cerca de ti
-            </h1>
-            <p className="text-lg md:text-xl mb-8 text-primary-foreground/90 text-shadow">
-              Encuentra organizaciones, veterinarias y grupos de apoyo en tu comunidad.
-            </p>
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-10 py-6 text-lg font-semibold">
-              Buscar Ahora
-            </Button>
+        <div className="relative z-10 text-white container mx-auto px-4">
+           <div className="max-w-xl">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 !leading-tight text-shadow-md">
+                  Conecta con refugios y adopta cerca de ti
+                </h1>
+                <p className="text-lg md:text-xl mb-8 text-primary-foreground/90 text-shadow">
+                  Encuentra organizaciones, veterinarias y grupos de apoyo en tu comunidad.
+                </p>
+                <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-10 py-6 text-lg font-semibold">
+                  Buscar Ahora
+                </Button>
+           </div>
         </div>
       </section>
 
@@ -74,6 +85,31 @@ export default function SupportNetworksPage() {
               </CardContent>
           </Card>
       </div>
+
+      {/* Sección Lugares Destacados */}
+      <section className="py-16 lg:py-24 bg-muted/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Lugares Destacados</h2>
+            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
+              Explora refugios y organizaciones de rescate con animales listos para encontrar un hogar.
+            </p>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-12">
+            {/* Columna de Tarjetas */}
+            <div className="lg:col-span-1 space-y-6">
+              {shelters.map(shelter => (
+                <ShelterCard key={shelter.id} shelter={shelter} />
+              ))}
+            </div>
+
+            {/* Columna del Mapa */}
+            <div className="lg:col-span-2 min-h-[600px] lg:min-h-full">
+              <Map />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
