@@ -196,7 +196,9 @@ export function Header() {
                 className="w-full max-w-sm bg-primary p-0 text-white"
               >
                 <SheetHeader className="flex h-16 flex-row items-center justify-between border-b border-primary-hover px-4">
-                  <Logo />
+                  <div className="flex justify-center">
+                    <Logo />
+                  </div>
                   <SheetTitle className="sr-only">Menú Principal</SheetTitle>
                   <SheetTrigger asChild>
                     <Button
