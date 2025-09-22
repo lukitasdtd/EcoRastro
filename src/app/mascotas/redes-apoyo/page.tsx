@@ -14,30 +14,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Search, List } from 'lucide-react';
 
 export default function SupportNetworksPage() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'redes-apoyo-hero');
 
   return (
     <div className="flex flex-col">
       {/* Sección Hero */}
       <section className="relative w-full h-[500px] bg-primary/20 flex items-center justify-center text-center">
         {/* Imagen de fondo */}
-        {heroImage && (
-          <>
-            <Image
-              src={heroImage.imageUrl}
-              alt={heroImage.description}
-              fill
-              style={{ objectFit: 'cover' }}
-              className="brightness-50"
-              data-ai-hint={heroImage.imageHint}
-              priority
-            />
-          </>
-        )}
+        <Image
+          src="/gato-naranjo.jpg"
+          alt="Un adorable gato naranjo mirando hacia arriba, sentado en un sillón"
+          fill
+          style={{ objectFit: 'cover' }}
+          className="brightness-50"
+          priority
+        />
 
         {/* Contenido superpuesto */}
         <div className="relative z-10 text-white p-4 max-w-4xl mx-auto">
