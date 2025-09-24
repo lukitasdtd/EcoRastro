@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -173,9 +174,9 @@ export function Header() {
             className="hidden rounded-full border-accent text-accent hover:bg-accent hover:text-gray-900 md:flex"
             asChild
           >
-            <Link href="/login">
+            <Link href="/usuario">
               <UserCircle className="mr-2 h-5 w-5" />
-              Iniciar Sesión
+              Mi Perfil
             </Link>
           </Button>
 
