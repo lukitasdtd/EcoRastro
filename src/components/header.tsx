@@ -202,16 +202,17 @@ export function Header() {
                     <Logo />
                   </div>
                   <SheetTitle className="sr-only">Menú Principal</SheetTitle>
-                  <SheetTrigger asChild>
+                  
                     <Button
                       variant="ghost"
                       size="icon"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="text-white hover:bg-primary-hover"
                     >
                       <X className="h-6 w-6" />
                       <span className="sr-only">Cerrar menú</span>
                     </Button>
-                  </SheetTrigger>
+                  
                 </SheetHeader>
                 <ScrollArea className="flex-grow">
                   <nav className="p-4">

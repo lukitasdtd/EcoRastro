@@ -6,10 +6,6 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   {
-    label: 'Inicio',
-    href: '/',
-  },
-  {
     label: 'Mapa Interactivo',
     href: '/mapa',
   },
