@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -56,7 +57,9 @@ export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
         <p className="text-sm text-foreground/60 mt-4 line-clamp-2 flex-grow">{pet.description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full">Ver Detalles</Button>
+        <Button asChild className="w-full">
+          <Link href={`/mascotas/reporte/${pet.id}`}>Ver Detalles</Link>
+        </Button>
       </CardFooter>
     </Card>
   );

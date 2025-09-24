@@ -19,6 +19,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Menu, X, ChevronDown, UserCircle } from 'lucide-react';
 import { navItems, type NavItem } from '@/lib/menu-data';
 import { cn } from '@/lib/utils';
@@ -193,9 +194,9 @@ export function Header() {
               </SheetTrigger>
               <SheetContent
                 side="left"
-                className="w-full max-w-sm bg-primary p-0 text-white"
+                className="w-full max-w-sm bg-primary p-0 text-white flex flex-col"
               >
-                <SheetHeader className="flex h-16 flex-row items-center justify-between border-b border-primary-hover px-4">
+                <SheetHeader className="flex h-16 flex-row items-center justify-between border-b border-primary-hover px-4 flex-shrink-0">
                   <div className="flex justify-center">
                     <Logo />
                   </div>
@@ -211,62 +212,64 @@ export function Header() {
                     </Button>
                   </SheetTrigger>
                 </SheetHeader>
-                <nav className="p-4">
-                  <Accordion type="single" collapsible className="w-full">
-                    {navItems.map(item =>
-                      item.subItems ? (
-                        <AccordionItem
-                          key={item.label}
-                          value={item.label}
-                          className="border-b-0"
-                        >
-                          <AccordionTrigger className="py-3 text-lg font-medium hover:no-underline">
+                <ScrollArea className="flex-grow">
+                  <nav className="p-4">
+                    <Accordion type="single" collapsible className="w-full">
+                      {navItems.map(item =>
+                        item.subItems ? (
+                          <AccordionItem
+                            key={item.label}
+                            value={item.label}
+                            className="border-b-0"
+                          >
+                            <AccordionTrigger className="py-3 text-lg font-medium hover:no-underline">
+                              {item.label}
+                            </AccordionTrigger>
+                            <AccordionContent className="pl-4">
+                              <ul className="flex flex-col gap-2">
+                                {item.subItems.map(sub => (
+                                  <li key={sub.href}>
+                                    <Link
+                                      href={sub.href}
+                                      onClick={() => setIsMobileMenuOpen(false)}
+                                      className="block rounded-md p-2 hover:bg-primary-hover"
+                                    >
+                                      {sub.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ) : (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="block py-3 text-lg font-medium"
+                          >
                             {item.label}
-                          </AccordionTrigger>
-                          <AccordionContent className="pl-4">
-                            <ul className="flex flex-col gap-2">
-                              {item.subItems.map(sub => (
-                                <li key={sub.href}>
-                                  <Link
-                                    href={sub.href}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="block rounded-md p-2 hover:bg-primary-hover"
-                                  >
-                                    {sub.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ) : (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block py-3 text-lg font-medium"
-                        >
-                          {item.label}
-                        </Link>
-                      )
-                    )}
-                  </Accordion>
-                  <div className="mt-6 border-t border-primary-hover pt-6">
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-full border-accent text-accent hover:bg-accent hover:text-gray-900"
-                      asChild
+                          </Link>
+                        )
+                      )}
+                    </Accordion>
+                  </nav>
+                </ScrollArea>
+                <div className="mt-auto border-t border-primary-hover p-4 flex-shrink-0">
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-full border-accent text-accent hover:bg-accent hover:text-gray-900"
+                    asChild
+                  >
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <Link
-                        href="/login"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <UserCircle className="mr-2 h-5 w-5" />
-                        Iniciar Sesión
-                      </Link>
-                    </Button>
-                  </div>
-                </nav>
+                      <UserCircle className="mr-2 h-5 w-5" />
+                      Iniciar Sesión
+                    </Link>
+                  </Button>
+                </div>
               </SheetContent>
             </Sheet>
           </div>

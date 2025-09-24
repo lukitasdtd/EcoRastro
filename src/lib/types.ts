@@ -40,4 +40,11 @@ export interface ReportedPet {
   description: string;
   imageId: string;
   size: 'Pequeño' | 'Mediano' | 'Grande';
+  temperament?: string[];
+  distinguishingMarks?: string;
+  wearsCollar?: boolean;
+  reward?: boolean;
+  contactName?: string;
+  contactPhone?: string;
+  preferredContact?: 'telefono' | 'whatsapp' | 'correo';
 }
