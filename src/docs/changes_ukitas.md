@@ -62,3 +62,28 @@ Líneas agregadas en `:root`:
 ### Cambios Realizados:
 - **`src/lib/menu-data.ts`**: Se eliminó el objeto correspondiente al enlace "Inicio" del arreglo `navItems` para removerlo de la barra de navegación principal. El logo ahora es el único encargado de redirigir a la página de inicio.
 - **`src/components/header.tsx`**: Se corrigió la duplicación del ícono de cierre (X) en el menú lateral para dispositivos móviles. Se eliminó un componente `SheetTrigger` redundante que envolvía el botón de cierre, solucionando el problema.
+
+---
+
+## Sesión 4 (17/07/2024): Funcionalidad de Geolocalización en Formulario de Reporte
+
+### Archivos Modificados:
+- `src/components/location-picker.tsx` (Nuevo)
+- `src/components/leaflet-map-draggable.tsx`
+- `src/components/reportar-mascota-form.tsx`
+
+### Cambios Realizados:
+- **`src/components/location-picker.tsx` (Nuevo):**
+  - Se creó un nuevo componente para encapsular el mapa y la lógica de geolocalización.
+  - Añade un botón "Usar mi ubicación" que, al ser presionado, solicita permiso al usuario para acceder a su ubicación a través del navegador.
+  - Muestra notificaciones (`toasts`) para informar al usuario sobre el estado de la búsqueda (éxito o error).
+
+- **`src/components/leaflet-map-draggable.tsx`:**
+  - Se refactorizó el componente para que sea "controlado", aceptando una propiedad `position` desde su componente padre (`LocationPicker`).
+  - El mapa ahora centra su vista y actualiza la posición del marcador cuando la propiedad `position` cambia.
+  - Se eliminó la lógica de geolocalización y los elementos de la UI duplicados que ahora son manejados por `LocationPicker`.
+
+- **`src/components/reportar-mascota-form.tsx`:**
+  - Se reemplazó el uso directo de `LeafletMapDraggable` por el nuevo componente `LocationPicker`.
+  - Esto integra la nueva funcionalidad de "Usar mi ubicación" directamente en el formulario de reporte de mascotas, mejorando la experiencia de usuario al permitirle establecer fácilmente la ubicación del reporte.
+

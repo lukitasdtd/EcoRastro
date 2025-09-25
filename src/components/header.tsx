@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import Link from 'next/link';
@@ -203,15 +201,8 @@ export function Header() {
                     <Logo />
                   </div>
                   <SheetTitle className="sr-only">Menú Principal</SheetTitle>
-                   <SheetClose asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-white hover:bg-primary-hover"
-                    >
-                      <X className="h-6 w-6" />
-                      <span className="sr-only">Cerrar menú</span>
-                    </Button>
+                  {/* Corrected: Removed the redundant trigger around the close button */}
+                  <SheetClose asChild>
                   </SheetClose>
                 </SheetHeader>
                 <ScrollArea className="flex-grow">

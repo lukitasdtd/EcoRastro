@@ -2,26 +2,26 @@
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
-import React, { useEffect, useRef, useState } from 'react';
-import { LocateFixed, MapPin } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { Map, Marker, LatLngTuple } from 'leaflet';
 
-
 interface DraggableMapProps {
     onLocationChange: (lat: number, lng: number) => void;
+    // Prop para controlar la posición del marcador desde el componente padre
+    position: LatLngTuple | null;
 }
 
-export default function LeafletMapDraggable({ onLocationChange }: DraggableMapProps) {
+export default function LeafletMapDraggable({ onLocationChange, position }: DraggableMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<Map | null>(null);
   const markerRef = useRef<Marker | null>(null);
   const { toast } = useToast();
 
-  const initialCenter: LatLngTuple = [-33.4489, -70.6693]; 
-  const initialZoom = 13;
+  const defaultCenter: LatLngTuple = [-33.4489, -70.6693]; 
+  const defaultZoom = 13;
   
+  // Efecto para inicializar el mapa
   useEffect(() => {
     let isMounted = true;
     if (mapRef.current && !mapInstance.current) {
@@ -31,9 +31,11 @@ export default function LeafletMapDraggable({ onLocationChange }: DraggableMapPr
       ]).then(([L]) => {
         if (!isMounted || !mapRef.current) return;
 
+        const initialCenter = position || defaultCenter;
+
         mapInstance.current = L.map(mapRef.current, {
           center: initialCenter,
-          zoom: initialZoom,
+          zoom: defaultZoom,
           zoomControl: false,
         });
 
@@ -45,11 +47,15 @@ export default function LeafletMapDraggable({ onLocationChange }: DraggableMapPr
 
         const marker = L.marker(initialCenter, { draggable: true }).addTo(mapInstance.current);
         markerRef.current = marker;
-        onLocationChange(initialCenter[0], initialCenter[1]);
+
+        // Informar a la Ficha de Reporte sobre la ubicación inicial
+        if(!position) {
+            onLocationChange(initialCenter[0], initialCenter[1]);
+        }
 
         marker.on('dragend', function (event) {
-          const position = event.target.getLatLng();
-          onLocationChange(position.lat, position.lng);
+          const newPosition = event.target.getLatLng();
+          onLocationChange(newPosition.lat, newPosition.lng);
         });
       }).catch(error => {
         console.error("Error al cargar Leaflet:", error);
@@ -61,6 +67,7 @@ export default function LeafletMapDraggable({ onLocationChange }: DraggableMapPr
       });
     }
     
+    // Limpieza al desmontar el componente
     return () => {
       isMounted = false;
       if (mapInstance.current) {
@@ -68,41 +75,25 @@ export default function LeafletMapDraggable({ onLocationChange }: DraggableMapPr
         mapInstance.current = null;
       }
     };
-  }, [onLocationChange, toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
 
-  const handleGeolocate = () => {
-    if (navigator.geolocation && mapInstance.current && markerRef.current) {
+  // Efecto para manejar actualizaciones de la posición desde el padre
+  useEffect(() => {
+    if (position && mapInstance.current && markerRef.current) {
       const map = mapInstance.current;
       const marker = markerRef.current;
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const pos: LatLngTuple = [position.coords.latitude, position.coords.longitude];
-          map.flyTo(pos, 16);
-          marker.setLatLng(pos);
-          onLocationChange(pos[0], pos[1]);
-        },
-        () => {
-          toast({
-            variant: 'destructive',
-            title: 'Permiso de ubicación denegado',
-            description: 'No pudimos acceder a tu ubicación. Puedes arrastrar el marcador manualmente.',
-          });
-        }
-      );
+      const currentMarkerPos = marker.getLatLng();
+      
+      if (position[0] !== currentMarkerPos.lat || position[1] !== currentMarkerPos.lng) {
+        map.flyTo(position, 16);
+        marker.setLatLng(position);
+      }
     }
-  };
+  }, [position]);
 
+  // El renderizado ahora es más simple, solo muestra el div del mapa
   return (
-    <div className="w-full h-full relative">
-        <div ref={mapRef} className="w-full h-full z-0 rounded-md" role="region" aria-label="Mapa para seleccionar ubicación" />
-        <div className="absolute top-2 right-2 z-10">
-           <Button type="button" size="icon" onClick={handleGeolocate} aria-label="Usar mi ubicación actual">
-                <LocateFixed className="w-5 h-5"/>
-           </Button>
-        </div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-10 pointer-events-none">
-            <MapPin className="w-8 h-8 text-primary drop-shadow-lg" />
-        </div>
-    </div>
+    <div ref={mapRef} className="w-full h-full z-0 rounded-md" role="region" aria-label="Mapa para seleccionar ubicación" />
   );
 }
