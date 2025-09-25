@@ -112,3 +112,4 @@ Esta fue la funcionalidad más compleja implementada. Se creó una página de ch
     *   **Conectar la UI con el Backend:** Reemplazar los datos simulados por llamadas a una API real.
 
 Este enfoque de **"UI primero"** ha permitido desarrollar y refinar la interfaz de forma rápida y visual, estableciendo una base sólida sobre la cual construir la lógica del servidor.
+
