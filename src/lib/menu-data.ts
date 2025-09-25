@@ -32,6 +32,10 @@ export const navItems: NavItem[] = [
     ],
   },
   {
+    label: 'Mensajes',
+    href: '/mensajes',
+  },
+  {
     label: 'Huertas',
     href: '/gardens',
     subItems: [
@@ -42,6 +46,10 @@ export const navItems: NavItem[] = [
       {
         label: 'Calendario de Siembra',
         href: '/calendar',
+      },
+      {
+        label: 'Formulario de Huerta',
+        href: '/huertas/formulario-huerta',
       },
     ],
   },
