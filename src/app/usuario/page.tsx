@@ -8,12 +8,12 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { reportedPets } from "@/lib/data";
 import ReportedPetCard from "@/components/reported-pet-card";
-import { Heart, Bell } from "lucide-react";
+import { PawPrint, Sprout } from "lucide-react";
 import { EditProfileDialog } from "@/components/edit-profile-dialog";
 
 export default function UserProfilePage() {
 
-    // Updated user state that can be changed by the dialog
+    // Estado del usuario que puede ser modificado por el diálogo de edición
     const [user, setUser] = useState({
         firstName: "Juan",
         lastName: "Pérez",
@@ -23,9 +23,12 @@ export default function UserProfilePage() {
         avatarUrl: "https://github.com/shadcn.png"
     });
 
+    // Datos de ejemplo para las mascotas reportadas por el usuario
     const userReports = reportedPets.slice(0, 2);
+    // Contador de ejemplo para las huertas (será dinámico en el futuro)
+    const gardenPublicationsCount = 0;
     
-    // This function will be called by the dialog to update the user state
+    // Función para actualizar el estado del usuario desde el diálogo
     const handleProfileUpdate = (updatedData: Partial<typeof user>) => {
         setUser(currentUser => ({...currentUser, ...updatedData}));
     };
@@ -34,7 +37,7 @@ export default function UserProfilePage() {
         <div className="container mx-auto px-4 py-8 md:py-12">
             
             {/* Encabezado del Perfil */}
-            <header className="flex flex-col md:flex-row items-center gap-6 md:gap-8 mb-12">
+            <header className="flex flex-col md:flex-row items-center gap-6 md:gap-8 mb-8">
                 <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-primary">
                     <AvatarImage src={user.avatarUrl} alt={`${user.firstName} ${user.lastName}`} />
                     <AvatarFallback>{user.firstName.charAt(0)}</AvatarFallback>
@@ -45,30 +48,41 @@ export default function UserProfilePage() {
                     <p className="text-sm text-muted-foreground mt-1">Miembro desde {new Date(user.memberSince).toLocaleDateString('es-CL', { year: 'numeric', month: 'long' })}</p>
                 </div>
                 <div className="md:ml-auto flex gap-2">
-                    {/* Replace the old button with the new Dialog component */}
                     <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
                 </div>
             </header>
 
-            {/* Contenido Principal con Pestañas - Se elimina la de configuracion */}
+            {/* Sección de Contadores */}
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <Card className="flex flex-col items-center justify-center p-6 bg-secondary/10">
+                    <CardTitle className="text-4xl font-bold">{userReports.length}</CardTitle>
+                    <p className="text-muted-foreground mt-2">Publicaciones de Mascotas</p>
+                </Card>
+                <Card className="flex flex-col items-center justify-center p-6 bg-secondary/10">
+                    <CardTitle className="text-4xl font-bold">{gardenPublicationsCount}</CardTitle>
+                    <p className="text-muted-foreground mt-2">Publicaciones de Huertas</p>
+                </Card>
+            </section>
+
+            {/* Contenido Principal con Pestañas para Mascotas y Huertas */}
             <main>
-                <Tabs defaultValue="reports" className="w-full">
+                <Tabs defaultValue="mascotas" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto h-auto mb-8">
-                        <TabsTrigger value="reports">
-                            <Bell className="mr-2 h-4 w-4" />
-                            Mis Reportes
+                        <TabsTrigger value="mascotas">
+                            <PawPrint className="mr-2 h-4 w-4" />
+                            Mis Mascotas
                         </TabsTrigger>
-                        <TabsTrigger value="favorites">
-                            <Heart className="mr-2 h-4 w-4" />
-                            Mis Favoritos
+                        <TabsTrigger value="huertas">
+                            <Sprout className="mr-2 h-4 w-4" />
+                            Mis Huertas
                         </TabsTrigger>
                     </TabsList>
 
-                    {/* Pestaña de Reportes */}
-                    <TabsContent value="reports">
+                    {/* Pestaña de Mascotas */}
+                    <TabsContent value="mascotas">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Mascotas Reportadas</CardTitle>
+                                <CardTitle>Publicaciones de Mascotas</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 {userReports.length > 0 ? (
@@ -79,23 +93,24 @@ export default function UserProfilePage() {
                                     </div>
                                 ) : (
                                     <div className="text-center py-12 text-muted-foreground">
-                                        <p>Aún no has reportado ninguna mascota.</p>
-                                        <Button variant="link" className="mt-2">Reportar una mascota</Button>
+                                        <p>Aún no has realizado publicaciones sobre mascotas.</p>
+                                        <Button variant="link" className="mt-2">Crear una nueva publicación</Button>
                                     </div>
                                 )}
                             </CardContent>
                         </Card>
                     </TabsContent>
 
-                    {/* Pestaña de Favoritos */}
-                    <TabsContent value="favorites">
+                    {/* Pestaña de Huertas */}
+                    <TabsContent value="huertas">
                          <Card>
                             <CardHeader>
-                                <CardTitle>Mis Favoritos</CardTitle>
+                                <CardTitle>Publicaciones de Huertas</CardTitle>
                             </CardHeader>
                             <CardContent className="text-center py-12 text-muted-foreground">
-                                <p>Aún no has guardado ningún favorito.</p>
-                                <p className="text-sm">Explora las mascotas en adopción o las huertas para agregar a tus favoritos.</p>
+                                <p>Aún no has realizado publicaciones sobre huertas.</p>
+                                <p className="text-sm">Aquí aparecerán las huertas que registres en la comunidad.</p>
+                                <Button variant="link" className="mt-2">Crear una nueva publicación</Button>
                             </CardContent>
                         </Card>
                     </TabsContent>
