@@ -9,6 +9,7 @@ import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -202,7 +203,7 @@ export function Header() {
                     <Logo />
                   </div>
                   <SheetTitle className="sr-only">Menú Principal</SheetTitle>
-                  <SheetTrigger asChild>
+                   <SheetClose asChild>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -211,7 +212,7 @@ export function Header() {
                       <X className="h-6 w-6" />
                       <span className="sr-only">Cerrar menú</span>
                     </Button>
-                  </SheetTrigger>
+                  </SheetClose>
                 </SheetHeader>
                 <ScrollArea className="flex-grow">
                   <nav className="p-4">
