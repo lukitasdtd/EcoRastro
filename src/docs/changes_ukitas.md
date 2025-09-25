@@ -50,3 +50,15 @@ Líneas agregadas en `:root`:
 --accent-foreground: 240 10% 3.9%;
 --secondary: 158 19% 12%; /* #182722 */
 ```
+
+---
+
+## Sesión 3: Correcciones en el Navbar y Menú Móvil
+
+### Archivos Modificados:
+- `src/lib/menu-data.ts`
+- `src/components/header.tsx`
+
+### Cambios Realizados:
+- **`src/lib/menu-data.ts`**: Se eliminó el objeto correspondiente al enlace "Inicio" del arreglo `navItems` para removerlo de la barra de navegación principal. El logo ahora es el único encargado de redirigir a la página de inicio.
+- **`src/components/header.tsx`**: Se corrigió la duplicación del ícono de cierre (X) en el menú lateral para dispositivos móviles. Se eliminó un componente `SheetTrigger` redundante que envolvía el botón de cierre, solucionando el problema.
