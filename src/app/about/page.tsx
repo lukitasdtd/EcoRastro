@@ -1,131 +1,141 @@
-// TAREA 5: Proyecto Base React - Componentes
-// Este archivo demuestra la creación de un componente de React para la página "Acerca de Nosotros".
-// Cumple con los siguientes requisitos del sprint:
-// - Es un componente de React funcional, no una página HTML estática (Punto 5).
-// - Utiliza componentes reutilizables de ShadCN/UI como Card, lo que demuestra la modularidad (Punto 6).
-// - El diseño es responsivo gracias a las clases de Tailwind CSS (ej. `grid`, `md:grid-cols-2`), cumpliendo con el avance en responsividad (Punto 4).
-// - Renderiza dinámicamente una lista de miembros del equipo a partir de un array, una práctica común en React.
 
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Users, Target, Leaf } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Instagram, Twitter, Mail } from 'lucide-react';
 
 export default function AboutPage() {
-  // Se busca la imagen de héroe desde un archivo de datos centralizado.
-  const heroImage = PlaceHolderImages.find(img => img.id === 'garden1');
-
-  // Se define un array de objetos para los miembros del equipo.
-  // Esto permite renderizar la sección dinámicamente usando `map`.
-  const teamMembers = [
-    { name: 'Javiera López', role: 'Miembro del Equipo' },
-    { name: 'Geraldine Garces', role: 'Miembro del Equipo' },
-    { name: 'Diego Alfaro', role: 'Miembro del Equipo' },
-    { name: 'Carolina Fernandez', role: 'Miembro del Equipo' },
-    { name: 'Angelo Jimenez', role: 'Miembro del Equipo' },
-  ];
-
-  // La estructura de la página utiliza JSX, que es similar a HTML pero permite incrustar lógica de JavaScript.
   return (
-    <div className="flex flex-col">
-      {/* --- Sección Héroe --- */}
-      {/* El uso de `relative` y `absolute` es una técnica estándar para superponer texto sobre una imagen. */}
-      <section className="relative w-full h-80 bg-secondary/30">
-        {heroImage && (
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill // `fill` hace que la imagen cubra todo el contenedor padre.
-            style={{ objectFit: 'cover' }} // `object-fit` asegura que la imagen no se deforme.
-            className="brightness-75" // Clase de Tailwind para oscurecer la imagen y mejorar la legibilidad del texto.
-            data-ai-hint={heroImage.imageHint}
-          />
-        )}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Sobre EcoRastro
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl">
-            Conectando comunidades para un futuro más verde y solidario.
+    <div className="relative bg-[#E5E5E5] min-h-screen">
+      {/* Fondo de página con opacidad */}
+      <Image
+        src="/three.png"
+        alt="Fondo de página"
+        fill
+        className="object-cover opacity-10 -z-10"
+      />
+      <main className="container mx-auto px-4 py-12">
+        <section className="text-center">
+          <div className="inline-block">
+            <Image
+              src="/ecorastro logo transparente.png"
+              alt="EcoRastro Logo"
+              width={150}
+              height={150}
+              className="mx-auto"
+            />
+          </div>
+          <h1 className="text-5xl font-bold text-gray-800 mt-4">Quienes Somos</h1>
+          <p className="text-xl text-gray-600 mt-2">
+            "Unimos corazones para devolver a las mascotas su hogar".
           </p>
-        </div>
-      </section>
+        </section>
 
-      {/* --- Sección Misión y Visión --- */}
-      {/* Se utiliza `grid` y `md:grid-cols-2` para crear un diseño de dos columnas en pantallas medianas y grandes, y una sola columna en móviles. */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl font-bold mb-4">Nuestra Misión</h2>
-            <p className="text-foreground/80 text-lg mb-6">
-              Facilitar la conexión entre personas, mascotas y la naturaleza a través de una plataforma tecnológica que promueve la adopción, el cuidado de mascotas perdidas y la agricultura urbana sostenible. Buscamos fortalecer los lazos comunitarios y proteger nuestros ecosistemas locales.
+        {/* Sección "Quienes Somos" con imagen y texto */}
+        <section className="mt-12 flex flex-col md:flex-row items-center gap-12">
+          <div className="md:w-1/3 h-64 md:h-auto">
+            <Image
+              src="/catcito.png"
+              alt="Gato de la comunidad"
+              width={400}
+              height={400}
+              className="rounded-lg object-cover w-full h-full transform transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+          <div className="md:w-2/3 bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+            <p className="text-lg text-gray-700">
+              En EcoRastro creemos que cada mascota es parte de la familia. Nacimos con el propósito de ayudar en la búsqueda y rescate de animales perdidos, conectando a dueños y comunidad a través de la tecnología y la solidaridad.
+            </p>
+            <p className="text-lg text-gray-700 mt-4">
+              Nuestra misión es brindar un espacio seguro y confiable donde compartir información, difundir casos y movilizar a las personas para que ninguna mascota quede atrás.
+            </p>
+            <p className="text-lg text-gray-700 mt-4">
+              Soñamos con una comunidad unida, donde la empatía, la responsabilidad y el amor por los animales nos guíen en cada paso.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-6">
-             {/* Se reutiliza el componente `Card` para mostrar la Visión y los Valores. */}
-             <Card>
-              <CardHeader className="flex-row items-center gap-4">
-                <Target className="w-8 h-8 text-primary" />
-                <CardTitle>Visión</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-foreground/80">Ser la plataforma líder que inspire y movilice a las comunidades a crear entornos más conscientes, empáticos y ecológicos.</p>
-              </CardContent>
-            </Card>
-             <Card>
-              <CardHeader className="flex-row items-center gap-4">
-                <Leaf className="w-8 h-8 text-primary" />
-                <CardTitle>Valores</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-foreground/80 space-y-1">
-                    <li>Comunidad</li>
-                    <li>Sostenibilidad</li>
-                    <li>Empatía</li>
-                    <li>Innovación</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* --- Sección Equipo --- */}
-      <section className="bg-muted/40 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2">Conoce al Equipo</h2>
-          <p className="max-w-2xl mx-auto text-lg text-foreground/60 mb-12">
-            Somos un grupo apasionado por la tecnología y el impacto social positivo.
+        <section id="sobre-ecorastro" className="mt-16 bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">¿Qué es EcoRastro?</h2>
+          <p className="text-lg text-gray-700">
+            EcoRastro es una plataforma dedicada al rescate y reencuentro de mascotas. 
+            Nuestro objetivo es darles visibilidad a los animales perdidos para que puedan 
+            regresar a sus hogares, y también apoyar a aquellos que buscan un nuevo 
+            comienzo en una familia responsable y cariñosa.
           </p>
-          {/* Diseño de cuadrícula responsiva para los miembros del equipo. */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
-            {/* Se itera sobre el array `teamMembers` con `.map()` para renderizar una tarjeta por cada miembro. */}
-            {teamMembers.map((member) => {
-              // Lógica para separar nombre y apellido.
-              const nameParts = member.name.split(' ');
-              const firstName = nameParts[0];
-              const lastName = nameParts.slice(1).join(' ');
-              return (
-                <Card key={member.name} className="text-center">
-                  <CardHeader>
-                    <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
-                      <Users className="h-10 w-10 text-primary" />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardTitle className="text-xl leading-tight">
-                      {firstName}
-                      <br />
-                      {lastName}
-                    </CardTitle>
-                    <p className="text-primary font-semibold mt-1">{member.role}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+
+          <h2 className="text-3xl font-bold text-gray-800 mt-8 mb-4">¿Qué buscamos?</h2>
+          <p className="text-lg text-gray-700">
+            Buscamos crear una red de apoyo entre personas, rescatistas y organizaciones, 
+            para que ninguna mascota se quede atrás. Queremos facilitar la conexión entre 
+            quienes han perdido a sus compañeros y quienes los encuentran, además de 
+            fomentar la adopción consciente y el respeto hacia todos los seres vivos.
+          </p>
+        </section>
+
+        {/* Sección de Huertas con texto al lado */}
+        <section className="mt-16 flex flex-col md:flex-row items-center gap-12">
+          <div className="md:w-1/2">
+             <Image
+              src="/huertas.jpg"
+              alt="Huertas de la comunidad"
+              width={500}
+              height={500}
+              className="rounded-lg shadow-md object-contain transform transition-transform duration-300 hover:scale-105"
+            />
           </div>
-        </div>
-      </section>
+          <div className="md:w-1/2 bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Nuestras Huertas Comunitarias</h2>
+            <p className="text-lg text-gray-700">
+              Las huertas no solo nos entregan alimentos frescos y saludables, sino que 
+              también fortalecen los lazos entre vecinos, promueven el respeto por la 
+              naturaleza y nos enseñan el valor de la autogestión. Queremos motivar a cada 
+              persona a reconectarse con la tierra, aprovechar los recursos disponibles y 
+              compartir los frutos con la comunidad.
+            </p>
+          </div>
+        </section>
+
+        <section className="mt-16 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Nuestro Equipo</h2>
+          <div className="flex justify-center">
+            <Image
+              src="/team-photo.jpg"
+              alt="Equipo de desarrollo de EcoRastro"
+              width={800}
+              height={600}
+              className="rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </section>
+        
+        <section className="mt-16 text-center">
+          <h2 className="text-3xl font-bold text-gray-800">Contactanos</h2>
+          <div className="flex justify-center gap-8 mt-6">
+            <a href="https://www.instagram.com/ecorastro_cl" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-lg text-gray-700 hover:text-primary">
+              <Instagram />
+              <span>Ecorastro_cl</span>
+            </a>
+            <a href="https://twitter.com/ecorastro" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-lg text-gray-700 hover:text-primary">
+              <Twitter />
+              <span>Ecorastro</span>
+            </a>
+            <a href="mailto:contacto@ecorastro.cl" className="flex items-center gap-2 text-lg text-gray-700 hover:text-primary">
+              <Mail />
+              <span>Contacto@ecorastro.cl</span>
+            </a>
+          </div>
+        </section>
+
+        {/* Sección para la imagen que se superpone al footer */}
+        <section className="relative z-10 -mb-16 flex justify-center">
+            <Image
+              src="/cat-dog2.png"
+              alt="Gatos y Perros de la comunidad"
+              width={720}
+              height={180}
+              className="mx-auto"
+            />
+        </section>
+      </main>
     </div>
   );
 }
