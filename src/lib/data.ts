@@ -1,3 +1,4 @@
+
 import type { Pet, Garden, PlantingInfo, Shelter, ReportedPet } from '@/lib/types';
 
 export interface Crop {
@@ -45,6 +46,10 @@ export const reportedPets: ReportedPet[] = [
     contactName: 'Carlos',
     contactPhone: '+56912345678',
     preferredContact: 'telefono',
+    comments: [
+        { id: 'c1', author: 'Elena', date: '2024-07-16T10:30:00Z', location: 'Parque Bustamante, Providencia', comment: 'Creo que lo vi corriendo cerca de los juegos para niños. No estoy 100% segura, pero se parecía mucho.' },
+        { id: 'c2', author: 'Javier', date: '2024-07-16T18:45:00Z', location: 'Av. Francisco Bilbao con Bustamante', comment: 'Vi a un perro que podría ser Max, estaba olfateando cerca de una panadería. Parecía asustado.' },
+    ]
   },
   { 
     id: 'rp2', 

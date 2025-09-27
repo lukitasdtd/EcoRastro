@@ -1,3 +1,4 @@
+
 export interface Pet {
   id: string;
   name: string;
@@ -29,6 +30,15 @@ export interface Shelter {
   reviewCount: number;
 }
 
+// Interfaz para un comentario individual
+export interface PetComment {
+  id: string;
+  author: string;
+  date: string; // Formato ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+  location: string; // "Ciudad, Región"
+  comment: string;
+}
+
 export interface ReportedPet {
   id: string;
   name: string;
@@ -47,4 +57,5 @@ export interface ReportedPet {
   contactName?: string;
   contactPhone?: string;
   preferredContact?: 'telefono' | 'whatsapp' | 'correo';
+  comments?: PetComment[]; // Array de comentarios
 }

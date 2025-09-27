@@ -1,3 +1,4 @@
+
 // TAREA 9: Página de Detalle Dinámica (CRUD - Read)
 // Esta es una página de "Ruta Dinámica" en Next.js. El `[id]` en el nombre de la carpeta
 // significa que la página puede manejar cualquier ruta como `/mascotas/reporte/rp1`, `/mascotas/reporte/rp2`, etc.
@@ -10,10 +11,9 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { CommentForm } from '@/components/pets/comment-form'; // Importamos el nuevo componente
 import {
-  MapPin, CalendarDays, PawPrint, CheckCircle, XCircle, Phone, MessageSquare, Mail, Award, Info
+  MapPin, CalendarDays, PawPrint, CheckCircle, XCircle, Phone, MessageSquare, Award, Info
 } from 'lucide-react';
 
 // `generateStaticParams` es una función de Next.js que pre-renderiza estas páginas en el momento de la construcción (build).
@@ -75,10 +75,10 @@ export default function ReporteDetallePage({ params }: { params: { id: string } 
             </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* --- Columna Izquierda: Imagen y Contacto --- */}
-          <div className="space-y-8">
+          {/* --- Columna Izquierda: Imagen, Contacto y Comentarios --- */}
+          <div className="lg:col-span-1 space-y-8">
             <Card className="overflow-hidden shadow-lg">
                 <div className="relative w-full aspect-video">
                 {image && (
@@ -117,10 +117,34 @@ export default function ReporteDetallePage({ params }: { params: { id: string } 
                     </div>
                 </CardContent>
             </Card>
+
+            {/* --- Historial de Comentarios --- */}
+            {pet.comments && pet.comments.length > 0 && (
+              <Card className="shadow-md">
+                <CardHeader>
+                  <CardTitle>Historial de comentarios</CardTitle>
+                  <CardDescription>
+                    Estas personas han visto a {pet.name}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {pet.comments.map((comment) => (
+                    <div key={comment.id} className="border-l-2 border-primary pl-4">
+                        <p className="font-semibold text-sm text-foreground">
+                            {comment.location} - {new Date(comment.date).toLocaleString('es-CL', { timeStyle: 'short', dateStyle: 'short' })}
+                        </p>
+                        <p className="text-muted-foreground text-sm mt-1">
+                            "{comment.comment}"
+                        </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
-          {/* --- Columna Derecha: Detalles y Comentarios --- */}
-          <div className="space-y-8">
+          {/* --- Columna Derecha: Detalles y Formulario de Comentarios --- */}
+          <div className="lg:col-span-2 space-y-8">
             <Card className="shadow-md">
                 <CardHeader>
                     <CardTitle>Detalles del Reporte</CardTitle>
@@ -155,21 +179,9 @@ export default function ReporteDetallePage({ params }: { params: { id: string } 
                 </CardContent>
             </Card>
 
-            <Card className="shadow-md">
-                <CardHeader>
-                    <CardTitle>Comentarios de la Comunidad</CardTitle>
-                    <CardDescription>¿Has visto a {pet.name}? Deja un comentario aquí.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                     <form className="space-y-4">
-                        <div>
-                            <Label htmlFor="comment" className="sr-only">Comentario</Label>
-                            <Textarea id="comment" placeholder="Escribe tu comentario o avistamiento..." rows={4}/>
-                        </div>
-                        <Button>Publicar Comentario</Button>
-                    </form>
-                </CardContent>
-            </Card>
+            {/* --- Formulario de Comentarios (reemplazado por el componente de cliente) --- */}
+            <CommentForm petName={pet.name} />
+
           </div>
 
         </div>
