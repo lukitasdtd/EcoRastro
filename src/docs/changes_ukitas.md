@@ -1,7 +1,37 @@
 # Historial de Cambios - Rama "ukitas"
 
 Este documento registra las modificaciones realizadas en la rama "ukitas".
+
 ---
+
+## Sesión 1: Ajustes en la Página de Perfil de Mascota
+
+### Archivos Modificados:
+- `src/app/mascotas/reporte/[id]/page.tsx`
+
+### Cambios Realizados:
+- Se mejoró el diseño de la página de detalle de la mascota.
+
+--- 
+
+## Sesión 2: Actualización de la Paleta de Colores
+
+### Archivos Modificados:
+- `src/app/globals.css`
+
+### Cambios Realizados:
+- Se actualizó la paleta de colores de la aplicación.
+
+---
+
+## Sesión 3: Correcciones en el Navbar y Menú Móvil
+
+### Archivos Modificados:
+- `src/lib/menu-data.ts`
+- `src/components/header.tsx`
+
+### Cambios Realizados:
+- Se realizaron ajustes visuales y funcionales en la navegación principal.
 
 ## Sesión 4 
 ##  Funcionalidad de Geolocalización en Formulario de Reporte
@@ -53,36 +83,8 @@ Este documento registra las modificaciones realizadas en la rama "ukitas".
 - Se añadió `useState` para gestionar el estado de cada uno de los campos del formulario.
 - Se consolidó la lógica de validación en una única condición (`isFormValid`) que verifica que todos los campos estén llenos y que el RUT sea válido.
 - El botón "Crear Cuenta" ahora permanece deshabilitado (`disabled`) hasta que se cumplan todas las condiciones, asegurando la integridad de los datos enviados.
----
-
-## Sesión 3: Correcciones en el Navbar y Menú Móvil
-
-### Archivos Modificados:
-- `src/lib/menu-data.ts`
-- `src/components/header.tsx`
-
-### Cambios Realizados:
-- Se realizaron ajustes visuales y funcionales en la navegación principal.
 
 ---
-
-## Sesión 2: Actualización de la Paleta de Colores
-
-### Archivos Modificados:
-- `src/app/globals.css`
-
-### Cambios Realizados:
-- Se actualizó la paleta de colores de la aplicación.
-
----
-
-## Sesión 1: Ajustes en la Página de Perfil de Mascota
-
-### Archivos Modificados:
-- `src/app/mascotas/reporte/[id]/page.tsx`
-
-### Cambios Realizados:
-- Se mejoró el diseño de la página de detalle de la mascota.
 
 ## Sesión 5: Mejoras en la Página de Reporte y Comentarios
 
