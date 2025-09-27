@@ -1,39 +1,47 @@
+# Historial de Contribuciones Definitivas - Geraldine Garcés
 
+Este documento resume las contribuciones clave, basadas en el historial de commits, realizadas por geraldine.garces@soymas.cl al proyecto EcoRastro.
 
+---
 
+### 1. Implementación de Diseño Responsivo (Responsive Design)
 
+- **Resumen:** Se realizó un trabajo exhaustivo y continuo para asegurar que toda la aplicación fuera completamente funcional y se viera bien en diferentes tamaños de pantalla, desde dispositivos móviles hasta computadoras de escritorio.
+- **Detalles Clave:**
+    - Se abordaron y solucionaron de manera iterativa los problemas de responsividad en múltiples componentes, incluyendo la página de inicio y las secciones de contenido.
+- **Commits Relevantes:** `65d0c85`, `0b66245`, `9915faf`, `0ff68b7`
 
+---
 
-ACTUALIZACIÓN MAPA INTERACTIVO en rama perfeccionar-mapa 
+### 2. Creación y Expansión de la Sección Educativa
 
-1. Activación de Enlaces en el Mapa:
--Se modificó el componente principal del mapa (src/app/mapa/page.tsx) para generar enlaces únicos y dinámicos para cada huerta y reporte de mascota.
-Por ejemplo, "Huerta Comunitaria Ñuñoa" ahora dirige a /huertas/huerta-comunitaria-nunoa.
-2. Creación de Plantillas de Página Dinámicas:
--Se crearon dos nuevos archivos de plantilla que actúan como "moldes" para las páginas de detalle:
-src/app/huertas/[slug]/page.tsx: Muestra la información detallada de una huerta específica.
-src/app/mascotas/[slug]/page.tsx: Muestra la información detallada de un reporte de mascota.
--Estas páginas extraen el slug de la URL para buscar y mostrar la información correcta desde nuestra lista de datos de prueba.
-3. Optimización con Generación de Páginas Estáticas:
--Ambas plantillas utilizan la función generateStaticParams de Next.js. Esto le indica a Next.js que debe crear estas páginas de detalle como archivos HTML estáticos durante el proceso de construcción, lo que resulta en una velocidad de carga casi instantánea para el usuario final.
+- **Resumen:** Se creó desde cero el pilar educativo de la aplicación, desarrollando contenido valioso para los usuarios en dos áreas principales.
+- **Detalles Clave:**
+    - **Educación sobre Huertas:**
+        - Se creó la página `src/app/huerta/educacion/page.tsx`.
+        - La sección se hizo interactiva mediante la implementación de `Accordions` para las guías paso a paso.
+        - Se añadió contenido detallado sobre los materiales necesarios, pasos esenciales y consejos.
+    - **Educación sobre Fauna Silvestre:**
+        - Se propuso y creó una sección completamente nueva para la fauna silvestre.
+        - Se investigaron opciones de APIs y se añadió contenido e imágenes para educar a los usuarios sobre la fauna local.
+- **Commits Relevantes:** `6a70fbe`, `d6bed9f`, `b894962`, `54bb3ae`, `30c66cf`, `981e95d`
 
-CORRECCIÓN DE ERRORES Y REFACTORIZACIÓN:
-Durante la implementación, se identificaron y solucionaron varios errores críticos que mejoraron la estabilidad y robustez general de la aplicación:
+---
 
-1. Solución al Error de Navegación del Mapa:
--Problema: El mapa dejaba de funcionar (L.markerClusterGroup is not a function) al navegar a una página de detalle y luego volver.
--Solución: Se refactorizó el componente src/components/leaflet-map.tsx para asegurar que la librería Leaflet y sus plugins se inicialicen una sola vez en toda la aplicación, evitando que la configuración se pierda al cambiar de página.
+### 3. Funcionalidad del Mapa Interactivo y Vistas de Detalle
 
-2. Solución al Conflicto de Arquitectura en Next.js:
--Problema: Ocurría un error de compilación (Invalid page configuration) porque las páginas de detalle usaban a la vez 'use client' y generateStaticParams, algo que Next.js no permite.
--Solución: Se eliminó la directiva 'use client' de las páginas de detalle, ya que no contienen interactividad que lo requiera, designándolas correctamente como Componentes de Servidor y resolviendo el conflicto.
+- **Resumen:** Se lideró la evolución del mapa, transformándolo de una simple visualización a una plataforma de navegación interactiva y el núcleo de la aplicación.
+- **Detalles Clave:**
+    - Se crearon las **rutas dinámicas** (`/huertas/[slug]` y `/mascotas/[slug]`) y sus plantillas de página correspondientes.
+    - Se implementó `generateStaticParams` para pre-renderizar las páginas de detalle, optimizando drásticamente el rendimiento.
+    - Se solucionó un **error crítico de navegación** que rompía el mapa al volver desde una página de detalle, mediante la refactorización de la inicialización de Leaflet.
+- **Commits Relevantes:** `76a6b96` (este commit agrupa todo el trabajo de la sesión más reciente)
 
-3. Mejora de la Seguridad de Código (TypeScript):
+---
 
--Problema: TypeScript advertía que una variable del mapa (mapInstance.current) podía ser null, representando un riesgo de error en tiempo de ejecución.
-Solución: Se ajustó el código de inicialización del mapa en src/components/leaflet-map.tsx para garantizar a TypeScript que la variable siempre tendría un valor al ser utilizada, eliminando el riesgo.
-ARCHIVOS MODIFICADOS:
-Modificado: src/app/mapa/page.tsx
-Modificado: src/components/leaflet-map.tsx
-Nuevo: src/app/huertas/[slug]/page.tsx
-Nuevo: src/app/mascotas/[slug]/page.tsx
+### 4. Mantenimiento y Calidad del Código
+
+- **Resumen:** Se demostró un compromiso con la calidad y mantenibilidad del proyecto.
+- **Detalles Clave:**
+    - Se identificó proactivamente la necesidad de limpiar el código, solicitando la eliminación de archivos y código innecesario ("código basura").
+- **Commits Relevantes:** `fbdfec3`, `3487df5`, `3146d28`
