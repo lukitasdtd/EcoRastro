@@ -2,6 +2,9 @@
 
 Este documento registra las modificaciones realizadas en la rama "ukitas".
 
+# LINKS BASE DE DATOS
+https://www.tooltyp.com/arquitectura-de-un-servicio-de-mensajeria-instantanea-como-whatsapp/
+
 ---
 
 ## Sesión 1: Ajustes en la Página de Perfil de Mascota

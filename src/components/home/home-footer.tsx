@@ -7,12 +7,11 @@ export function HomeFooter() {
   const footerImage = PlaceHolderImages.find(img => img.id === 'footer-bg');
   const navLinks = [
     { label: 'Nosotros', href: '/about' },
-    { label: 'Nuestra misión', href: '/about' },
     { label: 'Mapa interactivo', href: '/mapa' },
     { label: 'Mascotas', href: '/mascotas' },
     { label: 'Calendario de siembra', href: '/calendar' },
     { label: 'Tips de huerta', href: '/gardens' },
-    { label: 'Tenencia responsable', href: '/mascotas' },
+      { label: 'Tenencia responsable', href: '/mascotas/educacion' }
   ];
   
   const midPoint = Math.ceil(navLinks.length / 2);

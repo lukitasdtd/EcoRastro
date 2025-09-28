@@ -1,6 +1,6 @@
 
 'use client';
-
+import Link from 'next/link';
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { reportedPets } from "@/lib/data";
 import ReportedPetCard from "@/components/reported-pet-card";
-import { PawPrint, Sprout } from "lucide-react";
+import { PawPrint, Sprout, MessageSquare } from "lucide-react";
 import { EditProfileDialog } from "@/components/edit-profile-dialog";
 
 export default function UserProfilePage() {
@@ -49,6 +49,12 @@ export default function UserProfilePage() {
                 </div>
                 <div className="md:ml-auto flex gap-2">
                     <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
+                    <Button asChild>
+                        <Link href="/mensajes">
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            Mis Mensajes
+                        </Link>
+                    </Button>
                 </div>
             </header>
 

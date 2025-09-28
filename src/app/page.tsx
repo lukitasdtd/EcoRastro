@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center bg-background">
       <div className="w-full container mx-auto text-center py-2">
-        <Logo />
+        <Logo size="large"/>
       </div>
       <header className="w-full bg-muted/30 py-10">
         <div className="container mx-auto">

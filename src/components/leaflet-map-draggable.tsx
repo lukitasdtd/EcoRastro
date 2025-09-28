@@ -1,99 +1,152 @@
 'use client';
 
+// TAREA 8: Integración de API Externa (Leaflet)
+// Este componente encapsula el mapa de Leaflet.
+// Puntos clave para la exposición:
+// - La directiva 'use client' es fundamental porque Leaflet interactúa con el DOM del navegador, algo que solo existe en el cliente.
+// - Las importaciones de CSS se hacen al principio para asegurar que los estilos del mapa se carguen correctamente.
+// - `useEffect` se usa para inicializar el mapa de forma segura solo después de que el componente se haya montado en el cliente.
+// - Se maneja la limpieza del mapa en la función de retorno de `useEffect` para evitar fugas de memoria.
+// - Se muestra cómo añadir elementos interactivos como marcadores (`L.marker`) y popups (`bindPopup`).
+
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import React, { useEffect, useRef } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { LocateFixed, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Map, Marker, LatLngTuple } from 'leaflet';
+import type { Map, Marker } from 'leaflet';
 
-interface DraggableMapProps {
-    onLocationChange: (lat: number, lng: number) => void;
-    // Prop para controlar la posición del marcador desde el componente padre
-    position: LatLngTuple | null;
-}
+export default function LeafletMap() {
+    // `useRef` se usa para mantener una referencia al elemento DIV del mapa y a la instancia del mapa de Leaflet
+    // sin provocar que el componente se vuelva a renderizar cuando cambian.
+    const mapRef = useRef<HTMLDivElement>(null);
+    const mapInstance = useRef<Map | null>(null);
+    const userMarker = useRef<Marker | null>(null);
+    const { toast } = useToast();
 
-export default function LeafletMapDraggable({ onLocationChange, position }: DraggableMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<Map | null>(null);
-  const markerRef = useRef<Marker | null>(null);
-  const { toast } = useToast();
+    const initialCenter: [number, number] = [-33.4489, -70.6693];
+    const initialZoom = 11;
 
-  const defaultCenter: LatLngTuple = [-33.4489, -70.6693]; 
-  const defaultZoom = 13;
-  
-  // Efecto para inicializar el mapa
-  useEffect(() => {
-    let isMounted = true;
-    if (mapRef.current && !mapInstance.current) {
-       Promise.all([
-        import('leaflet'),
-        import('leaflet-defaulticon-compatibility')
-      ]).then(([L]) => {
-        if (!isMounted || !mapRef.current) return;
+    // `useEffect` para inicializar el mapa de forma segura en el cliente.
+    useEffect(() => {
+        let isMounted = true;
+        // Se verifica que estemos en el navegador (`window` existe) y que el div del mapa esté listo.
+        if (typeof window === 'undefined' || !mapRef.current) return;
 
-        const initialCenter = position || defaultCenter;
+        // Importa Leaflet dinámicamente solo en el cliente para evitar errores de SSR.
+        Promise.all([
+            import('leaflet'),
+            import('leaflet-defaulticon-compatibility'),
+        ]).then(([L]) => {
+            // Se asegura de que el componente todavía esté montado y que el mapa no se haya inicializado ya.
+            if (!isMounted || !mapRef.current || mapInstance.current) return;
 
-        mapInstance.current = L.map(mapRef.current, {
-          center: initialCenter,
-          zoom: defaultZoom,
-          zoomControl: false,
+            // Crea la instancia del mapa y la guarda en `mapInstance.current`.
+            mapInstance.current = L.map(mapRef.current, {
+                center: initialCenter,
+                zoom: initialZoom,
+                zoomControl: false, // Desactivamos el control por defecto para añadir el nuestro.
+            });
+
+            // Añade la capa de teselas de MapTiler OMT.
+            // NOTA: Debes reemplazar 'YOUR_API_KEY' con tu propia clave de API de MapTiler.
+            L.tileLayer('https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=YxbY9gzN5FVuqeFCKHbN', {
+                attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+            }).addTo(mapInstance.current);
+
+            // Añade el control de zoom en la posición deseada.
+            L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current);
+
+            // Marcadores de ejemplo para demostrar la funcionalidad del mapa.
+            const points = [
+                { lat: -33.45, lng: -70.65, title: 'Mascota Perdida', desc: 'Perro pequeño encontrado.', icon: 'paw' },
+                { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria', desc: 'Huerta Greenleaf.', icon: 'sprout' },
+                { lat: -33.50, lng: -70.68, title: 'Punto de Adopción', desc: 'Adopta un amigo fiel.', icon: 'heart' },
+            ];
+
+            points.forEach(point => {
+                const marker = L.marker([point.lat, point.lng]).addTo(mapInstance.current!);
+                marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
+            });
+
+        }).catch(error => {
+            console.error("Error al cargar Leaflet:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Error al cargar el mapa',
+                description: 'No se pudo inicializar el mapa. Por favor, intenta recargar la página.',
+            });
         });
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }).addTo(mapInstance.current);
+        // Función de limpieza: se ejecuta cuando el componente se desmonta.
+        return () => {
+            isMounted = false;
+            if (mapInstance.current) {
+                mapInstance.current.remove(); // Destruye la instancia del mapa para liberar memoria.
+                mapInstance.current = null;
+            }
+        };
+    }, [toast]); // `toast` se incluye como dependencia, aunque rara vez cambia.
 
-        L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current);
+    const handleGeolocate = () => {
+        // Usa la API de geolocalización del navegador.
+        if (navigator.geolocation && mapInstance.current) {
+            const map = mapInstance.current;
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos: [number, number] = [position.coords.latitude, position.coords.longitude];
 
-        const marker = L.marker(initialCenter, { draggable: true }).addTo(mapInstance.current);
-        markerRef.current = marker;
+                    map.flyTo(pos, 15); // Anima el mapa hacia la nueva posición.
 
-        // Informar a la Ficha de Reporte sobre la ubicación inicial
-        if(!position) {
-            onLocationChange(initialCenter[0], initialCenter[1]);
+                    // Actualiza o crea el marcador de la ubicación del usuario.
+                    if (userMarker.current) {
+                        userMarker.current.setLatLng(pos);
+                    } else {
+                        import('leaflet').then(L => {
+                            userMarker.current = L.circleMarker(pos, {
+                                radius: 8,
+                                color: '#fff',
+                                weight: 2,
+                                fillColor: '#4285F4',
+                                fillOpacity: 1,
+                            }).addTo(map);
+                        });
+                    }
+                    userMarker.current?.bindPopup('<b>Estás aquí</b>').openPopup();
+                },
+                () => {
+                    // Manejo de errores si el usuario deniega el permiso de ubicación.
+                    toast({
+                        variant: 'destructive',
+                        title: 'Permiso de ubicación denegado',
+                        description: 'No pudimos acceder a tu ubicación. Puedes activarlo en la configuración de tu navegador.',
+                    });
+                }
+            );
         }
-
-        marker.on('dragend', function (event) {
-          const newPosition = event.target.getLatLng();
-          onLocationChange(newPosition.lat, newPosition.lng);
-        });
-      }).catch(error => {
-        console.error("Error al cargar Leaflet:", error);
-        toast({
-          variant: 'destructive',
-          title: 'Error al cargar el mapa',
-          description: 'No se pudo inicializar el mapa. Por favor, intenta recargar la página.',
-        });
-      });
-    }
-    
-    // Limpieza al desmontar el componente
-    return () => {
-      isMounted = false;
-      if (mapInstance.current) {
-        mapInstance.current.remove();
-        mapInstance.current = null;
-      }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
 
-  // Efecto para manejar actualizaciones de la posición desde el padre
-  useEffect(() => {
-    if (position && mapInstance.current && markerRef.current) {
-      const map = mapInstance.current;
-      const marker = markerRef.current;
-      const currentMarkerPos = marker.getLatLng();
-      
-      if (position[0] !== currentMarkerPos.lat || position[1] !== currentMarkerPos.lng) {
-        map.flyTo(position, 16);
-        marker.setLatLng(position);
-      }
-    }
-  }, [position]);
+    const handleRecenter = () => {
+        mapInstance.current?.flyTo(initialCenter, initialZoom);
+    };
 
-  // El renderizado ahora es más simple, solo muestra el div del mapa
-  return (
-    <div ref={mapRef} className="w-full h-full z-0 rounded-md" role="region" aria-label="Mapa para seleccionar ubicación" />
-  );
+    return (
+        <Card className="w-full h-full rounded-2xl shadow-lg border-4 border-muted overflow-hidden">
+            <CardContent className="p-0 h-full relative">
+                <div ref={mapRef} className="w-full h-full z-0" role="region" aria-label="Mapa interactivo de la comunidad" />
+
+                {/* Controles personalizados sobre el mapa */}
+                <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+                    <Button size="icon" onClick={handleGeolocate} aria-label="Centrar en mi ubicación">
+                        <LocateFixed className="w-5 h-5" />
+                    </Button>
+                    <Button size="icon" onClick={handleRecenter} aria-label="Recentrar mapa a la vista inicial">
+                        <Home className="w-5 h-5" />
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
 }

@@ -32,10 +32,6 @@ export const navItems: NavItem[] = [
     ],
   },
   {
-    label: 'Mensajes',
-    href: '/mensajes',
-  },
-  {
     label: 'Huertas',
     href: '/gardens',
     subItems: [
