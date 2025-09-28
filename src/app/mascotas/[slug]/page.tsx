@@ -4,30 +4,9 @@ import { ArrowLeft, PawPrint } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardDescription } from '@/components/ui/card';
 import Image from 'next/image';
+import { petPoints, slugify } from '@/lib/data'; // 1. Importar datos y función de utilidad
 
-// --- Definición de datos ---
-// Esto se duplicaría desde la página del mapa. En una app real, vendría de una API.
-const slugify = (text: string) => {
-  return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
-};
-
-const allPoints = [
-  { lat: -33.45, lng: -70.65, title: 'Perro Perdido Providencia', desc: 'Golden Retriever encontrado.', type: 'pet' as const, image: '/gato-naranjo.jpg', link: `/mascotas/${slugify('Perro Perdido Providencia')}` },
-  { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria Ñuñoa', desc: 'Cultivos orgánicos en Ñuñoa.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Huerta Comunitaria Ñuñoa')}` },
-  { lat: -33.50, lng: -70.68, title: 'Gato Encontrado La Cisterna', desc: 'Gato naranja visto en paradero 21.', type: 'pet' as const, image: '/gato-naranjo.jpg', link: `/mascotas/${slugify('Gato Encontrado La Cisterna')}` },
-  { lat: -33.43, lng: -70.62, title: 'Jardín Vertical Santiago', desc: 'Iniciativa vecinal en Santiago Centro.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Jardín Vertical Santiago')}` },
-  { lat: -33.46, lng: -70.60, title: 'Punto de Adopción Las Condes', desc: 'Jornada de adopción de cachorros.', type: 'pet' as const, image: '/gato-naranjo.jpg', link: `/mascotas/${slugify('Punto de Adopción Las Condes')}` },
-  { lat: -33.49, lng: -70.70, title: 'Huerta Escolar Maipú', desc: 'Proyecto educativo en Maipú.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Huerta Escolar Maipú')}` },
-  { lat: -33.42, lng: -70.66, title: 'Canario Perdido Recoleta', desc: 'Canario amarillo visto cerca del cerro.', type: 'pet' as const, image: '/gato-naranjo.jpg', link: `/mascotas/${slugify('Canario Perdido Recoleta')}` },
-  { lat: -33.51, lng: -70.61, title: 'Composta Comunitaria La Florida', desc: 'Centro de compostaje en La Florida.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Composta Comunitaria La Florida')}` },
-];
-
-const petPoints = allPoints.filter(p => p.type === 'pet');
+// Las listas de puntos y la función slugify se han eliminado de aquí.
 
 // --- Generación de Páginas Estáticas (Server-Side) ---
 export async function generateStaticParams() {
@@ -40,7 +19,7 @@ export async function generateStaticParams() {
 export default function MascotaPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
 
-  // Buscar la mascota usando el slug de la URL
+  // 2. Buscar en la lista de mascotas importada
   const pet = petPoints.find(p => slugify(p.title) === slug);
 
   if (!pet) {

@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useMemo } from 'react';
@@ -6,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Clock, PawPrint, Leaf } from 'lucide-react';
 import Link from 'next/link';
+import { allMapPoints } from '@/lib/data'; // 1. Importar los datos centralizados
 
 export function MapFeatures() {
 
@@ -54,7 +54,8 @@ export function MapFeatures() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Columna del Mapa */}
             <div className="relative w-full h-[70vh] min-h-[500px] lg:h-full">
-              <Map />
+              {/* 2. Pasar los puntos al componente del mapa */}
+              <Map points={allMapPoints} />
             </div>
 
             {/* Columna de Beneficios */}

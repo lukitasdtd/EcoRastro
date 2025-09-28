@@ -1,11 +1,8 @@
 // TAREA 9: Página de Detalle Dinámica (CRUD - Read)
-// Esta es una página de "Ruta Dinámica" en Next.js. El `[id]` en el nombre de la carpeta
-// significa que la página puede manejar cualquier ruta como `/mascotas/reporte/rp1`, `/mascotas/reporte/rp2`, etc.
-// El `id` se extrae de la URL y se usa para obtener los datos específicos de esa mascota.
-
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { reportedPets } from '@/lib/data';
+// CORRECCIÓN FINAL: Se importa `reportedPets` que ahora sí existe en data.ts
+import { reportedPets } from '@/lib/data'; 
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,162 +13,127 @@ import {
   MapPin, CalendarDays, PawPrint, CheckCircle, XCircle, Phone, MessageSquare, Mail, Award, Info
 } from 'lucide-react';
 
-// `generateStaticParams` es una función de Next.js que pre-renderiza estas páginas en el momento de la construcción (build).
-// Esto mejora el rendimiento y el SEO, ya que las páginas de mascotas más importantes se generan como HTML estático.
-export function generateStaticParams() {
+// TAREA 10: Generación de Páginas Estáticas (getStaticPaths)
+export async function generateStaticParams() {
+  // Se utiliza la lista correcta con los datos detallados.
   return reportedPets.map(pet => ({
     id: pet.id,
   }));
 }
 
-// El componente de la página recibe `params`, que contiene el `id` de la mascota desde la URL.
-export default function ReporteDetallePage({ params }: { params: { id: string } }) {
-  // --- Lógica de "Read" ---
-  // Se busca en el array `reportedPets` la mascota que coincida con el `id` de la URL.
-  // Esto simula una consulta a una base de datos para obtener un registro específico.
-  const pet = reportedPets.find(p => p.id === params.id);
+// --- Componente de la Página de Detalle ---
+export default function ReportDetailsPage({ params }: { params: { id: string } }) {
+  const { id } = params;
 
-  // Si no se encuentra la mascota, se muestra la página 404 de Next.js.
+  // Se busca la mascota en la lista correcta `reportedPets`.
+  const pet = reportedPets.find(p => p.id === id);
+
   if (!pet) {
     notFound();
   }
 
   const image = PlaceHolderImages.find(img => img.id === pet.imageId);
 
-  // Helper para renderizar los detalles en tarjetas
-  const DetailCard = ({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) => (
-    <Card className="bg-background/60">
-      <CardHeader className="flex-row items-center gap-4 space-y-0 pb-2">
-        {icon}
-        <CardTitle className="text-base font-semibold">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {children}
-      </CardContent>
-    </Card>
-  );
-
   return (
-    <div className="bg-muted/30 flex-grow">
+    <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 py-8 md:py-12">
-        
-        {/* --- Encabezado --- */}
-        <header className="mb-8">
-            <Badge 
-                variant={pet.status === 'Perdido' ? 'destructive' : 'default'}
-                className="mb-2"
-            >
-                {pet.status}
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-                {pet.name}
-            </h1>
-            <div className="flex items-center gap-2 mt-2 text-muted-foreground">
-              <MapPin className="h-5 w-5" />
-              <span className="text-lg">{pet.location}</span>
-            </div>
-            <p className="text-sm text-muted-foreground/80 mt-2">
-                Reportado el {new Date(pet.date).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
           
-          {/* --- Columna Izquierda: Imagen y Contacto --- */}
-          <div className="space-y-8">
+          {/* Columna Izquierda: Imagen y Estado */}
+          <div className="lg:col-span-1 space-y-6">
             <Card className="overflow-hidden shadow-lg">
-                <div className="relative w-full aspect-video">
-                {image && (
-                    <Image
-                    src={image.imageUrl}
-                    alt={`Foto de ${pet.name}`}
+              <CardContent className="p-0">
+                <div className="relative w-full aspect-square">
+                  <Image 
+                    src={image?.src ?? '/placeholder.jpg'} 
+                    alt={pet.name}
                     fill
-                    style={{ objectFit: 'cover' }}
-                    data-ai-hint={pet.species.toLowerCase()}
-                    priority
-                    />
-                )}
+                    className="object-cover"
+                  />
+                  <div className={`absolute top-2 right-2 flex items-center gap-1 text-white px-2 py-1 rounded-full text-xs font-semibold ${pet.status === 'lost' ? 'bg-red-500' : 'bg-green-500'}`}>
+                    {pet.status === 'lost' ? <XCircle size={14} /> : <CheckCircle size={14} />}
+                    {pet.status === 'lost' ? 'Perdido' : 'Encontrado'}
+                  </div>
                 </div>
+              </CardContent>
             </Card>
 
-             <Card className="shadow-md">
-                <CardHeader>
-                    <CardTitle>Información de Contacto</CardTitle>
-                    <CardDescription>
-                        Si tienes información sobre {pet.name}, contacta a {pet.contactName}.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <Button className="w-full justify-start gap-3" asChild>
-                        <a href={`tel:${pet.contactPhone}`}>
-                            <Phone className="h-5 w-5" /> Llamar a {pet.contactName}
-                        </a>
-                    </Button>
-                    <Button variant="secondary" className="w-full justify-start gap-3" asChild>
-                        <a href={`https://wa.me/${pet.contactPhone?.replace(/\+/g, '')}`} target="_blank">
-                            <MessageSquare className="h-5 w-5" /> Enviar WhatsApp
-                        </a>
-                    </Button>
-                    <div className="text-xs text-muted-foreground text-center pt-2">
-                        El medio de contacto preferido es: <strong>{pet.preferredContact}</strong>.
+            {/* TAREA 11: Componente de Acciones (Botones de Contacto) */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg"><Phone size={18}/> Contactar al Reportante</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600">
+                  <MessageSquare size={16}/> Enviar Mensaje
+                </Button>
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                  <Mail size={16}/> Enviar Email
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Columna Derecha: Detalles del Reporte */}
+          <div className="lg:col-span-2 space-y-8">
+            <Card className="shadow-lg">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-3xl md:text-4xl font-bold text-gray-800">{pet.name}</CardTitle>
+                    <CardDescription className="text-lg text-gray-500 mt-1">{pet.breed}</CardDescription>
+                  </div>
+                  <Badge variant="secondary" className="flex items-center gap-1.5 text-sm">
+                    <PawPrint size={14}/> {pet.type}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={16} className="text-gray-400"/>
+                    <span>Visto por última vez en: <strong>{pet.lastSeenLocation}</strong></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CalendarDays size={16} className="text-gray-400"/>
+                    <span>Fecha: <strong>{pet.lastSeenDate}</strong></span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-2">Descripción</h3>
+                  <p className="text-gray-600 whitespace-pre-line">{pet.description}</p>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
+                  <Award size={18}/>
+                  <p><strong>Recompensa:</strong> {pet.reward ? `$${pet.reward}` : 'No especificada'}</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* TAREA 12: Componente Interactivo (Comentarios/Avistamientos) */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Info size={18}/> Avistamientos de la Comunidad</CardTitle>
+                <CardDescription>¿Has visto a {pet.name}? ¡Deja un comentario aquí!</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <img src="/placeholder-user.jpg" alt="user" className="w-10 h-10 rounded-full"/>
+                    <div className="flex-1 bg-gray-100 p-3 rounded-lg">
+                      <p className="text-sm text-gray-600">Lo vi cerca del parque principal esta mañana. Parecía asustado.</p>
+                      <p className="text-xs text-gray-400 mt-1">- Vecino de la zona, hace 2 horas</p>
                     </div>
-                </CardContent>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="comment">Agregar un avistamiento</Label>
+                    <Textarea id="comment" placeholder={`Ej: Acabo de ver a ${pet.name} corriendo hacia...`} />
+                    <Button>Publicar comentario</Button>
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           </div>
-
-          {/* --- Columna Derecha: Detalles y Comentarios --- */}
-          <div className="space-y-8">
-            <Card className="shadow-md">
-                <CardHeader>
-                    <CardTitle>Detalles del Reporte</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                   <p className="text-foreground/80">{pet.description}</p>
-                   <div className="grid grid-cols-2 gap-4">
-                       <DetailCard icon={<PawPrint className="h-6 w-6 text-primary"/>} title="Características">
-                            <ul className="list-disc list-inside text-sm space-y-1 text-foreground/80">
-                                <li><strong>Especie:</strong> {pet.species}</li>
-                                <li><strong>Raza:</strong> {pet.breed}</li>
-                                <li><strong>Tamaño:</strong> {pet.size}</li>
-                            </ul>
-                       </DetailCard>
-                       <DetailCard icon={<Info className="h-6 w-6 text-primary"/>} title="Señas Particulares">
-                            <p className="text-sm text-foreground/80">{pet.distinguishingMarks}</p>
-                       </DetailCard>
-                        <DetailCard icon={pet.wearsCollar ? <CheckCircle className="h-6 w-6 text-green-600"/> : <XCircle className="h-6 w-6 text-destructive"/>} title="Collar">
-                           <p className="text-sm text-foreground/80">{pet.wearsCollar ? 'Sí llevaba' : 'No llevaba'}</p>
-                       </DetailCard>
-                        <DetailCard icon={pet.reward ? <Award className="h-6 w-6 text-amber-500"/> : <XCircle className="h-6 w-6 text-destructive"/>} title="Recompensa">
-                           <p className="text-sm text-foreground/80">{pet.reward ? 'Se ofrece' : 'No se ofrece'}</p>
-                       </DetailCard>
-                   </div>
-                   {pet.temperament && pet.temperament.length > 0 && (
-                        <DetailCard icon={<PawPrint className="h-6 w-6 text-primary"/>} title="Temperamento">
-                            <div className="flex flex-wrap gap-2">
-                                {pet.temperament.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
-                            </div>
-                       </DetailCard>
-                   )}
-                </CardContent>
-            </Card>
-
-            <Card className="shadow-md">
-                <CardHeader>
-                    <CardTitle>Comentarios de la Comunidad</CardTitle>
-                    <CardDescription>¿Has visto a {pet.name}? Deja un comentario aquí.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                     <form className="space-y-4">
-                        <div>
-                            <Label htmlFor="comment" className="sr-only">Comentario</Label>
-                            <Textarea id="comment" placeholder="Escribe tu comentario o avistamiento..." rows={4}/>
-                        </div>
-                        <Button>Publicar Comentario</Button>
-                    </form>
-                </CardContent>
-            </Card>
-          </div>
-
         </div>
       </div>
     </div>

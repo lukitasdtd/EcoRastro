@@ -1,212 +1,95 @@
-import type { Pet, Garden, PlantingInfo, Shelter, ReportedPet } from '@/lib/types';
+/*
+ *************************************************************************
+ *_ Punto Central de Datos de la Aplicación
+ *************************************************************************
+ */
 
-export interface Crop {
-  id: string;
-  name: string;
-  type: 'Verdura' | 'Fruta' | 'Hierba';
-  imageId: string;
-  imageHint: string;
-}
-
-export interface MonthlyPlantingData {
-  crops: Crop[];
-  featuredCrop: Crop;
-}
-
-export const adoptionPets: Pet[] = [
-  { id: '1', name: 'Buddy', type: 'Perro', breed: 'Golden Retriever', age: 3, imageId: 'pet1' },
-  { id: '2', name: 'Bigotes', type: 'Gato', breed: 'Atigrado', age: 2, imageId: 'pet2' },
-  { id: '3', name: 'Rocky', type: 'Perro', breed: 'Quiltro', age: 5, imageId: 'pet3' },
-  { id: '4', name: 'Luna', type: 'Gato', breed: 'Gato Negro', age: 1, imageId: 'pet4' },
-];
-
-export const communityGardens: Garden[] = [
-  { id: 'g1', name: 'Huerta Comunitaria Greenleaf', location: 'Av. Jardín 123, Villa Alegre', description: 'Una huerta comunitaria vibrante, enfocada en el cultivo de verduras orgánicas y eventos para la comunidad.', imageId: 'garden1' },
-  { id: 'g2', name: 'Parcelas El Sol', location: 'Pasaje Las Flores 456, Pueblito', description: 'Parcelas individuales disponibles para arriendo. Ofrecemos herramientas y agua.', imageId: 'garden1' },
-  { id: 'g3', name: 'El Huerto del Barrio', location: 'Calle Las Raíces 789, Metrópolis', description: 'Una huerta colaborativa donde todos comparten el trabajo y la cosecha.', imageId: 'garden1' },
-];
-
-export const reportedPets: ReportedPet[] = [
-  { 
-    id: 'rp1', 
-    name: 'Max', 
-    species: 'Perro', 
-    breed: 'Labrador', 
-    status: 'Perdido', 
-    date: '2024-07-15', 
-    location: 'Ñuñoa, Santiago, Chile', 
-    description: 'Max es un labrador dorado muy amigable que se perdió cerca del parque Bustamante. Es de tamaño grande, juguetón y responde a su nombre. No llevaba collar el día que se perdió. Hay recompensa por su recuperación.', 
-    imageId: 'reported-pet-1', 
-    size: 'Grande',
-    temperament: ['Sociable'],
-    distinguishingMarks: 'Tiene una pequeña mancha blanca en el pecho.',
-    wearsCollar: false,
-    reward: true,
-    contactName: 'Carlos',
-    contactPhone: '+56912345678',
-    preferredContact: 'telefono',
-  },
-  { 
-    id: 'rp2', 
-    name: 'Milo', 
-    species: 'Gato', 
-    breed: 'Siamés', 
-    status: 'Encontrado', 
-    date: '2024-07-20', 
-    location: 'Providencia, Santiago, Chile', 
-    description: 'Gato siamés encontrado en la calle. Es muy cariñoso y parece bien cuidado. Buscamos a sus dueños. Se encontró en las cercanías de la Avenida Providencia.', 
-    imageId: 'reported-pet-2', 
-    size: 'Mediano',
-    temperament: ['Cariñoso', 'Tranquilo'],
-    distinguishingMarks: 'Ojos azules intensos, cola con punta oscura.',
-    wearsCollar: false,
-    reward: false,
-    contactName: 'Ana',
-    contactPhone: '+56987654321',
-    preferredContact: 'whatsapp',
-  },
-  { 
-    id: 'rp3', 
-    name: 'Desconocido', 
-    species: 'Perro', 
-    breed: 'Quiltro', 
-    status: 'Encontrado', 
-    date: '2024-07-18', 
-    location: 'Maipú, Santiago, Chile', 
-    description: 'Perrita quiltra de tamaño mediano encontrada vagando sola. Tiene un collar rojo gastado pero sin placa. Es algo tímida pero no agresiva.', 
-    imageId: 'reported-pet-3', 
-    size: 'Mediano',
-    temperament: ['Tímida/o'],
-    distinguishingMarks: 'Orejas puntiagudas y una cicatriz pequeña en el hocico.',
-    wearsCollar: true,
-    reward: false,
-    contactName: 'Fundación Huellitas',
-    contactPhone: '+56923456789',
-    preferredContact: 'telefono',
-  },
-  { 
-    id: 'rp4', 
-    name: 'Pelusa', 
-    species: 'Gato', 
-    breed: 'Angora', 
-    status: 'Perdido', 
-    date: '2024-07-21', 
-    location: 'Las Condes, Santiago, Chile', 
-    description: 'Gata blanca muy peluda, responde al nombre de Pelusa. Es algo asustadiza con los extraños. Se perdió en la zona del Apumanque. Por favor, cualquier información es valiosa.', 
-    imageId: 'reported-pet-4', 
-    size: 'Pequeño',
-    temperament: ['Nerviosa/o'],
-    distinguishingMarks: 'Ojos verdes y un collar rosado con un cascabel.',
-    wearsCollar: true,
-    reward: true,
-    contactName: 'Sofía',
-    contactPhone: '+56934567890',
-    preferredContact: 'whatsapp',
-  },
-  { 
-    id: 'rp5', 
-    name: 'Toby', 
-    species: 'Perro', 
-    breed: 'Beagle', 
-    status: 'Perdido', 
-    date: '2024-07-19', 
-    location: 'La Florida, Santiago, Chile', 
-    description: 'Beagle tricolor con una mancha característica en el lomo con forma de corazón. Muy juguetón y escapista. Se perdió desde casa en el paradero 14.', 
-    imageId: 'reported-pet-5', 
-    size: 'Mediano',
-    temperament: ['Sociable'],
-    distinguishingMarks: 'Mancha en forma de corazón en el lomo.',
-    wearsCollar: true,
-    reward: false,
-    contactName: 'Miguel',
-    contactPhone: '+56945678901',
-    preferredContact: 'telefono',
-  },
-  { 
-    id: 'rp6', 
-    name: 'Nube', 
-    species: 'Gato', 
-    breed: 'Común Europeo', 
-    status: 'Encontrado', 
-    date: '2024-07-22', 
-    location: 'Santiago Centro, Chile', 
-    description: 'Gatito gris y blanco encontrado en el barrio Lastarria. Maúlla mucho y busca cariño. Parece ser joven. Lo tenemos resguardado en nuestro departamento.', 
-    imageId: 'reported-pet-6', 
-    size: 'Pequeño',
-    temperament: ['Sociable'],
-    distinguishingMarks: 'Patitas delanteras blancas como si llevara guantes.',
-    wearsCollar: false,
-    reward: false,
-    contactName: 'Laura',
-    contactPhone: '+56956789012',
-    preferredContact: 'whatsapp',
-  },
-]
-
-export const plantingData: Record<string, MonthlyPlantingData> = {
-  enero: {
-    crops: [{ id: 'cebolla', name: 'Cebolla', type: 'Verdura', imageId: 'crop-onion', imageHint: 'onion bulb' }],
-    featuredCrop: { id: 'cebolla', name: 'Cebolla', type: 'Verdura', imageId: 'crop-onion', imageHint: 'onion bulb' },
-  },
-  febrero: {
-    crops: [{ id: 'rabano', name: 'Rábano', type: 'Verdura', imageId: 'crop-radish', imageHint: 'radish vegetable' }],
-    featuredCrop: { id: 'rabano', name: 'Rábano', type: 'Verdura', imageId: 'crop-radish', imageHint: 'radish vegetable' },
-  },
-  marzo: {
-    crops: [{ id: 'zanahoria', name: 'Zanahoria', type: 'Verdura', imageId: 'crop-carrot', imageHint: 'carrot bunch' }],
-    featuredCrop: { id: 'zanahoria', name: 'Zanahoria', type: 'Verdura', imageId: 'crop-carrot', imageHint: 'carrot bunch' },
-  },
-  abril: {
-    crops: [{ id: 'brocoli', name: 'Brócoli', type: 'Verdura', imageId: 'crop-broccoli', imageHint: 'broccoli head' }],
-    featuredCrop: { id: 'brocoli', name: 'Brócoli', type: 'Verdura', imageId: 'crop-broccoli', imageHint: 'broccoli head' },
-  },
-  mayo: {
-    crops: [{ id: 'pepino', name: 'Pepino', type: 'Verdura', imageId: 'crop-cucumber', imageHint: 'cucumber fresh' }],
-    featuredCrop: { id: 'pepino', name: 'Pepino', type: 'Verdura', imageId: 'crop-cucumber', imageHint: 'cucumber fresh' },
-  },
-  junio: {
-    crops: [{ id: 'choclo', name: 'Choclo', type: 'Verdura', imageId: 'crop-corn', imageHint: 'corn cob' }],
-    featuredCrop: { id: 'choclo', name: 'Choclo', type: 'Verdura', imageId: 'crop-corn', imageHint: 'corn cob' },
-  },
-  julio: {
-    crops: [{ id: 'zapallo', name: 'Zapallo', type: 'Verdura', imageId: 'crop-pumpkin', imageHint: 'pumpkin squash' }],
-    featuredCrop: { id: 'zapallo', name: 'Zapallo', type: 'Verdura', imageId: 'crop-pumpkin', imageHint: 'pumpkin squash' },
-  },
-  agosto: {
-    crops: [{ id: 'coliflor', name: 'Coliflor', type: 'Verdura', imageId: 'crop-cauliflower', imageHint: 'cauliflower head' }],
-    featuredCrop: { id: 'coliflor', name: 'Coliflor', type: 'Verdura', imageId: 'crop-cauliflower', imageHint: 'cauliflower head' },
-  },
-  septiembre: {
-    crops: [{ id: 'tomate', name: 'Tomate Cherry', type: 'Fruta', imageId: 'crop-tomato', imageHint: 'cherry tomato' }],
-    featuredCrop: { id: 'tomate', name: 'Tomate Cherry', type: 'Fruta', imageId: 'crop-tomato', imageHint: 'cherry tomato' },
-  },
-  octubre: {
-    crops: [{ id: 'lechuga', name: 'Lechuga', type: 'Verdura', imageId: 'crop-lettuce', imageHint: 'lettuce head' }],
-    featuredCrop: { id: 'lechuga', name: 'Lechuga', type: 'Verdura', imageId: 'crop-lettuce', imageHint: 'lettuce head' },
-  },
-  noviembre: {
-    crops: [{ id: 'albahaca', name: 'Albahaca', type: 'Hierba', imageId: 'crop-basil', imageHint: 'basil leaves' }],
-    featuredCrop: { id: 'albahaca', name: 'Albahaca', type: 'Hierba', imageId: 'crop-basil', imageHint: 'basil leaves' },
-  },
-  diciembre: {
-    crops: [{ id: 'pimiento', name: 'Pimiento', type: 'Verdura', imageId: 'crop-pepper', imageHint: 'bell pepper' }],
-    featuredCrop: { id: 'pimiento', name: 'Pimiento', type: 'Verdura', imageId: 'crop-pepper', imageHint: 'bell pepper' },
-  },
+// --- Función de Utilidad para crear URL amigables ---
+export const slugify = (text: string) => {
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 };
 
-export const plantingCalendar: PlantingInfo[] = [
-  { month: 'Enero', crops: ['Cebollas', 'Espinacas', 'Lechuga'] },
-  { month: 'Febrero', crops: ['Arvejas', 'Rábanos', 'Kale'] },
-  { month: 'Marzo', crops: ['Zanahorias', 'Betarragas', 'Acelgas'] },
-  { month: 'Abril', crops: ['Tomates', 'Pimientos', 'Brócoli'] },
-  { month: 'Mayo', crops: ['Pepinos', 'Zapallitos italianos', 'Porotos'] },
-  { month: 'Junio', crops: ['Choclo', 'Calabaza', 'Melones'] },
-  { month: 'Julio', crops: ['Zapallos', 'Camotes', 'Okra'] },
-  { month: 'Agosto', crops: ['Repollo', 'Coliflor', 'Tomates de otoño'] },
-  { month: 'Septiembre', crops: ['Espinacas', 'Lechuga', 'Ajo'] },
-  { month: 'Octubre', crops: ['Kale', 'Berzas', 'Nabos'] },
-  { month: 'Noviembre', crops: ['Cultivos de cobertura', 'Ajo', 'Cebollas'] },
-  { month: 'Diciembre', crops: ['Planificando para la Primavera'] },
+// --- Tipos de Datos ---
+
+// Tipo para los puntos simples del mapa interactivo
+export type MapPoint = {
+  lat: number;
+  lng: number;
+  title: string;
+  desc: string;
+  type: 'pet' | 'garden';
+  image: string;
+  link: string;
+};
+
+// Tipo para los reportes detallados de mascotas
+export type ReportedPet = {
+  id: string; 
+  name: string;
+  type: 'Perro' | 'Gato' | 'Pájaro' | 'Otro';
+  breed: string;
+  status: 'lost' | 'found';
+  lastSeenLocation: string;
+  lastSeenDate: string;
+  description: string;
+  reward?: number;
+  imageId: string; 
+};
+
+// TIPO NUEVO: Tipo para el calendario de siembra
+export type PlantingCalendarEntry = {
+  month: string;
+  vegetable: string;
+  action: 'Siembra' | 'Cosecha';
+  notes: string;
+};
+
+
+// --- Lista Maestra de Puntos del Mapa ---
+export const allMapPoints: MapPoint[] = [
+  { lat: -33.45, lng: -70.65, title: 'Perro Perdido Providencia', desc: 'Golden Retriever encontrado.', type: 'pet', image: '/gato-naranjo.jpg', link: `/mascotas/reporte/rp1` },
+  { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria Ñuñoa', desc: 'Cultivos orgánicos en Ñuñoa.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/huerta-comunitaria-nunoa` },
+  { lat: -33.50, lng: -70.68, title: 'Gato Encontrado La Cisterna', desc: 'Gato naranja visto en paradero 21.', type: 'pet', image: '/gato-naranjo.jpg', link: `/mascotas/reporte/rp2` },
+  { lat: -33.43, lng: -70.62, title: 'Jardín Vertical Santiago', desc: 'Iniciativa vecinal en Santiago Centro.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/jardin-vertical-santiago` },
+  { lat: -33.46, lng: -70.60, title: 'Punto de Adopción Las Condes', desc: 'Jornada de adopción de cachorros.', type: 'pet', image: '/gato-naranjo.jpg', link: `/mascotas/reporte/rp3` },
+  { lat: -33.49, lng: -70.70, title: 'Huerta Escolar Maipú', desc: 'Proyecto educativo en Maipú.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/huerta-escolar-maipu` },
+  { lat: -33.42, lng: -70.66, title: 'Canario Perdido Recoleta', desc: 'Canario amarillo visto cerca del cerro.', type: 'pet', image: '/gato-naranjo.jpg', link: `/mascotas/reporte/rp4` },
+  { lat: -33.51, lng: -70.61, title: 'Composta Comunitaria La Florida', desc: 'Centro de compostaje en La Florida.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/composta-comunitaria-la-florida` },
 ];
 
-export { type Shelter };
+// --- Lista de Reportes de Mascotas ---
+export const reportedPets: ReportedPet[] = [
+  { id: 'rp1', name: 'Toby', type: 'Perro', breed: 'Golden Retriever', status: 'found', lastSeenLocation: 'Providencia, cerca del Costanera Center', lastSeenDate: '2024-07-20', description: 'Encontrado cerca del Costanera Center. Es muy amigable y parece bien cuidado. Llevaba un collar azul pero sin placa de identificación.', reward: 0, imageId: 'img1' },
+  { id: 'rp2', name: 'Milo', type: 'Gato', breed: 'Naranja atigrado', status: 'lost', lastSeenLocation: 'La Cisterna, Paradero 21', lastSeenDate: '2024-07-19', description: 'Gato macho, muy cariñoso. Se perdió desde casa. Es de color naranja con rayas y tiene la punta de la cola blanca.', reward: 50000, imageId: 'img2' },
+  { id: 'rp3', name: 'Cachorros en Adopción', type: 'Perro', breed: 'Mestizos', status: 'found', lastSeenLocation: 'Parque Araucano, Las Condes', lastSeenDate: '2024-07-21', description: 'Jornada de adopción este fin de semana. Varios cachorros mestizos de tamaño mediano buscan un hogar responsable y cariñoso.', imageId: 'img3' },
+  { id: 'rp4', name: 'Piolín', type: 'Pájaro', breed: 'Canario', status: 'lost', lastSeenLocation: 'Recoleta, cerca del Cerro San Cristóbal', lastSeenDate: '2024-07-22', description: 'Canario de color amarillo intenso. Se escapó de su jaula. Responde al nombre de Piolín y le gusta cantar por las mañanas.', imageId: 'img4' },
+];
+
+// --- Datos para el Calendario de Siembra ---
+export const plantingData: PlantingCalendarEntry[] = [
+  { month: 'Enero', vegetable: 'Tomate', action: 'Siembra', notes: 'Proteger del sol directo en horas de máximo calor.' },
+  { month: 'Enero', vegetable: 'Albahaca', action: 'Siembra', notes: 'Mantener el suelo húmedo.' },
+  { month: 'Febrero', vegetable: 'Lechuga', action: 'Siembra', notes: 'Buscar variedades de verano resistentes al calor.' },
+  { month: 'Marzo', vegetable: 'Tomate', action: 'Cosecha', notes: 'Cosechar cuando estén firmes y de color uniforme.' },
+  { month: 'Marzo', vegetable: 'Zanahoria', action: 'Siembra', notes: 'Asegurar suelo suelto y profundo.' },
+  { month: 'Abril', vegetable: 'Espinaca', action: 'Siembra', notes: 'Ideal para climas más frescos.' },
+  { month: 'Mayo', vegetable: 'Lechuga', action: 'Cosecha', notes: 'Cosechar hojas exteriores para una producción continua.' },
+  { month: 'Mayo', vegetable: 'Ajo', action: 'Siembra', notes: 'Plantar dientes individuales.' },
+  { month: 'Junio', vegetable: 'Habas', action: 'Siembra', notes: 'Resistentes al frío.' },
+  { month: 'Julio', vegetable: 'Espinaca', action: 'Cosecha', notes: 'Cosechar antes de que florezca.' },
+  { month: 'Agosto', vegetable: 'Puerros', action: 'Siembra', notes: 'Requieren un largo periodo de crecimiento.' },
+  { month: 'Septiembre', vegetable: 'Rabanitos', action: 'Siembra', notes: 'Crecen rápidamente.' },
+  { month: 'Octubre', vegetable: 'Acelga', action: 'Siembra', notes: 'Muy productiva y resistente.' },
+  { month: 'Noviembre', vegetable: 'Zanahoria', action: 'Cosecha', notes: 'Cosechar antes de que el suelo se endurezca.' },
+  { month: 'Diciembre', vegetable: 'Pimiento', action: 'Siembra', notes: 'Necesitan calor para germinar.' }
+];
+
+// --- Datos Derivados (para componentes específicos) ---
+export const petPoints = allMapPoints.filter(p => p.type === 'pet');
+export const gardenPoints = allMapPoints.filter(p => p.type === 'garden');
+export const adoptionPets = reportedPets.filter(p => p.status === 'found');

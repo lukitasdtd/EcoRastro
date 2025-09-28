@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { communityGardens } from '@/lib/data';
+import { gardenPoints } from '@/lib/data';
 import GardenCard from '@/components/garden-card';
 import { GardenFinder } from '@/components/garden-finder';
 
@@ -10,56 +10,38 @@ export default function GardensPage() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'garden1');
 
   return (
-    <div className="flex flex-col">
-      <section className="relative w-full h-96 bg-secondary/30">
+    <div className="bg-gray-50">
+      {/* Sección Hero */}
+      <div className="relative h-64 md:h-80 w-full overflow-hidden">
         {heroImage && (
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            style={{ objectFit: 'cover' }}
-            className="brightness-75"
-            data-ai-hint={heroImage.imageHint}
-          />
+            <Image 
+                // CORRECCIÓN: Se utiliza `imageUrl` en lugar de `src` para que coincida con la estructura de datos.
+                src={heroImage.imageUrl}
+                alt="Huertas comunitarias"
+                fill
+                className="object-cover"
+            />
         )}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Cultiva Comunidad, Cosecha Futuro
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl mb-8">
-            Encuentra tu espacio verde en la ciudad. Conéctate con otros, aprende a cultivar y disfruta de alimentos frescos y locales.
-          </p>
-          <Button asChild size="lg">
-            <Link href="#finder">Buscar una Huerta</Link>
-          </Button>
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-white">Encuentra Tu Huerta Comunitaria</h1>
+          <p className="mt-2 text-lg text-gray-200 max-w-2xl">Conecta con la naturaleza y tu comunidad. Descubre, participa y cultiva en las huertas cercanas a ti.</p>
         </div>
-      </section>
+      </div>
 
-      <section id="finder" className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold">Encuentra tu Huerta Ideal</h2>
-          <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
-            Usa nuestro buscador inteligente para conectar con la huerta comunitaria perfecta para ti.
-          </p>
-        </div>
+      <div className="container mx-auto px-4 py-12">
+        {/* TAREA 8: Formulario de Búsqueda con IA (Server Action) */}
         <GardenFinder />
-      </section>
 
-      <section className="bg-muted/40 py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold">Huertas Comunitarias Destacadas</h2>
-            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
-              Explora algunos de los espacios verdes que nuestra comunidad ha creado.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {communityGardens.map(garden => (
-              <GardenCard key={garden.id} garden={garden} />
+        {/* Sección de la Grilla de Huertas */}
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Huertas Destacadas</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {gardenPoints.map(garden => (
+              <GardenCard key={garden.title} garden={garden} />
             ))}
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

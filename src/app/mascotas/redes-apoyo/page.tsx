@@ -27,6 +27,8 @@ import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { shelters } from '@/lib/shelter-data';
 import ShelterCard from '@/components/shelter-card';
+// CORRECCIÓN: Se importan los datos para el mapa.
+import { allMapPoints } from '@/lib/data';
 
 export default function SupportNetworksPage() {
   const Map = useMemo(() => dynamic(
@@ -128,7 +130,8 @@ export default function SupportNetworksPage() {
           </div>
 
           <div className="relative w-full h-[70vh] min-h-[500px]">
-            <Map />
+            {/* CORRECCIÓN: Se pasan los datos al componente del mapa. */}
+            <Map points={allMapPoints} />
           </div>
         </div>
       </section>

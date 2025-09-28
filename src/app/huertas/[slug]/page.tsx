@@ -4,30 +4,15 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Image from 'next/image';
+import { gardenPoints, slugify } from '@/lib/data'; // 1. Importar datos y función de utilidad
 
-// --- Definición de datos ---
-// En una aplicación real, esto vendría de una API o una base de datos.
-const slugify = (text: string) => {
-  return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
-};
-
-const mapPoints = [
-  { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria Ñuñoa', desc: 'Cultivos orgánicos en Ñuñoa.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Huerta Comunitaria Ñuñoa')}` },
-  { lat: -33.43, lng: -70.62, title: 'Jardín Vertical Santiago', desc: 'Iniciativa vecinal en Santiago Centro.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Jardín Vertical Santiago')}` },
-  { lat: -33.49, lng: -70.70, title: 'Huerta Escolar Maipú', desc: 'Proyecto educativo en Maipú.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Huerta Escolar Maipú')}` },
-  { lat: -33.51, lng: -70.61, title: 'Composta Comunitaria La Florida', desc: 'Centro de compostaje en La Florida.', type: 'garden' as const, image: '/gato-naranjo.jpg', link: `/huertas/${slugify('Composta Comunitaria La Florida')}` },
-];
+// La lista de puntos y la función slugify se han eliminado de aquí.
+// Ahora provienen de `src/lib/data.ts` para garantizar la coherencia.
 
 // --- Generación de Páginas Estáticas (Server-Side) ---
-// Esto le dice a Next.js que cree estas páginas durante el build, haciéndolas súper rápidas.
-// ESTA FUNCIÓN REQUIERE QUE EL COMPONENTE SEA UN SERVER COMPONENT (sin 'use client').
+// Usamos la lista pre-filtrada de huertas para generar las páginas.
 export async function generateStaticParams() {
-  return mapPoints.map(garden => ({
+  return gardenPoints.map(garden => ({
     slug: slugify(garden.title),
   }));
 }
@@ -36,8 +21,8 @@ export async function generateStaticParams() {
 export default function HuertaPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
 
-  // Buscar la información de la huerta usando el slug de la URL
-  const garden = mapPoints.find(p => slugify(p.title) === slug);
+  // 2. Buscar en la lista de huertas importada
+  const garden = gardenPoints.find(p => slugify(p.title) === slug);
 
   // Si no se encuentra la huerta, mostrar la página 404 de Next.js
   if (!garden) {
@@ -59,7 +44,6 @@ export default function HuertaPage({ params }: { params: { slug: string } }) {
 
         <Card className="overflow-hidden rounded-2xl shadow-lg border-2 border-gray-200">
           <CardHeader className="p-0">
-             {/* Usamos el componente Image de Next.js para optimización automática */}
             <div className="relative w-full h-64 md:h-80">
                  <Image
                     src={garden.image}

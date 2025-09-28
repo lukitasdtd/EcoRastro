@@ -1,131 +1,99 @@
-// TAREA 5: Proyecto Base React - Componentes
-// Este archivo demuestra la creación de un componente de React para la página "Acerca de Nosotros".
-// Cumple con los siguientes requisitos del sprint:
-// - Es un componente de React funcional, no una página HTML estática (Punto 5).
-// - Utiliza componentes reutilizables de ShadCN/UI como Card, lo que demuestra la modularidad (Punto 6).
-// - El diseño es responsivo gracias a las clases de Tailwind CSS (ej. `grid`, `md:grid-cols-2`), cumpliendo con el avance en responsividad (Punto 4).
-// - Renderiza dinámicamente una lista de miembros del equipo a partir de un array, una práctica común en React.
-
 import Image from 'next/image';
+import { Check, Leaf, PawPrint, Users } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Users, Target, Leaf } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function AboutPage() {
-  // Se busca la imagen de héroe desde un archivo de datos centralizado.
-  const heroImage = PlaceHolderImages.find(img => img.id === 'garden1');
+  const aboutImage = PlaceHolderImages.find(img => img.id === 'about');
 
-  // Se define un array de objetos para los miembros del equipo.
-  // Esto permite renderizar la sección dinámicamente usando `map`.
-  const teamMembers = [
-    { name: 'Javiera López', role: 'Miembro del Equipo' },
-    { name: 'Geraldine Garces', role: 'Miembro del Equipo' },
-    { name: 'Diego Alfaro', role: 'Miembro del Equipo' },
-    { name: 'Carolina Fernandez', role: 'Miembro del Equipo' },
-    { name: 'Angelo Jimenez', role: 'Miembro del Equipo' },
-  ];
+  const features = [
+    { 
+      name: 'Mapeo Centralizado', 
+      description: 'Visualiza reportes de mascotas y huertas en un solo mapa interactivo.',
+      icon: <MapPinIcon />
+    },
+    { 
+      name: 'Participación Comunitaria', 
+      description: 'Fomentamos la colaboración vecinal para resolver problemas locales juntos.',
+      icon: <Users className="w-8 h-8 text-green-600" />
+    },
+    { 
+      name: 'Cuidado Animal', 
+      description: 'Ayuda a reunir mascotas con sus dueños y a encontrar hogares para animales necesitados.',
+      icon: <PawPrint className="w-8 h-8 text-orange-500" />
+    },
+    { 
+      name: 'Sostenibilidad Urbana', 
+      description: 'Promovemos la agricultura urbana y el compostaje para ciudades más verdes.',
+      icon: <Leaf className="w-8 h-8 text-lime-500" />
+    },
+  ]
 
-  // La estructura de la página utiliza JSX, que es similar a HTML pero permite incrustar lógica de JavaScript.
   return (
-    <div className="flex flex-col">
-      {/* --- Sección Héroe --- */}
-      {/* El uso de `relative` y `absolute` es una técnica estándar para superponer texto sobre una imagen. */}
-      <section className="relative w-full h-80 bg-secondary/30">
-        {heroImage && (
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill // `fill` hace que la imagen cubra todo el contenedor padre.
-            style={{ objectFit: 'cover' }} // `object-fit` asegura que la imagen no se deforme.
-            className="brightness-75" // Clase de Tailwind para oscurecer la imagen y mejorar la legibilidad del texto.
-            data-ai-hint={heroImage.imageHint}
-          />
-        )}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Sobre EcoRastro
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl">
-            Conectando comunidades para un futuro más verde y solidario.
-          </p>
+    <div className="bg-white">
+      {/* Sección Hero */}
+      <div className="relative isolate overflow-hidden bg-gradient-to-b from-green-100/20 pt-14">
+        <div
+          className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-green-600/10 ring-1 ring-green-50 sm:-mr-80 lg:-mr-96"
+          aria-hidden="true"
+        />
+        <div className="mx-auto max-w-7xl px-6 py-32 sm:py-40 lg:px-8">
+          <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-16 lg:gap-y-6 xl:grid-cols-1 xl:grid-rows-1 xl:gap-x-8">
+            <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:col-span-2 xl:col-auto">
+              Nuestra Misión: Fortalecer Lazos Comunitarios.
+            </h1>
+            <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1">
+              <p className="text-lg leading-8 text-gray-600">
+                Creemos en el poder de la comunidad. Nuestra plataforma nació de la idea de que la tecnología puede y debe servir como un puente para conectar a las personas, resolver problemas locales y cuidar de nuestro entorno. Cada mascota reunida con su familia y cada semilla plantada en una huerta comunitaria es un paso hacia un futuro más conectado y sostenible.
+              </p>
+            </div>
+            {aboutImage && (
+              <div className="mt-10 aspect-[6/5] w-full max-w-lg rounded-2xl object-cover sm:mt-16 lg:mt-0 lg:max-w-none xl:row-span-2 xl:row-end-2 xl:mt-36">
+                 <Image
+                    // CORRECCIÓN FINAL: Se utiliza `imageUrl` en lugar de `src`.
+                    src={aboutImage.imageUrl}
+                    alt="Equipo de voluntarios trabajando en una huerta comunitaria"
+                    width={800}
+                    height={600}
+                    className="w-full h-full object-cover rounded-2xl"
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </section>
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32" />
+      </div>
 
-      {/* --- Sección Misión y Visión --- */}
-      {/* Se utiliza `grid` y `md:grid-cols-2` para crear un diseño de dos columnas en pantallas medianas y grandes, y una sola columna en móviles. */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl font-bold mb-4">Nuestra Misión</h2>
-            <p className="text-foreground/80 text-lg mb-6">
-              Facilitar la conexión entre personas, mascotas y la naturaleza a través de una plataforma tecnológica que promueve la adopción, el cuidado de mascotas perdidas y la agricultura urbana sostenible. Buscamos fortalecer los lazos comunitarios y proteger nuestros ecosistemas locales.
+      {/* Sección de Características */}
+      <div className="mx-auto mt-16 max-w-7xl px-6 sm:mt-32 lg:px-8">
+        <div className="mx-auto max-w-2xl lg:max-w-none">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">¿Por Qué Existimos?</h2>
+            <p className="mt-4 text-lg leading-8 text-gray-600">
+              Para crear un impacto positivo y tangible en nuestras comunidades.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-6">
-             {/* Se reutiliza el componente `Card` para mostrar la Visión y los Valores. */}
-             <Card>
-              <CardHeader className="flex-row items-center gap-4">
-                <Target className="w-8 h-8 text-primary" />
-                <CardTitle>Visión</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-foreground/80">Ser la plataforma líder que inspire y movilice a las comunidades a crear entornos más conscientes, empáticos y ecológicos.</p>
-              </CardContent>
-            </Card>
-             <Card>
-              <CardHeader className="flex-row items-center gap-4">
-                <Leaf className="w-8 h-8 text-primary" />
-                <CardTitle>Valores</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-foreground/80 space-y-1">
-                    <li>Comunidad</li>
-                    <li>Sostenibilidad</li>
-                    <li>Empatía</li>
-                    <li>Innovación</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
+          <dl className="mt-16 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-y-16">
+            {features.map((feature) => (
+              <div key={feature.name} className="flex flex-col items-center text-center">
+                <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
+                  {feature.icon}
+                  {feature.name}
+                </dt>
+                <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                  <p className="flex-auto">{feature.description}</p>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
-      </section>
-
-      {/* --- Sección Equipo --- */}
-      <section className="bg-muted/40 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2">Conoce al Equipo</h2>
-          <p className="max-w-2xl mx-auto text-lg text-foreground/60 mb-12">
-            Somos un grupo apasionado por la tecnología y el impacto social positivo.
-          </p>
-          {/* Diseño de cuadrícula responsiva para los miembros del equipo. */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
-            {/* Se itera sobre el array `teamMembers` con `.map()` para renderizar una tarjeta por cada miembro. */}
-            {teamMembers.map((member) => {
-              // Lógica para separar nombre y apellido.
-              const nameParts = member.name.split(' ');
-              const firstName = nameParts[0];
-              const lastName = nameParts.slice(1).join(' ');
-              return (
-                <Card key={member.name} className="text-center">
-                  <CardHeader>
-                    <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
-                      <Users className="h-10 w-10 text-primary" />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardTitle className="text-xl leading-tight">
-                      {firstName}
-                      <br />
-                      {lastName}
-                    </CardTitle>
-                    <p className="text-primary font-semibold mt-1">{member.role}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
+}
+
+// Placeholder para el ícono de MapPin que falta
+function MapPinIcon() {
+  return (
+    <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+  )
 }
