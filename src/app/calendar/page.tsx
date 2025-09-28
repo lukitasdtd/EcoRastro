@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { plantingData, PlantingData, Crop } from '@/lib/data';
+import { plantingData, Crop } from '@/lib/data';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cropDetails, CropDetail } from '@/lib/crop-details';
 import { CropDetailModal, ModalData } from '@/components/calendar/CropDetailModal';
@@ -52,7 +52,7 @@ const CalendarNav = ({ currentDate, setCurrentDate, activeCategory, setActiveCat
         <div className="hidden md:flex items-center gap-2 bg-black/10 p-1 rounded-full">
             {(['Verduras', 'Frutas', 'Hierbas'] as Category[]).map(cat => (
                 <Button key={cat} variant='ghost' onClick={() => setActiveCategory(cat)}
-                    className={`rounded-full h-8 px-4 text-sm font-medium transition-colors duration-300 ${activeCategory === cat ? 'bg-background text-foreground hover:bg-background/90' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}>
+                    className={`rounded-full h-8 px-4 text-sm font-medium transition-colors duration-300 ${activeCategory === cat ? 'bg-background text-foreground hover:bg-background/90' : 'text-secondary-foreground hover:bg-secondary-foreground/80'}`}>
                     {cat}
                 </Button>
             ))}
@@ -132,7 +132,7 @@ const InfoCard = ({ activeCrop, isLoading, onOpenModal }: { activeCrop: Crop | n
             <Card className="rounded-2xl shadow-lg h-full border-0"><CardContent className="p-4 text-center"><Skeleton className="w-full h-40 rounded-xl mb-4 bg-slate-200" /><Skeleton className="h-8 w-3/4 mb-2 mx-auto bg-slate-200" /><Skeleton className="h-5 w-full mb-4 bg-slate-200" /><Skeleton className="h-10 w-32 mx-auto bg-slate-200" /></CardContent></Card>
         );
     }
-    if (!activeCrop) return <Card className="flex items-center justify-center h-full rounded-2xl shadow-lg border-0"><p className="text-muted-foreground p-4 text-center">No hay cultivos recomendados para este mes.</p></Card>;
+    if (!activeCrop) return <Card className="flex items-center justify-center h-full rounded-2xl shadow-lg border-0"><p className="text-muted-foreground p-4 text-center">No hay cultivos para esta categoría en este mes.</p></Card>;
 
     return (
         <Card className="rounded-2xl shadow-lg h-full overflow-hidden flex flex-col border-0">
@@ -197,6 +197,7 @@ const CalendarGrid = ({ currentDate, selectedDate, cropsForMonth, onDayClick, is
         }));
 
         return days;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentDate, selectedDate, cropsForMonth, onDayClick]);
 
     if (isLoading) {
@@ -235,7 +236,14 @@ export default function CalendarPage() {
 
     const realSeason = getSeason(new Date());
 
-    // Lógica de búsqueda
+    // --- Lógica de Datos ---
+    const monthKey = useMemo(() => format(currentDate, 'MMMM', { locale: es }).toLowerCase(), [currentDate]);
+
+    const cropsForCurrentMonth = useMemo(() => {
+        const allCropsInMonth = plantingData[monthKey]?.crops || [];
+        return allCropsInMonth.filter(crop => crop.category === activeCategory);
+    }, [monthKey, activeCategory]);
+
     const allCropsForSearch: SearchableCrop[] = useMemo(() => 
         Object.entries(cropDetails).map(([id, data]) => ({ id, ...data }))
     , []);
@@ -249,55 +257,49 @@ export default function CalendarPage() {
         return allCropsForSearch.filter(crop => crop.name.toLowerCase().includes(searchQuery.toLowerCase()));
     }, [searchQuery, allCropsForSearch]);
 
-    const cropsForCurrentMonth = useMemo(() => {
-        const monthKey = format(currentDate, 'MMMM', { locale: es }).toLowerCase();
-        return plantingData[monthKey]?.crops || [];
-    }, [currentDate]);
+    // --- Efectos ---
 
-    // Efecto para la carga inicial y selección automática
-    useEffect(() => {
-        setIsLoading(true);
-        const timer = setTimeout(() => {
-            const firstCropOfMonth = cropsForCurrentMonth[0];
-            if (firstCropOfMonth) {
-                setActiveCrop(firstCropOfMonth);
-                const dayOfFirstCrop = (firstCropOfMonth.week - 1) * 7 + 1;
-                const newSelectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayOfFirstCrop);
-                setSelectedDate(newSelectedDate);
-            }
-            setIsLoading(false);
-        }, 300);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // Efecto para actualizar el cultivo al cambiar de mes
+    // Efecto para la selección de cultivo por defecto al cambiar de mes o categoría
     useEffect(() => {
         if (isSearching) return;
-        const firstCropOfMonth = cropsForCurrentMonth[0];
-        setActiveCrop(firstCropOfMonth || null);
         
-        if(firstCropOfMonth) {
+        const firstCropOfMonth = cropsForCurrentMonth[0];
+        
+        if (firstCropOfMonth) {
+            setActiveCrop(firstCropOfMonth);
             const dayOfFirstCrop = (firstCropOfMonth.week - 1) * 7 + 1;
             const newSelectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayOfFirstCrop);
             setSelectedDate(newSelectedDate);
         } else {
+            setActiveCrop(null);
             setSelectedDate(null);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentDate]);
+    }, [cropsForCurrentMonth]); // Se ejecuta cuando cambian los cultivos (mes o categoría)
 
+    // Efecto para el estado de carga
+    useEffect(() => {
+        setIsLoading(true);
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [monthKey, activeCategory]);
+
+
+    // --- Manejadores de Eventos ---
 
     const handleDayClick = (day: Date, crop: Crop | undefined) => {
         setSelectedDate(day);
-        if (crop) setActiveCrop(crop);
+        if (crop) {
+            setActiveCrop(crop);
+        }
     };
     
     const handleOpenModal = (cropId: string) => {
         const details = cropDetails[cropId];
         if (details) {
-            // Buscar el cultivo original para obtener el imageId
             const originalCrop = allCropsFromPlantingData.find(c => c.id === cropId);
-            
             const modalData: ModalData = {
                 id: cropId,
                 imageId: originalCrop?.imageId, 
@@ -329,8 +331,8 @@ export default function CalendarPage() {
                                 <CalendarNav 
                                     currentDate={currentDate} 
                                     setCurrentDate={setCurrentDate} 
-                                    activeCategory={activeCategory} 
-                                    setActiveCategory={setActiveCategory} 
+                                    activeCategory={activeCategory}
+                                    setActiveCategory={setActiveCategory}
                                     onSearchClick={() => setIsSearching(true)}
                                 />
                             )}

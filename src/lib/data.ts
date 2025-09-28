@@ -49,6 +49,7 @@ export type Crop = {
   name: string;
   imageId: string; 
   week: number; // Semana del mes (1-4) en la que es ideal plantar
+  category: 'Verduras' | 'Frutas' | 'Hierbas';
 };
 
 export type MonthlyPlantingData = {
@@ -81,68 +82,68 @@ export const reportedPets: ReportedPet[] = [
 export const plantingData: PlantingData = {
   enero: {
     crops: [
-      { id: 'tomate', name: 'Tomate', imageId: 'img_tomato', week: 1 },
-      { id: 'albahaca', name: 'Albahaca', imageId: 'img_basil', week: 3 },
+      { id: 'tomate', name: 'Tomate', imageId: 'img_tomato', week: 1, category: 'Frutas' },
+      { id: 'albahaca', name: 'Albahaca', imageId: 'img_basil', week: 3, category: 'Hierbas' },
     ],
     tips: ['Siembra: Proteger del sol directo en horas de máximo calor.', 'Riego: Mantener el suelo húmedo para la albahaca.']
   },
   febrero: {
-    crops: [{ id: 'lechuga', name: 'Lechuga', imageId: 'img_lettuce', week: 2 }],
+    crops: [{ id: 'lechuga', name: 'Lechuga', imageId: 'img_lettuce', week: 2, category: 'Verduras' }],
     tips: ['Siembra: Buscar variedades de verano resistentes al calor.', 'Cuidado: Vigilar la aparición de pulgones.']
   },
   marzo: {
     crops: [
-      { id: 'zanahoria', name: 'Zanahoria', imageId: 'img_carrot', week: 1 },
-      { id: 'tomate', name: 'Tomate', imageId: 'img_tomato', week: 4 },
+      { id: 'zanahoria', name: 'Zanahoria', imageId: 'img_carrot', week: 1, category: 'Verduras' },
+      { id: 'tomate', name: 'Tomate', imageId: 'img_tomato', week: 4, category: 'Frutas' },
     ],
     tips: ['Siembra: Asegurar suelo suelto y profundo para las zanahorias.', 'Cosecha: Recolectar los últimos tomates antes de que refresque.']
   },
   abril: {
-    crops: [{ id: 'espinaca', name: 'Espinaca', imageId: 'img_spinach', week: 2 }],
+    crops: [{ id: 'espinaca', name: 'Espinaca', imageId: 'img_spinach', week: 2, category: 'Verduras' }],
     tips: ['Siembra: Ideal para climas más frescos que comienzan.', 'Asociación: Crece bien junto a las fresas.']
   },
   mayo: {
     crops: [
-      { id: 'ajo', name: 'Ajo', imageId: 'img_garlic', week: 1 },
-      { id: 'lechuga', name: 'Lechuga', imageId: 'img_lettuce', week: 3 },
+      { id: 'ajo', name: 'Ajo', imageId: 'img_garlic', week: 1, category: 'Verduras' },
+      { id: 'lechuga', name: 'Lechuga', imageId: 'img_lettuce', week: 3, category: 'Verduras' },
     ],
     tips: ['Siembra: Plantar dientes individuales con la punta hacia arriba.', 'Cosecha: Recolectar hojas exteriores de la lechuga para producción continua.']
   },
   junio: {
-    crops: [{ id: 'habas', name: 'Habas', imageId: 'img_beans', week: 1 }],
+    crops: [{ id: 'habas', name: 'Habas', imageId: 'img_beans', week: 1, category: 'Verduras' }],
     tips: ['Siembra: Son muy resistentes al frío, ideal para el mes más corto.', 'Soporte: Pueden necesitar tutores a medida que crecen.']
   },
   julio: {
     crops: [
-      { id: 'cebolla', name: 'Cebolla', imageId: 'img_onion', week: 2 },
-      { id: 'espinaca', name: 'Espinaca', imageId: 'img_spinach', week: 4 },
+      { id: 'cebolla', name: 'Cebolla', imageId: 'img_onion', week: 2, category: 'Verduras' },
+      { id: 'espinaca', name: 'Espinaca', imageId: 'img_spinach', week: 4, category: 'Verduras' },
     ],
     tips: ['Siembra: Empezar almácigos de cebolla en interior.', 'Cosecha: Última oportunidad para cosechar espinacas antes de que florezcan.']
   },
   agosto: {
-    crops: [{ id: 'puerros', name: 'Puerros', imageId: 'img_leek', week: 3 }],
+    crops: [{ id: 'puerros', name: 'Puerros', imageId: 'img_leek', week: 3, category: 'Verduras' }],
     tips: ['Siembra: Requieren un largo periodo de crecimiento, empezar ahora.', 'Cuidado: Aporcar tierra alrededor de la base para blanquear el tallo.']
   },
   septiembre: {
     crops: [
-      { id: 'tomate-cherry', name: 'Tomate Cherry', imageId: 'img_cherry_tomato', week: 3 },
-      { id: 'rabanitos', name: 'Rabanitos', imageId: 'img_radish', week: 1 },
+      { id: 'tomate-cherry', name: 'Tomate Cherry', imageId: 'img_cherry_tomato', week: 3, category: 'Frutas' },
+      { id: 'rabanitos', name: 'Rabanitos', imageId: 'img_radish', week: 1, category: 'Verduras' },
     ],
     tips: ['Los rabanitos crecen muy rápido, ideales para la impaciencia primaveral.', 'Los tomates cherry necesitan mucho sol para desarrollar su sabor.']
   },
   octubre: {
-    crops: [{ id: 'acelga', name: 'Acelga', imageId: 'img_chard', week: 2 }],
+    crops: [{ id: 'acelga', name: 'Acelga', imageId: 'img_chard', week: 2, category: 'Verduras' }],
     tips: ['Siembra: Muy productiva y resistente, se puede cosechar hoja por hoja.', 'Cuidado: Tolera bien diferentes tipos de suelo.']
   },
   noviembre: {
     crops: [
-      { id: 'zapallo', name: 'Zapallo', imageId: 'img_pumpkin', week: 1 },
-      { id: 'zanahoria', name: 'Zanahoria', imageId: 'img_carrot', week: 4 },
+      { id: 'zapallo', name: 'Zapallo', imageId: 'img_pumpkin', week: 1, category: 'Frutas' },
+      { id: 'zanahoria', name: 'Zanahoria', imageId: 'img_carrot', week: 4, category: 'Verduras' },
     ],
     tips: ['Siembra: El zapallo necesita mucho espacio para expandirse.', 'Cosecha: Sacar las últimas zanahorias sembradas en otoño.']
   },
   diciembre: {
-    crops: [{ id: 'pimiento', name: 'Pimiento', imageId: 'img_pepper', week: 1 }],
+    crops: [{ id: 'pimiento', name: 'Pimiento', imageId: 'img_pepper', week: 1, category: 'Frutas' }],
     tips: ['Siembra: Necesitan mucho calor y sol para germinar y prosperar.', 'Protección: Cuidar de los cambios bruscos de temperatura.']
   }
 };
