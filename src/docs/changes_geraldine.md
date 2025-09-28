@@ -61,3 +61,6 @@ Este documento resume las contribuciones clave, basadas en el historial de commi
         - Se crearon y poblaron los conjuntos de datos que faltaban, incluyendo `adoptionPets` (para la página de adopción) y `plantingData` (para la API del calendario de siembra).
     - **Solución de Errores de Runtime:**
         - Se corrigió un crash en la página de "Redes de Apoyo" (`/mascotas/redes-apoyo`) que ocurría porque el componente del mapa no recibía los datos de los puntos a mostrar. Se aseguró el paso correcto de las `props` para solucionar el error.
+ 
+ ¿Por qué hice esto? 
+ No podía reparar el Calendario de Siembra de forma aislada porque el problema de fondo (la falta de datos centralizados) afectaba a varias partes de la aplicación a la vez. Tuve que hacer una reparación general para poder seguir adelante con mi trabajo específico.
