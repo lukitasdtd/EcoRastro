@@ -4,15 +4,16 @@
  *************************************************************************
  */
 
-// --- Función de Utilidad para crear URL amigables ---
+// --- Función de Utilidad para crear URL amigables (RESTAURADA) ---
 export const slugify = (text: string) => {
   return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
+    .replace(/\s+/g, '-')       // Reemplaza espacios con -
+    .replace(/[^\w\-]+/g, '')   // Elimina caracteres no alfanuméricos excepto -
+    .replace(/\-\-+/g, '-')     // Reemplaza múltiples - con uno solo
+    .replace(/^-+/, '')          // Elimina - del inicio
+    .replace(/-+$/, '');         // Elimina - del final
 };
+
 
 // --- Tipos de Datos ---
 
@@ -41,12 +42,22 @@ export type ReportedPet = {
   imageId: string; 
 };
 
-// TIPO NUEVO: Tipo para el calendario de siembra
-export type PlantingCalendarEntry = {
-  month: string;
-  vegetable: string;
-  action: 'Siembra' | 'Cosecha';
-  notes: string;
+// --- Tipos para el Calendario de Siembra ---
+
+export type Crop = {
+  id: string; 
+  name: string;
+  imageId: string; 
+  week: number; // Semana del mes (1-4) en la que es ideal plantar
+};
+
+export type MonthlyPlantingData = {
+  crops: Crop[];
+  tips: string[];
+};
+
+export type PlantingData = {
+  [month: string]: MonthlyPlantingData;
 };
 
 
@@ -56,10 +67,6 @@ export const allMapPoints: MapPoint[] = [
   { lat: -33.48, lng: -70.58, title: 'Huerta Comunitaria Ñuñoa', desc: 'Cultivos orgánicos en Ñuñoa.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/huerta-comunitaria-nunoa` },
   { lat: -33.50, lng: -70.68, title: 'Gato Encontrado La Cisterna', desc: 'Gato naranja visto en paradero 21.', type: 'pet', image: '/gato-naranjo.jpg', link: `/mascotas/reporte/rp2` },
   { lat: -33.43, lng: -70.62, title: 'Jardín Vertical Santiago', desc: 'Iniciativa vecinal en Santiago Centro.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/jardin-vertical-santiago` },
-  { lat: -33.46, lng: -70.60, title: 'Punto de Adopción Las Condes', desc: 'Jornada de adopción de cachorros.', type: 'pet', image: '/gato-naranjo.jpg', link: `/mascotas/reporte/rp3` },
-  { lat: -33.49, lng: -70.70, title: 'Huerta Escolar Maipú', desc: 'Proyecto educativo en Maipú.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/huerta-escolar-maipu` },
-  { lat: -33.42, lng: -70.66, title: 'Canario Perdido Recoleta', desc: 'Canario amarillo visto cerca del cerro.', type: 'pet', image: '/gato-naranjo.jpg', link: `/mascotas/reporte/rp4` },
-  { lat: -33.51, lng: -70.61, title: 'Composta Comunitaria La Florida', desc: 'Centro de compostaje en La Florida.', type: 'garden', image: '/gato-naranjo.jpg', link: `/huertas/composta-comunitaria-la-florida` },
 ];
 
 // --- Lista de Reportes de Mascotas ---
@@ -71,23 +78,75 @@ export const reportedPets: ReportedPet[] = [
 ];
 
 // --- Datos para el Calendario de Siembra ---
-export const plantingData: PlantingCalendarEntry[] = [
-  { month: 'Enero', vegetable: 'Tomate', action: 'Siembra', notes: 'Proteger del sol directo en horas de máximo calor.' },
-  { month: 'Enero', vegetable: 'Albahaca', action: 'Siembra', notes: 'Mantener el suelo húmedo.' },
-  { month: 'Febrero', vegetable: 'Lechuga', action: 'Siembra', notes: 'Buscar variedades de verano resistentes al calor.' },
-  { month: 'Marzo', vegetable: 'Tomate', action: 'Cosecha', notes: 'Cosechar cuando estén firmes y de color uniforme.' },
-  { month: 'Marzo', vegetable: 'Zanahoria', action: 'Siembra', notes: 'Asegurar suelo suelto y profundo.' },
-  { month: 'Abril', vegetable: 'Espinaca', action: 'Siembra', notes: 'Ideal para climas más frescos.' },
-  { month: 'Mayo', vegetable: 'Lechuga', action: 'Cosecha', notes: 'Cosechar hojas exteriores para una producción continua.' },
-  { month: 'Mayo', vegetable: 'Ajo', action: 'Siembra', notes: 'Plantar dientes individuales.' },
-  { month: 'Junio', vegetable: 'Habas', action: 'Siembra', notes: 'Resistentes al frío.' },
-  { month: 'Julio', vegetable: 'Espinaca', action: 'Cosecha', notes: 'Cosechar antes de que florezca.' },
-  { month: 'Agosto', vegetable: 'Puerros', action: 'Siembra', notes: 'Requieren un largo periodo de crecimiento.' },
-  { month: 'Septiembre', vegetable: 'Rabanitos', action: 'Siembra', notes: 'Crecen rápidamente.' },
-  { month: 'Octubre', vegetable: 'Acelga', action: 'Siembra', notes: 'Muy productiva y resistente.' },
-  { month: 'Noviembre', vegetable: 'Zanahoria', action: 'Cosecha', notes: 'Cosechar antes de que el suelo se endurezca.' },
-  { month: 'Diciembre', vegetable: 'Pimiento', action: 'Siembra', notes: 'Necesitan calor para germinar.' }
-];
+export const plantingData: PlantingData = {
+  enero: {
+    crops: [
+      { id: 'tomate', name: 'Tomate', imageId: 'img_tomato', week: 1 },
+      { id: 'albahaca', name: 'Albahaca', imageId: 'img_basil', week: 3 },
+    ],
+    tips: ['Siembra: Proteger del sol directo en horas de máximo calor.', 'Riego: Mantener el suelo húmedo para la albahaca.']
+  },
+  febrero: {
+    crops: [{ id: 'lechuga', name: 'Lechuga', imageId: 'img_lettuce', week: 2 }],
+    tips: ['Siembra: Buscar variedades de verano resistentes al calor.', 'Cuidado: Vigilar la aparición de pulgones.']
+  },
+  marzo: {
+    crops: [
+      { id: 'zanahoria', name: 'Zanahoria', imageId: 'img_carrot', week: 1 },
+      { id: 'tomate', name: 'Tomate', imageId: 'img_tomato', week: 4 },
+    ],
+    tips: ['Siembra: Asegurar suelo suelto y profundo para las zanahorias.', 'Cosecha: Recolectar los últimos tomates antes de que refresque.']
+  },
+  abril: {
+    crops: [{ id: 'espinaca', name: 'Espinaca', imageId: 'img_spinach', week: 2 }],
+    tips: ['Siembra: Ideal para climas más frescos que comienzan.', 'Asociación: Crece bien junto a las fresas.']
+  },
+  mayo: {
+    crops: [
+      { id: 'ajo', name: 'Ajo', imageId: 'img_garlic', week: 1 },
+      { id: 'lechuga', name: 'Lechuga', imageId: 'img_lettuce', week: 3 },
+    ],
+    tips: ['Siembra: Plantar dientes individuales con la punta hacia arriba.', 'Cosecha: Recolectar hojas exteriores de la lechuga para producción continua.']
+  },
+  junio: {
+    crops: [{ id: 'habas', name: 'Habas', imageId: 'img_beans', week: 1 }],
+    tips: ['Siembra: Son muy resistentes al frío, ideal para el mes más corto.', 'Soporte: Pueden necesitar tutores a medida que crecen.']
+  },
+  julio: {
+    crops: [
+      { id: 'cebolla', name: 'Cebolla', imageId: 'img_onion', week: 2 },
+      { id: 'espinaca', name: 'Espinaca', imageId: 'img_spinach', week: 4 },
+    ],
+    tips: ['Siembra: Empezar almácigos de cebolla en interior.', 'Cosecha: Última oportunidad para cosechar espinacas antes de que florezcan.']
+  },
+  agosto: {
+    crops: [{ id: 'puerros', name: 'Puerros', imageId: 'img_leek', week: 3 }],
+    tips: ['Siembra: Requieren un largo periodo de crecimiento, empezar ahora.', 'Cuidado: Aporcar tierra alrededor de la base para blanquear el tallo.']
+  },
+  septiembre: {
+    crops: [
+      { id: 'tomate-cherry', name: 'Tomate Cherry', imageId: 'img_cherry_tomato', week: 3 },
+      { id: 'rabanitos', name: 'Rabanitos', imageId: 'img_radish', week: 1 },
+    ],
+    tips: ['Los rabanitos crecen muy rápido, ideales para la impaciencia primaveral.', 'Los tomates cherry necesitan mucho sol para desarrollar su sabor.']
+  },
+  octubre: {
+    crops: [{ id: 'acelga', name: 'Acelga', imageId: 'img_chard', week: 2 }],
+    tips: ['Siembra: Muy productiva y resistente, se puede cosechar hoja por hoja.', 'Cuidado: Tolera bien diferentes tipos de suelo.']
+  },
+  noviembre: {
+    crops: [
+      { id: 'zapallo', name: 'Zapallo', imageId: 'img_pumpkin', week: 1 },
+      { id: 'zanahoria', name: 'Zanahoria', imageId: 'img_carrot', week: 4 },
+    ],
+    tips: ['Siembra: El zapallo necesita mucho espacio para expandirse.', 'Cosecha: Sacar las últimas zanahorias sembradas en otoño.']
+  },
+  diciembre: {
+    crops: [{ id: 'pimiento', name: 'Pimiento', imageId: 'img_pepper', week: 1 }],
+    tips: ['Siembra: Necesitan mucho calor y sol para germinar y prosperar.', 'Protección: Cuidar de los cambios bruscos de temperatura.']
+  }
+};
+
 
 // --- Datos Derivados (para componentes específicos) ---
 export const petPoints = allMapPoints.filter(p => p.type === 'pet');
