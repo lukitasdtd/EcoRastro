@@ -1,11 +1,48 @@
+'use client';
 
 import Image from 'next/image';
-import { Instagram, Twitter, Mail } from 'lucide-react';
+import Link from 'next/link';
+import { Instagram, Twitter, Mail, X } from 'lucide-react';
+import { useState } from 'react';
 
 export default function AboutPage() {
+  const teamMembers = [
+    {
+      name: 'Geraldine Garces',
+      nickname: 'Airï',
+      imageUrl: '/gato-naranjo.jpg',
+      description: 'Aporta su conocimiento técnico y ambiental, además de estudios previos en programación. Tiene una comunicación asertiva y calmada, que ayuda a equilibrar y guiar al equipo. Su proactividad y capacidad de recolectar información fortalecen la parte investigativa y técnica del proyecto. Siempre optimista y clara en ideas, se convierte en una guía confiable en el área técnica y ambiental.',
+    },
+    {
+      name: 'Angelo Jimenez',
+      nickname: 'Ukitas',
+      imageUrl: '/ukitas.jpg',
+      description: 'Se destaca por su rapidez de aprendizaje, pensamiento analítico y atención al detalle. Tiene un liderazgo natural, compartiendo sus conocimientos con humildad y empatía. Con gran capacidad de programación y comunicación asertiva, transmite ideas claras y mantiene la calma en situaciones de presión. Es autodidacta, resolutivo y motivador de equipos, aportando tanto en la parte técnica como en el espíritu del grupo.',
+    },
+    {
+      name: 'Javiera Lopez',
+      nickname: 'Javii',
+      imageUrl: '/javii.jpg',
+      description: 'Se caracteriza por su rapidez de reacción, motivación y energía positiva. No teme expresar lo que piensa y aporta siempre una mirada empática al grupo. Su pensamiento analítico y capacidad de investigación la hacen una pieza clave en la toma de decisiones. Destaca en la gestión de equipo, coordinación y motivación, siendo motor y referente en momentos clave.',
+    },
+    {
+      name: 'Carolina Fernandez',
+      nickname: 'Carolin',
+      imageUrl: '/carolin.jpg',
+      description: 'Destaca por su claridad y firmeza al exponer ideas. Tiene un estilo directo y honesto, lo que aporta transparencia al equipo. Su creatividad en presentaciones, diseño gráfico y marketing le da un sello distintivo al proyecto. Optimista, detallista y con gran capacidad ejecutiva, es nuestra diseñadora oficial y quien potencia lo visual y lo atractivo de nuestras propuestas.',
+    },
+    {
+      name: 'Diego Alfaro',
+      nickname: 'Dego',
+      imageUrl: '/dego.jpg',
+      description: 'Con gran orientación al cliente y visión en ventas y análisis comercial, aporta ideas frescas y creativas al proyecto. Su capacidad en diseño y modelado 3D potencia la visualización de propuestas. Destaca como vocero del equipo, siempre con actitud positiva, aportando organización y creatividad en cada etapa.',
+    },
+  ];
+
+  const [selectedMember, setSelectedMember] = useState(null);
+
   return (
     <div className="relative bg-[#E5E5E5] min-h-screen">
-      {/* Fondo de página con opacidad */}
       <Image
         src="/three.png"
         alt="Fondo de página"
@@ -29,7 +66,6 @@ export default function AboutPage() {
           </p>
         </section>
 
-        {/* Sección "Quienes Somos" con imagen y texto */}
         <section className="mt-12 flex flex-col md:flex-row items-center gap-12">
           <div className="md:w-1/3 h-64 md:h-auto">
             <Image
@@ -71,7 +107,6 @@ export default function AboutPage() {
           </p>
         </section>
 
-        {/* Sección de Huertas con texto al lado */}
         <section className="mt-16 flex flex-col md:flex-row items-center gap-12">
           <div className="md:w-1/2">
              <Image
@@ -106,6 +141,26 @@ export default function AboutPage() {
             />
           </div>
         </section>
+
+        <section className="mt-16 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Conoce al Equipo</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 px-4">
+            {teamMembers.map((member) => (
+              <div key={member.nickname} onClick={() => setSelectedMember(member)} className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col items-center cursor-pointer">
+                <div className="relative h-32 w-32 mb-4">
+                  <Image
+                    src={member.imageUrl}
+                    alt={member.name}
+                    fill
+                    className="rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">{member.name}</h3>
+                <p className="text-md text-gray-600">({member.nickname})</p>
+              </div>
+            ))}
+          </div>
+        </section>
         
         <section className="mt-16 text-center">
           <h2 className="text-3xl font-bold text-gray-800">Contactanos</h2>
@@ -125,7 +180,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Sección para la imagen que se superpone al footer */}
         <section className="relative z-10 -mb-16 flex justify-center">
             <Image
               src="/cat-dog2.png"
@@ -136,6 +190,29 @@ export default function AboutPage() {
             />
         </section>
       </main>
+
+      {selectedMember && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-full m-4 relative transform transition-all duration-300 scale-100">
+            <button onClick={() => setSelectedMember(null)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+              <X size={24} />
+            </button>
+            <div className="flex flex-col items-center text-center">
+              <div className="relative h-40 w-40 mb-4">
+                <Image
+                  src={selectedMember.imageUrl}
+                  alt={selectedMember.name}
+                  fill
+                  className="rounded-full object-cover"
+                />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800">{selectedMember.name}</h2>
+              <p className="text-xl text-gray-600">({selectedMember.nickname})</p>
+              <p className="text-lg text-gray-700 mt-4">{selectedMember.description}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
