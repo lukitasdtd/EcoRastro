@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import { Quicksand, Roboto } from 'next/font/google';
 import './globals.css';

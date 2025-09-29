@@ -42,12 +42,20 @@ export type ReportedPet = {
   imageId: string; 
 };
 
-// TIPO NUEVO: Tipo para el calendario de siembra
-export type PlantingCalendarEntry = {
-  month: string;
-  vegetable: string;
-  action: 'Siembra' | 'Cosecha';
-  notes: string;
+// TIPO NUEVO: para el calendario de siembra
+export type Crop = {
+  id: string;          // ej: "tomate"
+  name: string;        // ej: "Tomate"
+  category: 'Verduras' | 'Frutas' | 'Hierbas';
+  week: number;        // Semana del mes (1-4) para la siembra/plantación
+  imageId: string;     // ID para vincular a una imagen de placeholder
+};
+
+// Tipo para la estructura de datos de siembra
+export type PlantingData = {
+  [month: string]: {
+    crops: Crop[];
+  };
 };
 
 
@@ -73,23 +81,65 @@ export const reportedPets: ReportedPet[] = [
 ];
 
 // --- Datos para el Calendario de Siembra ---
-export const plantingData: PlantingCalendarEntry[] = [
-  { month: 'Enero', vegetable: 'Tomate', action: 'Siembra', notes: 'Proteger del sol directo en horas de máximo calor.' },
-  { month: 'Enero', vegetable: 'Albahaca', action: 'Siembra', notes: 'Mantener el suelo húmedo.' },
-  { month: 'Febrero', vegetable: 'Lechuga', action: 'Siembra', notes: 'Buscar variedades de verano resistentes al calor.' },
-  { month: 'Marzo', vegetable: 'Tomate', action: 'Cosecha', notes: 'Cosechar cuando estén firmes y de color uniforme.' },
-  { month: 'Marzo', vegetable: 'Zanahoria', action: 'Siembra', notes: 'Asegurar suelo suelto y profundo.' },
-  { month: 'Abril', vegetable: 'Espinaca', action: 'Siembra', notes: 'Ideal para climas más frescos.' },
-  { month: 'Mayo', vegetable: 'Lechuga', action: 'Cosecha', notes: 'Cosechar hojas exteriores para una producción continua.' },
-  { month: 'Mayo', vegetable: 'Ajo', action: 'Siembra', notes: 'Plantar dientes individuales.' },
-  { month: 'Junio', vegetable: 'Habas', action: 'Siembra', notes: 'Resistentes al frío.' },
-  { month: 'Julio', vegetable: 'Espinaca', action: 'Cosecha', notes: 'Cosechar antes de que florezca.' },
-  { month: 'Agosto', vegetable: 'Puerros', action: 'Siembra', notes: 'Requieren un largo periodo de crecimiento.' },
-  { month: 'Septiembre', vegetable: 'Rabanitos', action: 'Siembra', notes: 'Crecen rápidamente.' },
-  { month: 'Octubre', vegetable: 'Acelga', action: 'Siembra', notes: 'Muy productiva y resistente.' },
-  { month: 'Noviembre', vegetable: 'Zanahoria', action: 'Cosecha', notes: 'Cosechar antes de que el suelo se endurezca.' },
-  { month: 'Diciembre', vegetable: 'Pimiento', action: 'Siembra', notes: 'Necesitan calor para germinar.' }
-];
+export const plantingData: PlantingData = {
+  enero: {
+    crops: [
+      { id: 'tomate', name: 'Tomate', category: 'Verduras', week: 1, imageId: 'img1' },
+      { id: 'albahaca', name: 'Albahaca', category: 'Hierbas', week: 3, imageId: 'img5' }
+    ]
+  },
+  febrero: {
+    crops: [
+      { id: 'lechuga', name: 'Lechuga', category: 'Verduras', week: 2, imageId: 'img3' }
+    ]
+  },
+  marzo: {
+    crops: [
+      { id: 'zanahoria', name: 'Zanahoria', category: 'Verduras', week: 1, imageId: 'img6' }
+    ]
+  },
+  abril: {
+    crops: [
+      { id: 'espinaca', name: 'Espinaca', category: 'Verduras', week: 2, imageId: 'img7' }
+    ]
+  },
+  mayo: {
+    crops: [
+      { id: 'ajo', name: 'Ajo', category: 'Verduras', week: 4, imageId: 'img8' }
+    ]
+  },
+  junio: {
+    crops: [
+      { id: 'habas', name: 'Habas', category: 'Verduras', week: 3, imageId: 'img9' }
+    ]
+  },
+  julio: {
+    crops: []
+  },
+  agosto: {
+    crops: [
+      { id: 'puerros', name: 'Puerros', category: 'Verduras', week: 1, imageId: 'img10' }
+    ]
+  },
+  septiembre: {
+    crops: [
+      { id: 'rabanitos', name: 'Rabanitos', category: 'Verduras', week: 2, imageId: 'img11' }
+    ]
+  },
+  octubre: {
+    crops: [
+      { id: 'acelga', name: 'Acelga', category: 'Verduras', week: 1, imageId: 'img12' }
+    ]
+  },
+  noviembre: {
+    crops: []
+  },
+  diciembre: {
+    crops: [
+      { id: 'pimiento', name: 'Pimiento', category: 'Verduras', week: 3, imageId: 'img13' }
+    ]
+  }
+};
 
 // --- Datos Derivados (para componentes específicos) ---
 export const petPoints = allMapPoints.filter(p => p.type === 'pet');

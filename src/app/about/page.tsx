@@ -1,99 +1,141 @@
+
 import Image from 'next/image';
-import { Check, Leaf, PawPrint, Users } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Instagram, Twitter, Mail } from 'lucide-react';
 
 export default function AboutPage() {
-  const aboutImage = PlaceHolderImages.find(img => img.id === 'about');
-
-  const features = [
-    { 
-      name: 'Mapeo Centralizado', 
-      description: 'Visualiza reportes de mascotas y huertas en un solo mapa interactivo.',
-      icon: <MapPinIcon />
-    },
-    { 
-      name: 'Participación Comunitaria', 
-      description: 'Fomentamos la colaboración vecinal para resolver problemas locales juntos.',
-      icon: <Users className="w-8 h-8 text-green-600" />
-    },
-    { 
-      name: 'Cuidado Animal', 
-      description: 'Ayuda a reunir mascotas con sus dueños y a encontrar hogares para animales necesitados.',
-      icon: <PawPrint className="w-8 h-8 text-orange-500" />
-    },
-    { 
-      name: 'Sostenibilidad Urbana', 
-      description: 'Promovemos la agricultura urbana y el compostaje para ciudades más verdes.',
-      icon: <Leaf className="w-8 h-8 text-lime-500" />
-    },
-  ]
-
   return (
-    <div className="bg-white">
-      {/* Sección Hero */}
-      <div className="relative isolate overflow-hidden bg-gradient-to-b from-green-100/20 pt-14">
-        <div
-          className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-green-600/10 ring-1 ring-green-50 sm:-mr-80 lg:-mr-96"
-          aria-hidden="true"
-        />
-        <div className="mx-auto max-w-7xl px-6 py-32 sm:py-40 lg:px-8">
-          <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-16 lg:gap-y-6 xl:grid-cols-1 xl:grid-rows-1 xl:gap-x-8">
-            <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:col-span-2 xl:col-auto">
-              Nuestra Misión: Fortalecer Lazos Comunitarios.
-            </h1>
-            <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1">
-              <p className="text-lg leading-8 text-gray-600">
-                Creemos en el poder de la comunidad. Nuestra plataforma nació de la idea de que la tecnología puede y debe servir como un puente para conectar a las personas, resolver problemas locales y cuidar de nuestro entorno. Cada mascota reunida con su familia y cada semilla plantada en una huerta comunitaria es un paso hacia un futuro más conectado y sostenible.
-              </p>
-            </div>
-            {aboutImage && (
-              <div className="mt-10 aspect-[6/5] w-full max-w-lg rounded-2xl object-cover sm:mt-16 lg:mt-0 lg:max-w-none xl:row-span-2 xl:row-end-2 xl:mt-36">
-                 <Image
-                    // CORRECCIÓN FINAL: Se utiliza `imageUrl` en lugar de `src`.
-                    src={aboutImage.imageUrl}
-                    alt="Equipo de voluntarios trabajando en una huerta comunitaria"
-                    width={800}
-                    height={600}
-                    className="w-full h-full object-cover rounded-2xl"
-                />
-              </div>
-            )}
+    <div className="relative bg-[#E5E5E5] min-h-screen">
+      {/* Fondo de página con opacidad */}
+      <Image
+        src="/three.png"
+        alt="Fondo de página"
+        fill
+        className="object-cover opacity-10 -z-10"
+      />
+      <main className="container mx-auto px-4 py-12">
+        <section className="text-center">
+          <div className="inline-block">
+            <Image
+              src="/ecorastro logo transparente.png"
+              alt="EcoRastro Logo"
+              width={150}
+              height={150}
+              className="mx-auto"
+            />
           </div>
-        </div>
-        <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32" />
-      </div>
+          <h1 className="text-5xl font-bold text-gray-800 mt-4">Quienes Somos</h1>
+          <p className="text-xl text-gray-600 mt-2">
+            "Unimos corazones para devolver a las mascotas su hogar".
+          </p>
+        </section>
 
-      {/* Sección de Características */}
-      <div className="mx-auto mt-16 max-w-7xl px-6 sm:mt-32 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:max-w-none">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">¿Por Qué Existimos?</h2>
-            <p className="mt-4 text-lg leading-8 text-gray-600">
-              Para crear un impacto positivo y tangible en nuestras comunidades.
+        {/* Sección "Quienes Somos" con imagen y texto */}
+        <section className="mt-12 flex flex-col md:flex-row items-center gap-12">
+          <div className="md:w-1/3 h-64 md:h-auto">
+            <Image
+              src="/catcito.png"
+              alt="Gato de la comunidad"
+              width={400}
+              height={400}
+              className="rounded-lg object-cover w-full h-full transform transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+          <div className="md:w-2/3 bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+            <p className="text-lg text-gray-700">
+              En EcoRastro creemos que cada mascota es parte de la familia. Nacimos con el propósito de ayudar en la búsqueda y rescate de animales perdidos, conectando a dueños y comunidad a través de la tecnología y la solidaridad.
+            </p>
+            <p className="text-lg text-gray-700 mt-4">
+              Nuestra misión es brindar un espacio seguro y confiable donde compartir información, difundir casos y movilizar a las personas para que ninguna mascota quede atrás.
+            </p>
+            <p className="text-lg text-gray-700 mt-4">
+              Soñamos con una comunidad unida, donde la empatía, la responsabilidad y el amor por los animales nos guíen en cada paso.
             </p>
           </div>
-          <dl className="mt-16 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-y-16">
-            {features.map((feature) => (
-              <div key={feature.name} className="flex flex-col items-center text-center">
-                <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                  {feature.icon}
-                  {feature.name}
-                </dt>
-                <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
-                  <p className="flex-auto">{feature.description}</p>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
+        </section>
+
+        <section id="sobre-ecorastro" className="mt-16 bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">¿Qué es EcoRastro?</h2>
+          <p className="text-lg text-gray-700">
+            EcoRastro es una plataforma dedicada al rescate y reencuentro de mascotas. 
+            Nuestro objetivo es darles visibilidad a los animales perdidos para que puedan 
+            regresar a sus hogares, y también apoyar a aquellos que buscan un nuevo 
+            comienzo en una familia responsable y cariñosa.
+          </p>
+
+          <h2 className="text-3xl font-bold text-gray-800 mt-8 mb-4">¿Qué buscamos?</h2>
+          <p className="text-lg text-gray-700">
+            Buscamos crear una red de apoyo entre personas, rescatistas y organizaciones, 
+            para que ninguna mascota se quede atrás. Queremos facilitar la conexión entre 
+            quienes han perdido a sus compañeros y quienes los encuentran, además de 
+            fomentar la adopción consciente y el respeto hacia todos los seres vivos.
+          </p>
+        </section>
+
+        {/* Sección de Huertas con texto al lado */}
+        <section className="mt-16 flex flex-col md:flex-row items-center gap-12">
+          <div className="md:w-1/2">
+             <Image
+              src="/huertas.jpg"
+              alt="Huertas de la comunidad"
+              width={500}
+              height={500}
+              className="rounded-lg shadow-md object-contain transform transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+          <div className="md:w-1/2 bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Nuestras Huertas Comunitarias</h2>
+            <p className="text-lg text-gray-700">
+              Las huertas no solo nos entregan alimentos frescos y saludables, sino que 
+              también fortalecen los lazos entre vecinos, promueven el respeto por la 
+              naturaleza y nos enseñan el valor de la autogestión. Queremos motivar a cada 
+              persona a reconectarse con la tierra, aprovechar los recursos disponibles y 
+              compartir los frutos con la comunidad.
+            </p>
+          </div>
+        </section>
+
+        <section className="mt-16 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Nuestro Equipo</h2>
+          <div className="flex justify-center">
+            <Image
+              src="/team-photo.jpg"
+              alt="Equipo de desarrollo de EcoRastro"
+              width={800}
+              height={600}
+              className="rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </section>
+        
+        <section className="mt-16 text-center">
+          <h2 className="text-3xl font-bold text-gray-800">Contactanos</h2>
+          <div className="flex justify-center gap-8 mt-6">
+            <a href="https://www.instagram.com/ecorastro_cl" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-lg text-gray-700 hover:text-primary">
+              <Instagram />
+              <span>Ecorastro_cl</span>
+            </a>
+            <a href="https://twitter.com/ecorastro" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-lg text-gray-700 hover:text-primary">
+              <Twitter />
+              <span>Ecorastro</span>
+            </a>
+            <a href="mailto:contacto@ecorastro.cl" className="flex items-center gap-2 text-lg text-gray-700 hover:text-primary">
+              <Mail />
+              <span>Contacto@ecorastro.cl</span>
+            </a>
+          </div>
+        </section>
+
+        {/* Sección para la imagen que se superpone al footer */}
+        <section className="relative z-10 -mb-16 flex justify-center">
+            <Image
+              src="/cat-dog2.png"
+              alt="Gatos y Perros de la comunidad"
+              width={720}
+              height={180}
+              className="mx-auto"
+            />
+        </section>
+      </main>
     </div>
   );
-}
-
-// Placeholder para el ícono de MapPin que falta
-function MapPinIcon() {
-  return (
-    <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-  )
 }

@@ -135,7 +135,7 @@ export default function MapPage() {
         </div>
       </aside>
 
-      <main className="flex-1 relative">
+      <main className="flex-1 relative z-10">
         <Button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="md:hidden absolute top-4 left-4 z-30 bg-white p-2 rounded-md shadow-md"

@@ -24,7 +24,7 @@ export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
               alt={`Foto de ${pet.name}`}
               fill
               style={{ objectFit: 'cover' }}
-              data-ai-hint={pet.species.toLowerCase()}
+              data-ai-hint={pet.species?.toLowerCase() ?? 'animal'}
             />
           )}
            <Badge 
@@ -42,7 +42,7 @@ export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
         <div className="mt-4 space-y-2 text-sm text-foreground/80">
             <div className="flex items-center gap-2">
                 <PawPrint className="h-4 w-4 text-primary flex-shrink-0" />
-                <span>{pet.species}, {pet.size}</span>
+                <span>{[pet.species, pet.size].filter(Boolean).join(', ')}</span>
             </div>
             <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-primary flex-shrink-0" />

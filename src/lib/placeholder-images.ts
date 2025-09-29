@@ -1,10 +1,15 @@
-import data from './placeholder-images.json';
-
-export type ImagePlaceholder = {
-  id: string;
-  description: string;
-  imageUrl: string;
-  imageHint: string;
-};
-
-export const PlaceHolderImages: ImagePlaceholder[] = data.placeholderImages;
+export const PlaceHolderImages = [
+  { id: 'img1', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img2', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img3', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img4', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img5', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img6', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img7', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img8', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img9', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img10', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img11', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img12', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+  { id: 'img13', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
+];
