@@ -61,7 +61,7 @@ export default function AboutPage() {
             />
           </div>
           <h1 className="text-5xl font-bold text-gray-800 mt-4">Quienes Somos</h1>
-          <p className="text-xl text-gray-600 mt-2">
+          <p className="text-3xl text-gray-600 mt-2">
             "Unimos corazones para devolver a las mascotas su hogar".
           </p>
         </section>
