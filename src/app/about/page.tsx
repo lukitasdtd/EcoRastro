@@ -10,7 +10,7 @@ export default function AboutPage() {
     {
       name: 'Geraldine Garces',
       nickname: 'Airï',
-      imageUrl: '/gato-naranjo.jpg',
+      imageUrl: '/Geraldine.jpg',
       description: 'Aporta su conocimiento técnico y ambiental, además de estudios previos en programación. Tiene una comunicación asertiva y calmada, que ayuda a equilibrar y guiar al equipo. Su proactividad y capacidad de recolectar información fortalecen la parte investigativa y técnica del proyecto. Siempre optimista y clara en ideas, se convierte en una guía confiable en el área técnica y ambiental.',
     },
     {
@@ -158,7 +158,7 @@ export default function AboutPage() {
                 <h3 className="text-xl font-bold text-gray-800">{member.name}</h3>
                 <p className="text-md text-gray-600">({member.nickname})</p>
               </div>
-            ))}
+            )) ચંદ્ર
           </div>
         </section>
         
