@@ -79,4 +79,8 @@ export const navItems: NavItem[] = [
     label: 'Acerca de Nosotros',
     href: '/about',
   },
+  {
+    label: 'Comunidad',
+    href: '/comunidad',
+  },
 ];

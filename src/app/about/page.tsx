@@ -161,6 +161,14 @@ export default function AboutPage() {
             ))}
           </div>
         </section>
+
+        <section className="mt-16 bg-white p-12 rounded-lg shadow-xl text-center">
+          <div className="flex justify-center items-center mb-6">
+              <Image src="/logo-code-h.jpeg" alt="Logo de Code Hunters" width={150} height={150} className="rounded-full"/>
+          </div>
+          <h3 className="text-3xl font-bold text-gray-800">El Equipo de Desarrollo</h3>
+          <p className="text-xl text-gray-600 mt-2">Desarrollado con ❤️ por Code Hunters.</p>
+        </section>
         
         <section className="mt-16 text-center">
           <h2 className="text-3xl font-bold text-gray-800">Contactanos</h2>
