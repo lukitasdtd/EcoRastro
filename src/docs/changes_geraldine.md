@@ -64,3 +64,15 @@ Este documento resume las contribuciones clave, basadas en el historial de commi
  
  ¿Por qué hice esto? 
  No podía reparar el Calendario de Siembra de forma aislada porque el problema de fondo (la falta de datos centralizados) afectaba a varias partes de la aplicación a la vez. Tuve que hacer una reparación general para poder seguir adelante con mi trabajo específico.
+
+---
+
+### 6. Corrección de Errores de Renderizado y Tipos en el Mapa
+
+- **Resumen:** Se abordaron múltiples errores críticos que afectaban la visualización y el comportamiento del mapa interactivo y sus componentes asociados. Este trabajo fue esencial para asegurar la correcta renderización, la seguridad de tipos y la funcionalidad de filtrado.
+- **Detalles Clave:**
+    - **Robustez de Componentes:** Se solucionó un `TypeError` en el componente `ReportedPetCard` que ocurría al intentar renderizar mascotas que no tenían la propiedad `species`. Ahora el componente es más robusto ante datos variables.
+    - **Corrección de Tipos (TypeScript):** Se añadió la definición de `props` (`points`, `activeFilter`) que faltaba en el componente `LeafletMap`, eliminando el error de TypeScript `TS2322` que impedía la compilación.
+    - **Funcionalidad de Filtro Dinámico:** Se refactorizó el componente `LeafletMap` para que los marcadores se actualicen dinámicamente según el filtro seleccionado ('mascotas' o 'huertas'), haciendo que esta característica clave sea finalmente operativa.
+    - **Corrección de Visualización (Z-index):** Se ajustó el `z-index` en la página del mapa para asegurar que el `Header` de la aplicación se muestre siempre correctamente por encima del contenido del mapa.
+- **Commit Relevante:** `1fd69da`
