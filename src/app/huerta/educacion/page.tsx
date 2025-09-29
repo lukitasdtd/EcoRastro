@@ -1,116 +1,107 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FlipCard } from '@/components/ui/flip-card';
 import {
-  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, Tractor, Users, Leaf, CheckSquare, Heart, Sparkles, ArrowRight
+  Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, Tractor, Users, Leaf, CheckSquare, Heart, Sparkles, ArrowRight, ArrowLeft, RotateCw
 } from 'lucide-react';
 
 export default function HuertaEducationPage() {
   const gardenTypes = [
     {
       title: "Huerta Urbana",
-      description: "Aprovecha al máximo los espacios pequeños en la ciudad, como balcones, terrazas o patios. Ideal para cultivar en macetas, jardineras o mesas de cultivo. Es el punto de partida perfecto para principiantes.",
-      icon: <Tractor className="w-10 h-10 text-primary" />,
-      question: "Dame consejos para empezar mi primera huerta urbana en un balcón pequeño."
+      description: "Aprovecha al máximo los espacios pequeños en la ciudad. Ideal para cultivar en macetas, jardineras o mesas de cultivo.",
+      icon: <Tractor className="w-10 h-10 text-green-600" />,
     },
     {
       title: "Huerta Vertical",
-      description: "Cultiva hacia arriba usando paredes o estructuras para maximizar tu producción en espacios limitados. Perfecto para hierbas aromáticas, frutillas y hortalizas de hoja como lechugas.",
-      icon: <Sprout className="w-10 h-10 text-primary" />,
-      question: "¿Cuáles son las mejores plantas para una huerta vertical y qué estructura me recomiendas?"
+      description: "Cultiva hacia arriba usando paredes o estructuras para maximizar tu producción en espacios limitados.",
+      icon: <Sprout className="w-10 h-10 text-orange-500" />,
     },
     {
       title: "Hidroponía",
-      description: "Cultiva plantas sin suelo, usando soluciones minerales en agua. Es una técnica de alta eficiencia ideal para interiores y para un control total sobre los nutrientes y el ambiente de las plantas.",
-      icon: <Droplets className="w-10 h-10 text-primary" />,
-      question: "Explícame los conceptos básicos de la hidroponía para un principiante."
+      description: "Cultiva plantas sin suelo, usando soluciones minerales en agua. Una técnica de alta eficiencia para interiores.",
+      icon: <Droplets className="w-10 h-10 text-green-600" />,
     },
     {
       title: "Huerta Comunitaria",
-      description: "Únete a un espacio colectivo para cultivar alimentos, compartir conocimientos y fortalecer lazos con tus vecinos. Una gran forma de aprender en grupo y acceder a un terreno más grande.",
-      icon: <Users className="w-10 h-10 text-primary" />,
-      question: "¿Qué beneficios tiene unirme a una huerta comunitaria?"
+      description: "Únete a un espacio colectivo para cultivar, compartir conocimientos y fortalecer lazos con tus vecinos.",
+      icon: <Users className="w-10 h-10 text-orange-500" />,
     },
   ];
 
   const gardenBenefits = [
       {
         title: "Nutrición y Salud",
-        description: "Consume alimentos frescos, sin pesticidas y llenos de nutrientes. Sabrás exactamente qué estás comiendo y mejorarás tu dieta.",
-        icon: <Heart className="w-8 h-8 text-primary" />,
-        question: "Háblame sobre los beneficios nutricionales de cultivar mis propias verduras."
+        description: "Consume alimentos frescos, sin pesticidas y llenos de nutrientes.",
+        icon: <Heart className="w-8 h-8 text-green-600" />,
       },
       {
         title: "Bienestar Mental",
-        description: "La jardinería es una terapia probada. Reduce el estrés, mejora el ánimo, aumenta la concentración y te conecta con la naturaleza y sus ciclos.",
-        icon: <Sun className="w-8 h-8 text-primary" />,
-        question: "¿Cómo ayuda la jardinería a reducir el estrés y mejorar la salud mental?"
+        description: "La jardinería reduce el estrés, mejora el ánimo y te conecta con la naturaleza.",
+        icon: <Sun className="w-8 h-8 text-orange-500" />,
       },
       {
         title: "Economía y Ahorro",
-        description: "Ahorra dinero en el supermercado cultivando tus propias verduras, hierbas y frutas. ¡Y el sabor de lo recién cosechado no tiene comparación!",
-        icon: <Recycle className="w-8 h-8 text-primary" />,
-        question: "¿Cuánto dinero puedo ahorrar cultivando mis propias hortalizas básicas?"
+        description: "Ahorra dinero en el supermercado cultivando tus propias verduras, hierbas y frutas.",
+        icon: <Recycle className="w-8 h-8 text-green-600" />,
       },
       {
         title: "Biodiversidad",
-        description: "Atrae polinizadores como abejas y mariposas a tu jardín, creando un pequeño ecosistema que beneficia al entorno urbano y apoya la flora local.",
-        icon: <Bug className="w-8 h-8 text-primary" />,
-        question: "¿Qué plantas puedo cultivar en mi balcón para atraer abejas y mariposas?"
+        description: "Atrae polinizadores como abejas y mariposas, creando un pequeño ecosistema.",
+        icon: <Bug className="w-8 h-8 text-orange-500" />,
       }
   ]
 
   const lifeCycle = [
-      { title: "Semilla", icon: <Lightbulb className="w-8 h-8 mx-auto text-primary"/>, description: "El punto de partida. Contiene toda la información genética para crear una nueva planta." },
-      { title: "Germinación", icon: <Sprout className="w-8 h-8 mx-auto text-primary"/>, description: "La semilla 'despierta' con agua y calor, desarrollando sus primeras raíces y brotes." },
-      { title: "Crecimiento", icon: <Leaf className="w-8 h-8 mx-auto text-primary"/>, description: "La planta desarrolla hojas, tallos y raíces, realizando la fotosíntesis para alimentarse." },
-      { title: "Cosecha", icon: <Tractor className="w-8 h-8 mx-auto text-primary"/>, description: "Recolectamos los frutos, hojas o raíces en su punto óptimo de madurez y sabor." },
-      { title: "Compostaje", icon: <Recycle className="w-8 h-8 mx-auto text-primary"/>, description: "Los restos de la planta se descomponen para convertirse en abono y nutrir futuras siembras." },
+      { title: "Semilla", icon: <Lightbulb className="w-8 h-8 mx-auto text-green-600"/>, description: "El punto de partida de toda planta." },
+      { title: "Germinación", icon: <Sprout className="w-8 h-8 mx-auto text-orange-500"/>, description: "La semilla 'despierta' y brota." },
+      { title: "Crecimiento", icon: <Leaf className="w-8 h-8 mx-auto text-green-600"/>, description: "La planta desarrolla hojas y tallos." },
+      { title: "Cosecha", icon: <Tractor className="w-8 h-8 mx-auto text-orange-500"/>, description: "Recolectamos los frutos maduros." },
+      { title: "Compostaje", icon: <Recycle className="w-8 h-8 mx-auto text-green-600"/>, description: "Los restos se reciclan como abono." },
   ]
   
   const stepByStepGuides = [
     { 
         id: "suelo", 
-        title: "Preparación del suelo", 
-        icon: <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><Leaf className="w-6 h-6 text-primary"/></div>,
-        content: "Un buen suelo es la base de todo. Mezcla tierra de hojas con compost o humus de lombriz para asegurar una base rica en nutrientes y con buena aireación. Un buen drenaje es clave; si cultivas en macetas, asegúrate de que tengan agujeros y puedes agregar una capa de gravilla al fondo. Para tierra de jardín, considera camas de cultivo elevadas si el drenaje es malo."
+        title: "1. Suelo", 
+        icon: <Leaf className="w-8 h-8 text-green-600"/>,
+        content: "Mezcla tierra con compost para una base rica en nutrientes y con buen drenaje."
     },
     { 
         id: "siembra", 
-        title: "Siembra y trasplante", 
-        icon: <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><Sprout className="w-6 h-6 text-primary"/></div>,
-        content: "Revisa la profundidad recomendada para cada semilla; una regla general es enterrarla a una profundidad de 2-3 veces su tamaño. Para almácigos, usa bandejas con sustrato liviano. Al trasplantar, hazlo en un día nublado o al atardecer para evitar el estrés por calor en la planta. Riega bien después del trasplante. Consulta nuestro calendario de siembra para saber qué plantar cada mes."
+        title: "2. Siembra", 
+        icon: <Sprout className="w-8 h-8 text-green-600"/>,
+        content: "Entierra la semilla al doble de su tamaño y trasplanta al atardecer para evitar estrés."
     },
     { 
         id: "cuidados", 
-        title: "Cuidado de las plantas", 
-        icon: <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><Droplets className="w-6 h-6 text-primary"/></div>,
-        content: "El riego debe ser profundo pero no demasiado frecuente, es mejor regar bien un par de veces por semana que un poco todos los días. La poda de hojas viejas o enfermas ayuda a dar fuerza a la planta y a mejorar la ventilación. Para las plagas, empieza con remedios naturales como jabón potásico, aceite de neem o introduciendo insectos beneficiosos como las chinitas."
+        title: "3. Cuidado", 
+        icon: <Droplets className="w-8 h-8 text-green-600"/>,
+        content: "Riega profundo pero sin exceso. Poda hojas viejas para dar más fuerza a la planta."
     },
     { 
         id: "cosecha", 
-        title: "Cosecha y almacenamiento", 
-        icon: <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><Tractor className="w-6 h-6 text-primary"/></div>,
-        content: "Cosecha por la mañana, cuando las plantas están más hidratadas y frescas. Investiga cómo se ve cada vegetal cuando está maduro para cosechar en su punto óptimo de sabor. Para almacenar, las hortalizas de hoja se conservan bien en el refrigerador en bolsas perforadas, mientras que las de raíz como zanahorias o papas prefieren lugares frescos, oscuros y secos."
+        title: "4. Cosecha", 
+        icon: <Tractor className="w-8 h-8 text-green-600"/>,
+        content: "Cosecha por la mañana para mayor frescura y almacena según el tipo de hortaliza."
     },
   ]
 
   const checklistItems = [
     "Sustrato de buena calidad (tierra de hojas, turba)",
     "Compost o humus de lombriz para nutrir la tierra",
-    "Macetas, jardineras o contenedores con buen drenaje",
+    "Macetas o contenedores con buen drenaje",
     "Semillas o almácigos de tus cultivos preferidos",
     "Pala y rastrillo de mano",
-    "Regadera o manguera con pistola de riego suave",
+    "Regadera o manguera con riego suave",
     "Guantes de jardinería",
-    "Tijeras de podar para mantenimiento y cosecha",
-    "Etiquetas para identificar lo que siembras",
-    "Pulverizador para plagas o riego foliar",
-    "Tutores o estacas para plantas trepadoras (ej. tomates)",
+    "Tijeras de podar",
   ];
 
   const handleDownload = () => {
@@ -129,11 +120,11 @@ export default function HuertaEducationPage() {
     URL.revokeObjectURL(url);
   };
   
-  const premiumCard = (title: string, description: string) => (
-    <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-primary/5 border-dashed border-primary/20 h-full shadow-none">
+  const premiumCard = (title: string, description: string, cta: string) => (
+    <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-green-600/5 border-dashed border-green-600/20 h-full shadow-none">
         <CardHeader>
-            <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
-              <Sparkles className="h-8 w-8 text-primary" />
+            <div className="mx-auto bg-orange-500/10 rounded-full p-4 w-fit mb-4">
+              <Sparkles className="h-8 w-8 text-orange-500" />
             </div>
             <CardTitle className="text-2xl text-foreground">{title}</CardTitle>
         </CardHeader>
@@ -141,8 +132,8 @@ export default function HuertaEducationPage() {
             <p className="text-muted-foreground">{description}</p>
         </CardContent>
         <CardFooter>
-            <Button variant="default" disabled>
-                Accede a la Plataforma Premium por $2.990 CLP
+            <Button variant="default" disabled className="bg-orange-500 hover:bg-orange-600">
+                {cta}
             </Button>
         </CardFooter>
     </Card>
@@ -150,165 +141,204 @@ export default function HuertaEducationPage() {
 
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
-      {/* --- Hero --- */}
-      <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
-          Educación y Cultivo para tu Huerta
-        </h1>
-        <p className="max-w-3xl mx-auto text-lg text-foreground/60">
-          Cultivar tus propios alimentos es una experiencia gratificante. Aquí encontrarás todo lo que necesitas para empezar y llevar tu huerta al siguiente nivel.
-        </p>
-      </section>
+    <main className="bg-gradient-to-b from-green-50 to-white">
+      <div className="container mx-auto px-4 py-8 md:py-16">
+        <div className="mb-8">
+            <Button asChild variant="outline" className="bg-white">
+              <Link href="/"> 
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Volver al Inicio
+              </Link>
+            </Button>
+        </div>
 
-      {/* --- Experto con IA --- */}
-      <section className="mb-16">
-        {premiumCard(
-            "Experto de IA para tu Huerta",
-            "Resuelve tus dudas con nuestro experto virtual para obtener consejos personalizados sobre tu huerta."
-        )}
-      </section>
+        {/* --- Hero Section --- */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">
+              Educación y <span className="text-green-600">Cultivo para tu Huerta</span>
+            </h1>
+            <p className="max-w-xl mx-auto md:mx-0 mt-4 text-lg text-gray-600">
+              Cultivar tus propios alimentos es una experiencia gratificante. Aquí encontrarás todo lo que necesitas para empezar y llevar tu huerta al siguiente nivel.
+            </p>
+          </div>
+          <div>
+            {premiumCard(
+                "Experto de IA para tu Huerta",
+                "Resuelve tus dudas con nuestro experto virtual para obtener consejos personalizados sobre tu huerta.",
+                "Próximamente en Premium"
+            )}
+          </div>
+        </section>
 
-      <Tabs defaultValue="essentials" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
-          <TabsTrigger value="essentials">Guías Esenciales</TabsTrigger>
-          <TabsTrigger value="tools">Herramientas</TabsTrigger>
-          <TabsTrigger value="advanced">Contenido Avanzado</TabsTrigger>
-          <TabsTrigger value="community">Comunidad</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="essentials" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+            <TabsTrigger value="essentials">Guías Esenciales</TabsTrigger>
+            <TabsTrigger value="tools">Herramientas</TabsTrigger>
+            <TabsTrigger value="advanced">Contenido Avanzado</TabsTrigger>
+            <TabsTrigger value="community">Comunidad</TabsTrigger>
+          </TabsList>
 
-        {/* --- GUÍAS ESENCIALES --- */}
-        <TabsContent value="essentials" className="mt-8">
-            <div className="space-y-16">
-                 {/* --- Tipos de Huertas --- */}
-                <section>
-                    <h2 className="text-3xl font-bold text-center mb-10">Tipos de Huertas</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {gardenTypes.map((type) => (
-                        <Card key={type.title} className="text-center shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl flex flex-col">
-                          <CardHeader>
-                              <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-2">
-                                  {type.icon}
+          {/* --- GUÍAS ESENCIALES --- */}
+          <TabsContent value="essentials" className="mt-8">
+              <div className="space-y-16">
+                  {/* --- Tipos de Huertas --- */}
+                  <section>
+                      <div className="text-center mb-10">
+                          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 inline-block relative">
+                              Tipos de Huertas
+                              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-24 h-1 bg-green-500 rounded-full"></div>
+                          </h2>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {gardenTypes.map((type) => (
+                          <FlipCard
+                            key={type.title}
+                            className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer"
+                            frontContent={(
+                              <div className="relative w-full h-full flex items-center justify-center">
+                                <h3 className="text-xl font-bold text-gray-800 px-4 text-center">{type.title}</h3>
+                                <RotateCw className="absolute top-4 right-4 h-5 w-5 text-gray-400" />
                               </div>
-                              <CardTitle className="text-xl">{type.title}</CardTitle>
-                          </CardHeader>
-                          <CardContent className="flex-grow">
-                              <p className="text-foreground/80">{type.description}</p>
-                          </CardContent>
-                          <CardFooter>
-                              <Button variant="link" className="p-0 h-auto text-primary font-semibold w-full" disabled>
-                                  Aprender más <ArrowRight className="ml-1 h-4 w-4" />
-                              </Button>
-                          </CardFooter>
-                        </Card>
-                    ))}
-                    </div>
-                </section>
-
-                {/* --- Beneficios --- */}
-                <section>
-                    <h2 className="text-3xl font-bold text-center mb-10">Beneficios de la Huerta</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {gardenBenefits.map((benefit) => (
-                            <Card key={benefit.title} className="p-6 text-center flex flex-col items-center shadow-sm bg-muted/50 border-0">
-                                <div className="mb-4">{benefit.icon}</div>
-                                <CardTitle className="text-lg font-semibold mb-2">{benefit.title}</CardTitle>
-                                <p className="text-sm text-foreground/70 flex-grow">{benefit.description}</p>
-                                <Button variant="link" className="p-0 h-auto text-primary font-semibold mt-4" disabled>
-                                  Saber más
-                                </Button>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
-                
-                {/* --- Ciclo de Vida --- */}
-                <section>
-                    <h2 className="text-3xl font-bold text-center mb-10">Ciclo de Vida de los Cultivos</h2>
-                    <div className="relative grid grid-cols-2 md:grid-cols-5 gap-y-8 items-start justify-items-center">
-                        {lifeCycle.map((stage, index) => (
-                           <React.Fragment key={stage.title}>
-                                <div className="text-center w-32">
-                                    {stage.icon}
-                                    <h3 className="font-bold mt-2">{stage.title}</h3>
-                                    <p className="text-xs text-muted-foreground">{stage.description}</p>
+                            )}
+                            backContent={(
+                              <div className="text-center p-2">
+                                <div className="mx-auto bg-green-100/70 rounded-full p-3 w-fit mb-3">
+                                  {type.icon}
                                 </div>
-                                {index < lifeCycle.length - 1 && (
-                                    <div className="absolute top-1/3 left-0 right-0 h-0.5 w-full bg-border -z-10 hidden md:block" style={{ left: `${(100 / lifeCycle.length) / 2}%`, width: `${100 - (100 / lifeCycle.length)}%` }}></div>
-                                )}
-                           </React.Fragment>
+                                <p className="text-gray-600">{type.description}</p>
+                              </div>
+                            )}
+                          />
                         ))}
-                    </div>
-                </section>
+                      </div>
+                  </section>
 
-                {/* --- Guías Paso a Paso --- */}
-                <section>
-                     <h2 className="text-3xl font-bold text-center mb-10">Guías Paso a Paso</h2>
-                     <Accordion type="single" collapsible className="w-full max-w-4xl mx-auto space-y-4">
-                        {stepByStepGuides.map(guide => (
-                            <AccordionItem key={guide.id} value={guide.id} className="bg-muted/30 rounded-lg border px-4">
-                                <AccordionTrigger className="text-left hover:no-underline">
-                                    <div className="flex items-center gap-4">
-                                        {guide.icon}
-                                        <h3 className="text-xl font-semibold">{guide.title}</h3>
+                  {/* --- Beneficios y Ciclo de Vida --- */}
+                  <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 h-full">
+                        <CardHeader className="text-center border-b pb-4">
+                            <CardTitle className="text-2xl font-bold">Beneficios de la Huerta</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 pt-6">
+                           {gardenBenefits.map((benefit) => (
+                              <div key={benefit.title} className="flex items-start gap-3 p-2">
+                                  <div className="bg-green-100/70 rounded-full p-3 flex-shrink-0 mt-1">{benefit.icon}</div>
+                                  <div>
+                                    <h4 className="font-semibold mb-1 text-gray-800">{benefit.title}</h4>
+                                    <p className="text-sm text-gray-600">{benefit.description}</p>
+                                  </div>
+                              </div>
+                          ))}
+                        </CardContent>
+                    </Card>
+
+                    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 h-full">
+                        <CardHeader className="text-center border-b pb-4">
+                            <CardTitle className="text-2xl font-bold">Ciclo de Vida de los Cultivos</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3 pt-6">
+                           {lifeCycle.map((stage) => (
+                                <div key={stage.title} className="flex items-center gap-4 p-2 rounded-lg hover:bg-gray-50">
+                                    <div className="w-12 h-12 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center flex-shrink-0">{stage.icon}</div>
+                                    <div>
+                                      <h4 className="font-bold text-gray-800">{stage.title}</h4>
+                                      <p className="text-sm text-gray-500">{stage.description}</p>
                                     </div>
-                                </AccordionTrigger>
-                                <AccordionContent className="pt-2 pb-4 text-base text-foreground/80">
-                                    {guide.content}
-                                </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                        <AccordionItem value="checklist" className="bg-muted/30 rounded-lg border px-4">
-                            <AccordionTrigger className="text-left hover:no-underline">
-                                <div className="flex items-center gap-4">
-                                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center"><CheckSquare className="w-6 h-6 text-primary"/></div>
-                                    <h3 className="text-xl font-semibold">Checklist del Hortelano</h3>
                                 </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="pt-2 pb-4 text-base">
-                                <CardDescription>Todo lo que necesitas para empezar tu huerta con el pie derecho.</CardDescription>
-                                <div className="space-y-3 mt-4">
-                                    {checklistItems.map(item => (
-                                        <div key={item} className="flex items-center gap-3">
-                                            <CheckSquare className="w-5 h-5 text-primary" />
-                                            <span className="text-foreground/90">{item}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <Button className="w-full mt-6" onClick={handleDownload}>
-                                    Descargar Checklist
-                                </Button>
-                            </AccordionContent>
-                        </AccordionItem>
-                     </Accordion>
-                </section>
-            </div>
-        </TabsContent>
+                          ))}
+                        </CardContent>
+                    </Card>
+                  </section>
+                  
+                  {/* --- Paso a paso para cultivar tu huerta --- */}
+                  <section>
+                      <div className="text-center mb-12">
+                          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 inline-block relative">
+                              Paso a paso para cultivar tu huerta
+                              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-24 h-1 bg-green-500 rounded-full"></div>
+                          </h2>
+                      </div>
+                      <div className="flex flex-col items-center md:flex-row md:justify-between max-w-6xl mx-auto">
+                          {stepByStepGuides.map((guide, index) => (
+                              <React.Fragment key={guide.id}>
+                                  <div className="flex flex-col items-center text-center w-44 mb-8 md:mb-0">
+                                      <div className="h-16 w-16 rounded-full bg-green-100/70 flex items-center justify-center mb-3 border-2 border-white shadow-md">{guide.icon}</div>
+                                      <h3 className="font-semibold text-lg text-gray-800">{guide.title}</h3>
+                                      <p className="text-sm text-gray-500 mt-1 px-1">{guide.content}</p>
+                                  </div>
+                                  {index < stepByStepGuides.length - 1 && (
+                                    <>
+                                      <ArrowRight className="w-12 h-12 text-gray-300 mx-4 hidden md:block" />
+                                      <div className="h-8 w-px bg-gray-300 my-2 md:hidden"></div>
+                                    </>
+                                  )}
+                              </React.Fragment>
+                          ))}
+                      </div>
+                  </section>
 
-        {/* --- HERRAMIENTAS --- */}
-        <TabsContent value="tools" className="mt-8 grid place-items-center">
+
+                  {/* --- Checklist del Hortelano --- */}
+                  <section>
+                      <Card className="max-w-4xl mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100">
+                          <CardHeader>
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                              <div className="flex items-center gap-4">
+                                <div className="h-16 w-16 rounded-full bg-green-100/70 flex items-center justify-center flex-shrink-0">
+                                  <CheckSquare className="w-8 h-8 text-green-600"/>
+                                </div>
+                                <div>
+                                  <CardTitle className="text-2xl font-bold">Checklist del Hortelano</CardTitle>
+                                  <CardDescription>Todo lo que necesitas para empezar tu huerta con el pie derecho.</CardDescription>
+                                </div>
+                              </div>
+                              <Button className="mt-4 md:mt-0 w-full md:w-auto bg-orange-500 hover:bg-orange-600" onClick={handleDownload}>
+                                Descargar Checklist
+                              </Button>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="pt-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
+                                {checklistItems.map(item => (
+                                    <div key={item} className="flex items-center gap-3">
+                                        <CheckSquare className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                                        <span className="text-gray-700">{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                          </CardContent>
+                      </Card>
+                  </section>
+              </div>
+          </TabsContent>
+
+          {/* --- HERRAMIENTAS, AVANZADO, COMUNIDAD --- */}
+          <TabsContent value="tools" className="mt-8 grid place-items-center">
              {premiumCard(
                 "Herramientas Interactivas Premium",
-                "Accede a nuestra calculadora de siembra, notificaciones de riego y más para optimizar tu huerta."
+                "Accede a nuestra calculadora de siembra, notificaciones de riego y más para optimizar tu huerta.",
+                "Acceder a Herramientas Premium"
             )}
         </TabsContent>
         
-        {/* --- CONTENIDO AVANZADO --- */}
         <TabsContent value="advanced" className="mt-8 grid place-items-center">
              {premiumCard(
                 "Contenido Avanzado Premium",
-                "Desbloquea guías sobre permacultura, salud del suelo y huertas medicinales con tu suscripción."
+                "Desbloquea guías sobre permacultura, salud del suelo y huertas medicinales con tu suscripción.",
+                "Desbloquear Contenido Avanzado"
             )}
         </TabsContent>
         
-        {/* --- COMUNIDAD --- */}
         <TabsContent value="community" className="mt-8 grid place-items-center">
             {premiumCard(
                 "Comunidad Premium EcoRastro",
-                "Únete a foros exclusivos, participa en talleres y conecta con otros hortelanos expertos."
+                "Únete a foros exclusivos, participa en talleres y conecta con otros hortelanos expertos.",
+                "Unirse a la Comunidad"
             )}
         </TabsContent>
-      </Tabs>
-    </div>
+        </Tabs>
+      </div>
+    </main>
   );
 }
