@@ -2,13 +2,14 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { reportedPets } from "@/lib/data";
 import ReportedPetCard from "@/components/reported-pet-card";
-import { PawPrint, Sprout } from "lucide-react";
+import { PawPrint, Sprout, MessageSquare } from "lucide-react";
 import { EditProfileDialog } from "@/components/edit-profile-dialog";
 
 export default function UserProfilePage() {
@@ -47,7 +48,16 @@ export default function UserProfilePage() {
                     <p className="text-muted-foreground">{user.email}</p>
                     <p className="text-sm text-muted-foreground mt-1">Miembro desde {new Date(user.memberSince).toLocaleDateString('es-CL', { year: 'numeric', month: 'long' })}</p>
                 </div>
-                <div className="md:ml-auto flex gap-2">
+                <div className="md:ml-auto flex items-center gap-4">
+                    <Button
+                        className="rounded-lg bg-primary text-white hover:bg-primary/90"
+                        asChild
+                    >
+                        <Link href="/mensajes">
+                            <MessageSquare className="mr-2 h-5 w-5" />
+                            Mensajes
+                        </Link>
+                    </Button>
                     <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
                 </div>
             </header>
@@ -101,8 +111,7 @@ export default function UserProfilePage() {
                         </Card>
                     </TabsContent>
 
-                    {/* Pestaña de Huertas */}
-                    <TabsContent value="huertas">
+                    {/* Pestaña de Huertas */}                    <TabsContent value="huertas">
                          <Card>
                             <CardHeader>
                                 <CardTitle>Publicaciones de Huertas</CardTitle>

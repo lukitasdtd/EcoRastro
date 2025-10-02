@@ -125,7 +125,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
                     userMarker.current?.bindPopup('<b>Estás aquí</b>').openPopup();
                 },
                 () => {
-                    toast({ variant: 'destructive', title: 'Ubicación denegada', description: 'No pudimos acceder a tu ubicación.' });
+                    ({ variant: 'destructive', title: 'Ubicación denegada', description: 'No pudimos acceder a tu ubicación.' });
                 }
             );
         }

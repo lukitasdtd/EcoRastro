@@ -4,6 +4,8 @@
  *************************************************************************
  */
 
+import type { ReportedPet } from './types';
+
 // --- Función de Utilidad para crear URL amigables ---
 export const slugify = (text: string) => {
   return text.toString().toLowerCase()
@@ -26,20 +28,6 @@ export type MapPoint = {
   type: 'pet' | 'garden';
   image: string;
   link: string; // El link original se mantiene por si se usa en otro lado
-};
-
-// Tipo para los reportes detallados de mascotas
-export type ReportedPet = {
-  id: string; 
-  name: string;
-  type: 'Perro' | 'Gato' | 'Pájaro' | 'Otro';
-  breed: string;
-  status: 'lost' | 'found';
-  lastSeenLocation: string;
-  lastSeenDate: string;
-  description: string;
-  reward?: number;
-  imageId: string; 
 };
 
 // TIPO NUEVO: para el calendario de siembra
@@ -74,10 +62,10 @@ export const allMapPoints: MapPoint[] = [
 
 // --- Lista de Reportes de Mascotas ---
 export const reportedPets: ReportedPet[] = [
-  { id: 'rp1', name: 'Toby', type: 'Perro', breed: 'Golden Retriever', status: 'found', lastSeenLocation: 'Providencia, cerca del Costanera Center', lastSeenDate: '2024-07-20', description: 'Encontrado cerca del Costanera Center. Es muy amigable y parece bien cuidado. Llevaba un collar azul pero sin placa de identificación.', reward: 0, imageId: 'img1' },
-  { id: 'rp2', name: 'Milo', type: 'Gato', breed: 'Naranja atigrado', status: 'lost', lastSeenLocation: 'La Cisterna, Paradero 21', lastSeenDate: '2024-07-19', description: 'Gato macho, muy cariñoso. Se perdió desde casa. Es de color naranja con rayas y tiene la punta de la cola blanca.', reward: 50000, imageId: 'img2' },
-  { id: 'rp3', name: 'Cachorros en Adopción', type: 'Perro', breed: 'Mestizos', status: 'found', lastSeenLocation: 'Parque Araucano, Las Condes', lastSeenDate: '2024-07-21', description: 'Jornada de adopción este fin de semana. Varios cachorros mestizos de tamaño mediano buscan un hogar responsable y cariñoso.', imageId: 'img3' },
-  { id: 'rp4', name: 'Piolín', type: 'Pájaro', breed: 'Canario', status: 'lost', lastSeenLocation: 'Recoleta, cerca del Cerro San Cristóbal', lastSeenDate: '2024-07-22', description: 'Canario de color amarillo intenso. Se escapó de su jaula. Responde al nombre de Piolín y le gusta cantar por las mañanas.', imageId: 'img4' },
+  { id: 'rp1', name: 'Toby', species: 'Perro', breed: 'Golden Retriever', status: 'Encontrado', location: 'Providencia, cerca del Costanera Center', date: '2024-07-20', description: 'Encontrado cerca del Costanera Center. Es muy amigable y parece bien cuidado. Llevaba un collar azul pero sin placa de identificación.', reward: false, imageId: 'img1', size: 'Grande' },
+  { id: 'rp2', name: 'Milo', species: 'Gato', breed: 'Naranja atigrado', status: 'Perdido', location: 'La Cisterna, Paradero 21', date: '2024-07-19', description: 'Gato macho, muy cariñoso. Se perdió desde casa. Es de color naranja con rayas y tiene la punta de la cola blanca.', reward: true, imageId: 'img2', size: 'Mediano' },
+  { id: 'rp3', name: 'Cachorros en Adopción', species: 'Perro', breed: 'Mestizos', status: 'Encontrado', location: 'Parque Araucano, Las Condes', date: '2024-07-21', description: 'Jornada de adopción este fin de semana. Varios cachorros mestizos de tamaño mediano buscan un hogar responsable y cariñoso.', reward: false, imageId: 'img3', size: 'Mediano' },
+  { id: 'rp4', name: 'Piolín', species: 'Otro', breed: 'Canario', status: 'Perdido', location: 'Recoleta, cerca del Cerro San Cristóbal', date: '2024-07-22', description: 'Canario de color amarillo intenso. Se escapó de su jaula. Responde al nombre de Piolín y le gusta cantar por las mañanas.', reward: false, imageId: 'img4', size: 'Pequeño' },
 ];
 
 // --- Datos para el Calendario de Siembra ---
@@ -144,4 +132,4 @@ export const plantingData: PlantingData = {
 // --- Datos Derivados (para componentes específicos) ---
 export const petPoints = allMapPoints.filter(p => p.type === 'pet');
 export const gardenPoints = allMapPoints.filter(p => p.type === 'garden');
-export const adoptionPets = reportedPets.filter(p => p.status === 'found');
+export const adoptionPets = reportedPets.filter(p => p.status === 'Encontrado');
