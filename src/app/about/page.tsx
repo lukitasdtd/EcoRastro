@@ -108,7 +108,7 @@ export default function AboutPage() {
         </section>
         
         <section className="mt-16 text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Contactanos</h2>
+          <h2 className="text-3xl font-bold text-gray-800">Contáctanos</h2>
           <div className="flex justify-center gap-8 mt-6">
             <a href="https://www.instagram.com/ecorastro_cl" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-lg text-gray-700 hover:text-primary">
               <Instagram />
