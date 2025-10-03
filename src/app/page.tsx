@@ -36,14 +36,14 @@ export default function Home() {
             </div>
           </div>
           <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px]">
-            {heroImage && (
+          {/* Se inserta imagen del hero */}
               <Image
-                src={heroImage.imageUrl}
+                src="/foto_hero.png"
                 alt="Comunidad unida por mascotas y huertas"
                 fill
-                className="object-cover rounded-2xl shadow-xl"
-              />
-            )}
+                priority 
+                className=" !rounded-none object-contain object-[20%_50%]"
+            />
           </div>
         </div>
       </section>
