@@ -10,6 +10,10 @@ export const navItems: NavItem[] = [
     href: '/mapa',
   },
   {
+    label: 'Post Comunitarios',
+    href: '/post-comunitarios',
+  },
+  {
     label: 'Mascotas',
     href: '/mascotas',
     subItems: [

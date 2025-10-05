@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { ArrowRight, MapPin, Heart, ShieldCheck, Sprout } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { MapFeatures } from '@/components/home/map-features';
 import { PlantingCalendar } from '@/components/home/planting-calendar';
@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <main className="bg-white">
-      {/* Hero Section */}
+      {/* Sección de Hero */}
       <section className="relative bg-gradient-to-b from-green-50 to-white pt-16 md:pt-24">
         <div className="container mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
           <div className="text-center md:text-left">
@@ -51,6 +51,69 @@ export default function Home() {
       <MapFeatures />
 
       <PlantingCalendar />
+
+      {/* Sección Post comuntarios */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Historias que Conectan: Posteos Comunitarios</h2>
+          <p className="text-lg text-gray-600 mb-8">comparte y conecta con demás personas, cada historia cuenta</p>
+          
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+                {/* Fila 1 */}
+                <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden">
+                  <Image src="/perro_dueña.png" alt="Adopción exitosa" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                </div>
+                <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden">
+                  <Image src="/cultivos_casa.jpg" alt="Huerto en casa" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                </div>
+                <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden">
+                  <Image src="/familia_adopta.jpg" alt="Mujer en su huerta" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                </div>
+
+                {/* Fila 2 */}
+                <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden sm:col-span-1">
+                        <Image src="/cultivos-10.jpg" alt="Gata con sus bebés" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                    </div>
+                    <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden sm:col-span-1">
+                        <Image src="/gata_bebes.jpg" alt="Familia adoptando" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-1 text-center">
+            <div className="flex flex-col items-center justify-center">
+              <Heart className="w-10 h-10 text-green-600 mb-2" />
+              <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <Link href="/post-comunitarios" className="hover:text-green-600 hover:underline">
+                  Adopciones Exitosas
+                </Link>
+              </h4>
+              <p className="text-gray-600">“Historias inspiradoras de hogares encontrados.”</p>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <ShieldCheck className="w-10 h-10 text-green-600 mb-2" />
+              <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <Link href="/post-comunitarios" className="hover:text-green-600 hover:underline">
+                  Animales Rescatados
+                </Link>
+              </h4>
+              <p className="text-gray-600">“Testimonios de ayuda y recuperación.”</p>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <Sprout className="w-10 h-10 text-green-600 mb-2" />
+              <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                <Link href="/post-comunitarios" className="hover:text-green-600 hover:underline">
+                  Huertos Compartidos
+                </Link>
+              </h4>
+              <p className="text-gray-600">“Consejos y logros de las comunidades.”</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <EnvironmentalEducation />
 
