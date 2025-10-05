@@ -9,3 +9,5 @@
 -se creo la sección en pag principal de ¨post comunitarios¨ con imágenes con animación para verse más atractivo
 -se crearon las casillas de texto bajo estas imágenes, envían directamente a la vista post comunitarios
 -se agregó al navbar la entrada ¨Post comunitarios¨ y sólo eso al navbar
+-se creo la vista post comunitarios con ejemplos visuales
+

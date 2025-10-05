@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const educationalTopics = [
     {
@@ -28,9 +27,6 @@ const educationalTopics = [
   ];
 
 export function EnvironmentalEducation() {
-  const petsImage = PlaceHolderImages.find(img => img.id === 'hero-mascotas');
-  const gardenImage = PlaceHolderImages.find(img => img.id === 'hero-huerta');
-
   return (
     <section className="w-full bg-background py-16 lg:py-24" aria-labelledby="education-title">
       <div className="container mx-auto px-4">
@@ -48,26 +44,20 @@ export function EnvironmentalEducation() {
             {/* Columna de las Imágenes */}
             <div className="flex flex-col gap-6">
                 <div className="relative w-full h-64 rounded-2xl overflow-hidden shadow-md">
-                {petsImage && (
                     <Image
-                    src={petsImage.imageUrl}
-                    alt={petsImage.description}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    data-ai-hint={petsImage.imageHint}
+                        src="/adopcion.webp"
+                        alt="Una manada de cachorros en un entorno natural"
+                        fill
+                        style={{ objectFit: 'cover' }}
                     />
-                )}
                 </div>
                 <div className="relative w-full h-64 rounded-2xl overflow-hidden shadow-md">
-                {gardenImage && (
                     <Image
-                    src={gardenImage.imageUrl}
-                    alt={gardenImage.description}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    data-ai-hint={gardenImage.imageHint}
+                        src="/cultivo_lechuga.jpg"
+                        alt="Un cultivo de lechugas frescas en un huerto"
+                        fill
+                        style={{ objectFit: 'cover' }}
                     />
-                )}
                 </div>
             </div>
 
