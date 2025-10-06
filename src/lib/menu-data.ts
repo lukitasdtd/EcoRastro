@@ -83,4 +83,18 @@ export const navItems: NavItem[] = [
     label: 'Acerca de Nosotros',
     href: '/about',
   },
+  {
+    label: 'Iniciar Sesión',
+    href: '#',
+    subItems: [
+      {
+        label: 'Iniciar Sesión',
+        href: '/login',
+      },
+      {
+        label: 'Registrarse',
+        href: '/signup',
+      },
+    ],
+  },
 ];
