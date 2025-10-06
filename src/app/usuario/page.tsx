@@ -1,6 +1,6 @@
 
 'use client';
-
+import Link from 'next/link';
 import { useState } from 'react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -59,6 +59,12 @@ export default function UserProfilePage() {
                         </Link>
                     </Button>
                     <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
+                    <Button asChild>
+                        <Link href="/mensajes">
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            Mis Mensajes
+                        </Link>
+                    </Button>
                 </div>
             </header>
 

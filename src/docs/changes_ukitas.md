@@ -1,7 +1,40 @@
 # Historial de Cambios - Rama "ukitas"
 
 Este documento registra las modificaciones realizadas en la rama "ukitas".
+
+# LINKS BASE DE DATOS
+https://www.tooltyp.com/arquitectura-de-un-servicio-de-mensajeria-instantanea-como-whatsapp/
+
 ---
+
+## Sesión 1: Ajustes en la Página de Perfil de Mascota
+
+### Archivos Modificados:
+- `src/app/mascotas/reporte/[id]/page.tsx`
+
+### Cambios Realizados:
+- Se mejoró el diseño de la página de detalle de la mascota.
+
+--- 
+
+## Sesión 2: Actualización de la Paleta de Colores
+
+### Archivos Modificados:
+- `src/app/globals.css`
+
+### Cambios Realizados:
+- Se actualizó la paleta de colores de la aplicación.
+
+---
+
+## Sesión 3: Correcciones en el Navbar y Menú Móvil
+
+### Archivos Modificados:
+- `src/lib/menu-data.ts`
+- `src/components/header.tsx`
+
+### Cambios Realizados:
+- Se realizaron ajustes visuales y funcionales en la navegación principal.
 
 ## Sesión 4 
 ##  Funcionalidad de Geolocalización en Formulario de Reporte
@@ -53,33 +86,26 @@ Este documento registra las modificaciones realizadas en la rama "ukitas".
 - Se añadió `useState` para gestionar el estado de cada uno de los campos del formulario.
 - Se consolidó la lógica de validación en una única condición (`isFormValid`) que verifica que todos los campos estén llenos y que el RUT sea válido.
 - El botón "Crear Cuenta" ahora permanece deshabilitado (`disabled`) hasta que se cumplan todas las condiciones, asegurando la integridad de los datos enviados.
----
-
-## Sesión 3: Correcciones en el Navbar y Menú Móvil
-
-### Archivos Modificados:
-- `src/lib/menu-data.ts`
-- `src/components/header.tsx`
-
-### Cambios Realizados:
-- Se realizaron ajustes visuales y funcionales en la navegación principal.
 
 ---
 
-## Sesión 2: Actualización de la Paleta de Colores
+## Sesión 5: Mejoras en la Página de Reporte y Comentarios
 
-### Archivos Modificados:
-- `src/app/globals.css`
+### 1. Historial y Flujo de Comentarios en Reporte de Mascota
 
-### Cambios Realizados:
-- Se actualizó la paleta de colores de la aplicación.
-
----
-
-## Sesión 1: Ajustes en la Página de Perfil de Mascota
-
-### Archivos Modificados:
+#### Archivos Modificados:
+- `src/lib/types.ts`
+- `src/lib/data.ts`
 - `src/app/mascotas/reporte/[id]/page.tsx`
+- `src/components/pets/comment-form.tsx` (Nuevo)
+- `src/components/reportar-mascota-form.tsx` (Analizado)
+- `src/docs/changes_ukitas.md`
 
-### Cambios Realizados:
-- Se mejoró el diseño de la página de detalle de la mascota.
+#### Cambios Realizados:
+- **Historial de Comentarios:** Se añadió una nueva sección en la página de reporte para mostrar un historial de avistamientos o comentarios sobre la mascota.
+- **Reorganización de la Página:** Se ajustó el diseño de la página de reporte para que, en la vista de escritorio, el "Historial de comentarios" aparezca en la columna izquierda, debajo de la información de contacto.
+- **Formulario de Comentario Interactivo:** Se reemplazó el formulario de comentarios estático por un nuevo **Componente de Cliente** (`CommentForm`). Este componente es responsable de:
+    1.  **Solicitar Consentimiento de Ubicación:** Antes de acceder a la geolocalización, el componente pregunta explícitamente al usuario si desea compartir su ubicación actual o si prefiere ingresarla manualmente.
+    2.  **Captura Automática:** Si el usuario acepta, el componente obtiene y muestra la ubicación aproximada del usuario y la hora actual de Chile (GMT-4).
+    3.  **Entrada Manual de Ubicación:** Si el usuario se niega, el componente muestra campos para Región, Comuna y Calle, replicando el formato del formulario principal para reportar mascotas. La lista de comunas se actualiza dinámicamente según la región seleccionada.
+- **Visibilidad Condicional:** El campo de texto para escribir el comentario y el botón para publicarlo solo se muestran después de que el usuario ha completado uno de los dos flujos de ubicación, garantizando que cada comentario tenga una ubicación asociada.
