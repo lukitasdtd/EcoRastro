@@ -2,7 +2,6 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -49,22 +48,7 @@ export default function UserProfilePage() {
                     <p className="text-sm text-muted-foreground mt-1">Miembro desde {new Date(user.memberSince).toLocaleDateString('es-CL', { year: 'numeric', month: 'long' })}</p>
                 </div>
                 <div className="md:ml-auto flex items-center gap-4">
-                    <Button
-                        className="rounded-lg bg-primary text-white hover:bg-primary/90"
-                        asChild
-                    >
-                        <Link href="/mensajes">
-                            <MessageSquare className="mr-2 h-5 w-5" />
-                            Mensajes
-                        </Link>
-                    </Button>
                     <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
-                    <Button asChild>
-                        <Link href="/mensajes">
-                            <MessageSquare className="mr-2 h-4 w-4" />
-                            Mis Mensajes
-                        </Link>
-                    </Button>
                 </div>
             </header>
 
