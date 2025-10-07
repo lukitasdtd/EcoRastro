@@ -10,6 +10,10 @@ export const navItems: NavItem[] = [
     href: '/mapa',
   },
   {
+    label: 'Post Comunitarios',
+    href: '/post-comunitarios',
+  },
+  {
     label: 'Mascotas',
     href: '/mascotas',
     subItems: [
@@ -74,5 +78,19 @@ export const navItems: NavItem[] = [
   {
     label: 'Acerca de Nosotros',
     href: '/about',
+  },
+  {
+    label: 'Iniciar Sesión',
+    href: '#',
+    subItems: [
+      {
+        label: 'Iniciar Sesión',
+        href: '/login',
+      },
+      {
+        label: 'Registrarse',
+        href: '/signup',
+      },
+    ],
   },
 ];

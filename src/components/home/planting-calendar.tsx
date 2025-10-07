@@ -34,35 +34,35 @@ export function PlantingCalendar() {
   return (
     <section className="w-full bg-background py-16 lg:py-24" aria-labelledby="planting-calendar-title">
       <div className="container mx-auto px-4">
-        <Link href="/calendar" className="block group">
-          <Card className="p-8 md:p-12 rounded-2xl shadow-lg border group-hover:border-primary/50 transition-all">
-            <div className="text-center mb-12">
-              <h2 id="planting-calendar-title" className="text-3xl md:text-4xl font-bold tracking-tight group-hover:text-primary transition-colors">
-                Calendario de siembra
-              </h2>
-              <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
-                ¡Haz clic, Descubre qué plantar en cada temporada!
-              </p>
+        <Card className="p-8 md:p-12 rounded-2xl shadow-lg border transition-all">
+          <div className="text-center mb-12">
+            <h2 id="planting-calendar-title" className="text-3xl md:text-4xl font-bold tracking-tight transition-colors">
+              Calendario de siembra
+            </h2>
+            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
+              ¡Haz clic en una temporada para descubrir qué plantar!
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Columna de la Imagen */}
+            <div className="relative w-full h-80 md:h-full rounded-2xl overflow-hidden shadow-md">
+              {calendarImage && (
+                <Image
+                  src={calendarImage.imageUrl}
+                  alt={calendarImage.description}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  data-ai-hint={calendarImage.imageHint}
+                />
+              )}
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              {/* Columna de la Imagen */}
-              <div className="relative w-full h-80 md:h-full rounded-2xl overflow-hidden shadow-md">
-                {calendarImage && (
-                  <Image
-                    src={calendarImage.imageUrl}
-                    alt={calendarImage.description}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    data-ai-hint={calendarImage.imageHint}
-                  />
-                )}
-              </div>
-
-              {/* Columna de las Temporadas */}
-              <div className="flex flex-col gap-6">
-                {seasons.map((season, index) => (
-                  <Card key={index} className="p-4 shadow-sm group-hover:shadow-md transition-shadow duration-300">
+            {/* Columna de las Temporadas */}
+            <div className="flex flex-col gap-6">
+              {seasons.map((season, index) => (
+                <Link key={index} href="/calendar" className="block group rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                  <Card className="p-4 shadow-sm group-hover:shadow-md transition-shadow duration-300 h-full">
                     <CardContent className="flex items-center gap-4 p-0">
                       <div className="bg-primary/10 p-3 rounded-lg">
                         {season.icon}
@@ -73,11 +73,11 @@ export function PlantingCalendar() {
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
+                </Link>
+              ))}
             </div>
-          </Card>
-        </Link>
+          </div>
+        </Card>
       </div>
     </section>
   );
