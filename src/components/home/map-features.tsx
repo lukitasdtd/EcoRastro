@@ -41,7 +41,6 @@ export function MapFeatures() {
 
   return (
     <section className="w-full bg-background py-16 lg:py-24" aria-labelledby="map-title">
-      <Link href="/mapa" className="group">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 lg:mb-16">
             <h2 id="map-title" className="text-3xl md:text-4xl font-bold tracking-tight group-hover:text-primary transition-colors">
@@ -74,7 +73,6 @@ export function MapFeatures() {
             </div>
           </div>
         </div>
-      </Link>
     </section>
   );
 }
