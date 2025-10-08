@@ -56,7 +56,7 @@ export default function MapPage() {
   };
 
   return (
-    <div className="relative h-[calc(100vh-80px)] bg-[#F7F9F7] md:flex">
+    <div className="relative min-h-[calc(100vh-80px)] bg-[#F7F9F7] md:flex">
       <aside
         className={`absolute top-0 left-0 z-20 flex flex-col bg-[#E6F4EC] p-6 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -135,7 +135,7 @@ export default function MapPage() {
         </div>
       </aside>
 
-      <main className="flex-1 relative z-10">
+      <main className="flex-1 relative z-0">
         <Button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="md:hidden absolute top-4 left-4 z-30 bg-white p-2 rounded-md shadow-md"

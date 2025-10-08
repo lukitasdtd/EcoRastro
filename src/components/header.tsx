@@ -255,11 +255,11 @@ export function Header() {
                     asChild
                   >
                     <Link
-                      href="/login"
+                      href="/usuario"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <UserCircle className="mr-2 h-5 w-5" />
-                      Iniciar Sesión
+                      Mi Perfil
                     </Link>
                   </Button>
                 </div>

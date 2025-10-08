@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FlipCard } from '@/components/ui/flip-card';
 import {
@@ -11,15 +11,10 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import {
-  Heart,
-  PawPrint,
   Bone,
   Home,
-  FileText,
   Shield,
   ArrowRight,
-  Sparkles,
-  BookMarked,
   HelpCircle,
   Stethoscope,
   ShowerHead,
@@ -28,7 +23,8 @@ import {
   Building,
   Scale,
   ArrowLeft,
-  RotateCw
+  RotateCw,
+  PawPrint
 } from 'lucide-react';
 
 export default function PetEducationPage() {
@@ -68,67 +64,45 @@ export default function PetEducationPage() {
 
   const regulations = [
     {
-      icon: <FileText className="h-8 w-8 text-green-600" />,
-      title: 'Ley 21.020 (Ley Cholito)',
-      text: 'Establece la Tenencia Responsable, obligando a registrar e identificar a las mascotas.',
-      href: 'https://www.bcn.cl/leychile/navegar?idNorma=1106037',
+      icon: <Scale className="h-8 w-8 text-green-600" />,
+      title: 'Leyes de Tenencia Responsable',
+      text: 'Infórmate sobre las leyes locales sobre correa, registro y bienestar para garantizar una convivencia armónica.',
     },
     {
       icon: <Shield className="h-8 w-8 text-green-600" />,
-      title: 'Ley 20.380 (Protección)',
-      text: 'Normativa sobre la protección de los animales, que establece las obligaciones de su cuidado.',
-      href: 'https://www.bcn.cl/leychile/navegar?idNorma=1006858',
+      title: 'Normativas de Bienestar Animal',
+      text: 'Conoce tus obligaciones para prevenir el maltrato, el abandono y asegurar una vida digna para tu mascota.',
     },
      {
-      icon: <HelpCircle className="h-8 w-8 text-green-600" />,
-      title: 'Inscripción en Registro',
-      text: 'Pasos para inscribir a tu mascota en el Registro Nacional, un requisito obligatorio por ley.',
-      href: 'https://www.chileatiende.gob.cl/fichas/53562-inscripcion-en-el-registro-nacional-de-mascotas-o-animales-de-compania',
+      icon: <Building className="h-8 w-8 text-green-600" />,
+      title: 'Regulaciones Comunitarias',
+      text: 'Respeta las normas de tu comunidad o edificio sobre mascotas, como el uso de ascensores o áreas comunes.',
     },
   ];
 
   const faqItems = [
       {
         question: "¿Es obligatorio registrar a mi mascota?",
-        answer: "Sí, la Ley 21.020 (Ley Cholito) establece que es obligatorio inscribir a perros y gatos en el Registro Nacional de Mascotas.",
+        answer: "En muchos países y ciudades, sí. El registro a través de un microchip y una base de datos oficial es la forma más segura de demostrar quién es el dueño y facilitar el reencuentro en caso de pérdida. Consulta la normativa de tu localidad.",
       },
       {
         question: "¿Qué es y para qué sirve el microchip?",
-        answer: "El microchip es un dispositivo subcutáneo del tamaño de un grano de arroz que contiene un número de identificación único de 15 dígitos. Permite asociar a la mascota con su dueño en el registro oficial.",
+        answer: "El microchip es un dispositivo subcutáneo del tamaño de un grano de arroz con un número de identificación único. No tiene GPS, pero si alguien encuentra a tu mascota, un veterinario o refugio puede escanear el chip, buscar el número en una base de datos y contactarte.",
       },
       {
-        question: "¿La placa con el QR reemplaza al microchip?",
-        answer: "No, la placa es un complemento útil para una rápida identificación si alguien encuentra a tu mascota, pero no reemplaza la obligatoriedad del microchip y la inscripción en el registro oficial.",
+        question: "¿La placa con QR reemplaza al microchip?",
+        answer: "No. La placa es un complemento excelente para una identificación rápida y visible, pero puede caerse o dañarse. El microchip es un método de identificación permanente y más fiable. Lo ideal es usar ambos.",
       },
       {
         question: "¿Cómo y dónde denuncio el maltrato animal?",
-        answer: "Puedes denunciar el maltrato animal en Carabineros, PDI o en la Fiscalía. Aporta todas las pruebas que puedas (fotos, videos, testigos). El maltrato es un delito.",
+        answer: "Debes contactar a las autoridades locales, como la policía, el departamento de control animal o una organización de protección animal reconocida. Proporciona toda la evidencia posible, como fotos, videos y detalles del incidente.",
       },
       {
-        question: "¿Qué hago si perdí el certificado de mi microchip?",
-        answer: "Debes contactar al veterinario que implantó el chip para solicitar un duplicado del certificado. Si no es posible, algunos municipios o jornadas de implantación pueden leer el chip y emitir un nuevo certificado de idoneidad.",
+        question: "¿Qué hago si perdí los documentos del microchip?",
+        answer: "Contacta al veterinario que implantó el chip; es posible que tengan el registro. También puedes visitar a un veterinario para que escanee el chip y te ayude a identificar el número y la base de datos en la que está registrado para actualizar tu información.",
       }
   ]
   
-  const premiumCard = (title: string, description: string) => (
-    <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-green-600/5 border-dashed border-green-600/20 h-full shadow-none">
-        <CardHeader>
-            <div className="mx-auto bg-orange-500/10 rounded-full p-4 w-fit mb-4">
-              <Sparkles className="h-8 w-8 text-orange-500" />
-            </div>
-            <CardTitle className="text-2xl text-foreground">{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <p className="text-muted-foreground">{description}</p>
-        </CardContent>
-        <CardFooter>
-            <Button variant="default" disabled className="bg-orange-500 hover:bg-orange-600">
-                Accede a la Plataforma Premium
-            </Button>
-        </CardFooter>
-    </Card>
-  )
-
   return (
     <main className="bg-gradient-to-b from-green-50 to-white">
       <div className="container mx-auto px-4 py-8 md:py-16">
@@ -142,20 +116,14 @@ export default function PetEducationPage() {
         </div>
 
         {/* --- Hero Section --- */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
-          <div className="text-center md:text-left">
+        <section className="text-center mb-16">
+          <div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">
               Educación y <span className="text-orange-500">Cuidados para Mascotas</span>
             </h1>
-            <p className="max-w-xl mx-auto md:mx-0 mt-4 text-lg text-gray-600">
+            <p className="max-w-2xl mx-auto mt-4 text-lg text-gray-600">
               Ser un dueño responsable es la mayor muestra de amor. Aquí encontrarás información clave para el bienestar de tu compañero.
             </p>
-          </div>
-          <div>
-            {premiumCard(
-                "Asistente de IA para Mascotas",
-                "Obtén respuestas sobre salud, comportamiento y nutrición de nuestro asistente virtual."
-            )}
           </div>
         </section>
         
@@ -173,19 +141,19 @@ export default function PetEducationPage() {
               {careTips.map((tip) => (
                 <FlipCard
                   key={tip.title}
-                  className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer"
+                  className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer h-40"
                   frontContent={(
-                    <div className="relative w-full h-full flex items-center justify-center">
+                    <div className="relative w-full h-full flex items-center justify-center p-4">
                       <h3 className="text-xl font-bold text-gray-800 px-4 text-center">{tip.title}</h3>
                       <RotateCw className="absolute top-4 right-4 h-5 w-5 text-gray-400" />
                     </div>
                   )}
                   backContent={(
-                    <div className="text-center p-2">
+                    <div className="text-center p-4 flex flex-col items-center justify-center h-full">
                       <div className="mx-auto bg-green-100/70 rounded-full p-3 w-fit mb-3">
                         {tip.icon}
                       </div>
-                      <p className="text-gray-600 px-2">{tip.text}</p>
+                      <p className="text-gray-600 text-sm">{tip.text}</p>
                     </div>
                   )}
                 />
@@ -197,7 +165,7 @@ export default function PetEducationPage() {
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 h-full">
                 <CardHeader className="text-center border-b pb-4">
-                    <CardTitle className="text-2xl font-bold">Normativas Clave en Chile</CardTitle>
+                    <CardTitle className="text-2xl font-bold">Leyes y Normativas</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 pt-6">
                    {regulations.map((reg) => (
@@ -206,11 +174,6 @@ export default function PetEducationPage() {
                           <div className="flex-grow">
                             <h4 className="font-semibold text-gray-800">{reg.title}</h4>
                             <p className="text-sm text-gray-600 mb-1">{reg.text}</p>
-                            <Button asChild variant="link" className="p-0 h-auto text-orange-600 font-semibold hover:text-orange-700 text-sm">
-                              <Link href={reg.href} target="_blank" rel="noopener noreferrer">
-                                Ver fuente oficial <ArrowRight className="ml-1 h-3 w-3" />
-                              </Link>
-                            </Button>
                           </div>
                         </div>
                   ))}
@@ -222,18 +185,20 @@ export default function PetEducationPage() {
                   <div className="mx-auto bg-orange-500 text-white rounded-full p-4 w-fit mb-3">
                       <Search className="h-8 w-8" />
                   </div>
-                  <CardTitle className="text-2xl font-bold">Consulta el Registro de tu Mascota</CardTitle>
+                  <CardTitle className="text-2xl font-bold">Verifica el Registro del Microchip</CardTitle>
                 </CardHeader>
-                <CardContent className="pt-6">
-                    <p className="text-gray-600 mb-6">Verifica si el microchip de tu mascota está correctamente inscrito en la base de datos oficial.</p>
-                    <Button asChild size="lg" className="rounded-full bg-orange-500 hover:bg-orange-600 w-full" aria-label="Consultar chip en registratumascota.cl">
-                        <Link href="https://registratumascota.cl/consultas.xhtml" target="_blank" rel="noopener noreferrer">
-                            Consultar Chip Aquí
+                <CardContent className="pt-6 flex flex-col items-center">
+                    <p className="text-gray-600 mb-6">
+                        Es vital que tus datos de contacto estén actualizados en la base de datos del microchip. Si no recuerdas dónde lo registraste, puedes usar un buscador universal.
+                    </p>
+                    <Button asChild size="lg" className="rounded-full bg-orange-500 hover:bg-orange-600 w-full mt-auto">
+                        <Link href="https://petmicrochiplookup.org/" target="_blank" rel="noopener noreferrer">
+                            Buscador Universal (AAHA)
                             <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                     </Button>
-                    <p className="mt-4 text-sm text-orange-900/70">
-                      O visita el sitio en <Link href="https://registratumascota.cl/" target="_blank" rel="noopener noreferrer" className="underline font-semibold">registratumascota.cl</Link>
+                    <p className="mt-4 text-xs text-orange-900/70">
+                      Esta herramienta ayuda a identificar la base de datos del registro de un chip.
                     </p>
                 </CardContent>
             </Card>
