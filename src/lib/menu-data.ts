@@ -29,10 +29,6 @@ export const navItems: NavItem[] = [
         label: 'Redes de Apoyo',
         href: '/mascotas/redes-apoyo',
       },
-      {
-        label: 'Ver en Adopción',
-        href: '/adoption',
-      },
     ],
   },
   {

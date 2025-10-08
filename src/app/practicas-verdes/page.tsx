@@ -1,29 +1,10 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FlipCard } from '@/components/ui/flip-card';
-import { Recycle, Droplets, Trash2, Leaf, ShoppingCart, Lightbulb, ArrowLeft, RotateCw, Sparkles, CheckCircle, Calculator } from 'lucide-react';
+import { Recycle, Droplets, Trash2, ShoppingCart, ArrowLeft, RotateCw, CheckCircle, Calculator } from 'lucide-react';
 import Link from 'next/link';
-
-const premiumCard = (title: string, description: string) => (
-    <Card className="max-w-2xl mx-auto text-center p-8 flex flex-col items-center justify-center bg-teal-600/5 border-dashed border-teal-600/20 h-full shadow-none">
-        <CardHeader>
-            <div className="mx-auto bg-teal-500/10 rounded-full p-4 w-fit mb-4">
-              <Sparkles className="h-8 w-8 text-teal-500" />
-            </div>
-            <CardTitle className="text-2xl text-foreground">{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <p className="text-muted-foreground">{description}</p>
-        </CardContent>
-        <CardFooter>
-            <Button variant="default" disabled className="bg-teal-500 hover:bg-teal-600">
-                Próximamente en Premium
-            </Button>
-        </CardFooter>
-    </Card>
-)
 
 export default function PracticasVerdesPage() {
 
@@ -82,20 +63,14 @@ export default function PracticasVerdesPage() {
         </div>
 
         {/* --- Hero --- */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
-            <div className="text-center md:text-left">
+        <section className="text-center mb-16">
+            <div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">
                 Prácticas Verdes para un <span className="text-teal-600">Futuro Sostenible</span>
               </h1>
-              <p className="max-w-xl mx-auto md:mx-0 mt-4 text-lg text-gray-600">
+              <p className="max-w-2xl mx-auto mt-4 text-lg text-gray-600">
                 Cada pequeña acción cuenta. Descubre cómo puedes integrar hábitos sostenibles en tu vida diaria para cuidar nuestro planeta.
               </p>
-            </div>
-            <div>
-              {premiumCard(
-                  "Analiza tu Impacto Ambiental",
-                  "Nuestras herramientas premium te ayudarán a medir y reducir tu huella de carbono personal."
-              )}
             </div>
         </section>
 
@@ -113,19 +88,19 @@ export default function PracticasVerdesPage() {
                 {greenPractices.map((practice) => (
                   <FlipCard
                     key={practice.title}
-                    className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer"
+                    className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer h-40"
                     frontContent={(
-                      <div className="relative w-full h-full flex items-center justify-center">
+                      <div className="relative w-full h-full flex items-center justify-center p-4">
                         <h3 className="text-xl font-bold text-gray-800 px-4 text-center">{practice.title}</h3>
                         <RotateCw className="absolute top-4 right-4 h-5 w-5 text-gray-400" />
                       </div>
                     )}
                     backContent={(
-                      <div className="text-center p-2">
+                      <div className="text-center p-4 flex flex-col items-center justify-center h-full">
                         <div className="mx-auto bg-teal-100/70 rounded-full p-3 w-fit mb-3">
                           {practice.icon}
                         </div>
-                        <p className="text-gray-600 px-2">{practice.description}</p>
+                        <p className="text-gray-600 text-sm">{practice.description}</p>
                       </div>
                     )}
                   />
@@ -147,11 +122,6 @@ export default function PracticasVerdesPage() {
                         </div>
                   ))}
                 </CardContent>
-                <CardFooter>
-                  <Button asChild variant="link" className="p-0 h-auto text-teal-600 font-semibold hover:text-teal-700 mx-auto">
-                      <Link href="/huerta/educacion">Ver más sobre huertas</Link>
-                  </Button>
-                </CardFooter>
             </Card>
 
             <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 h-full text-center">
@@ -161,10 +131,12 @@ export default function PracticasVerdesPage() {
                   </div>
                   <CardTitle className="text-2xl font-bold">Calculadora de Huella de Carbono</CardTitle>
                 </CardHeader>
-                <CardContent className="pt-6 flex flex-col items-center h-full">
-                    <p className="text-gray-600 mb-6 flex-grow">Mide el impacto de tus hábitos diarios y descubre cómo reducir tu huella de carbono de manera efectiva.</p>
-                    <Button variant="default" disabled className="bg-teal-500 hover:bg-teal-600 w-full mt-auto">
-                      Herramienta Premium - Próximamente
+                <CardContent className="pt-6 flex flex-col items-center">
+                    <p className="text-gray-600 mb-6">Mide el impacto de tus hábitos diarios y descubre cómo reducir tu huella de carbono de manera efectiva.</p>
+                     <Button asChild className="bg-teal-500 hover:bg-teal-600 w-full mt-4">
+                        <Link href="https://footprint.wwf.org.uk" target="_blank" rel="noopener noreferrer">
+                          Calcular mi Huella (WWF)
+                        </Link>
                     </Button>
                 </CardContent>
             </Card>
