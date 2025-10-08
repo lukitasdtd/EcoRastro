@@ -45,24 +45,11 @@ export default function UserProfilePage() {
                 <div className="text-center md:text-left">
                     <h1 className="text-3xl md:text-4xl font-bold">{`${user.firstName} ${user.lastName}`}</h1>
                     <p className="text-muted-foreground">{user.email}</p>
-                    <p className="text-sm text-muted-foreground mt-1">Miembro desde {new Date(user.memberSince).toLocaleDateString('es-CL', { year: 'numeric', month: 'long' })}</p>
-                </div>
-                <div className="md:ml-auto flex items-center gap-4">
-                    <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
+                    <div className="mt-4">
+                        <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
+                    </div>
                 </div>
             </header>
-
-            {/* Sección de Contadores */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                <Card className="flex flex-col items-center justify-center p-6 bg-secondary/10">
-                    <CardTitle className="text-4xl font-bold">{userReports.length}</CardTitle>
-                    <p className="text-muted-foreground mt-2">Publicaciones de Mascotas</p>
-                </Card>
-                <Card className="flex flex-col items-center justify-center p-6 bg-secondary/10">
-                    <CardTitle className="text-4xl font-bold">{gardenPublicationsCount}</CardTitle>
-                    <p className="text-muted-foreground mt-2">Publicaciones de Huertas</p>
-                </Card>
-            </section>
 
             {/* Contenido Principal con Pestañas para Mascotas y Huertas */}
             <main>

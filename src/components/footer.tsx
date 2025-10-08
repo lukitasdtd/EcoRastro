@@ -24,7 +24,7 @@ export function Footer() {
 
         {/* Columna de Redes Sociales */}
         <div className="flex items-center justify-center md:justify-end space-x-4">
-          <Link href="#" className="text-primary-foreground/80 hover:text-white transition-colors" aria-label="Instagram de EcoRastro">
+          <Link href="https://www.instagram.com/ecorastrocl?igsh=aWRudGE0b2ZzYzZw" className="text-primary-foreground/80 hover:text-white transition-colors" aria-label="Instagram de EcoRastro">
             <Instagram className="h-6 w-6" />
           </Link>
           <Link href="#" className="text-primary-foreground/80 hover:text-white transition-colors" aria-label="Facebook de EcoRastro">

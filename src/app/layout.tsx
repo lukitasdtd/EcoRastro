@@ -33,7 +33,7 @@ export default function RootLayout({
       <body>
         <div className="flex min-h-screen w-full flex-col">
           <Header />
-          <main className="flex-1 pt-8">{children}</main>
+          <main className="flex-1 border-t-0 shadow-none ring-0">{children}</main>
           <Footer />
         </div>
         <Toaster />

@@ -153,11 +153,6 @@ export function FormularioHuerta() {
     maxFiles: 5,
   });
 
-  const handleLocationChange = useCallback((lat: number, lng: number) => {
-    form.setValue('lat', lat, { shouldValidate: true, shouldDirty: true });
-    form.setValue('lng', lng, { shouldValidate: true, shouldDirty: true });
-  }, [form]);
-
   const removeFile = (id: string) => {
     setFilesToUpload(prev => {
         const fileToRemove = prev.find(f => f.id === id);
@@ -249,10 +244,6 @@ export function FormularioHuerta() {
           <CardContent className="space-y-6">
             <FormField control={form.control} name="gardenName" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la huerta</FormLabel> <FormControl><Input placeholder="Ej: La huerta de María" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             <div>
-              <Label>Ubicación</Label>
-              <div className="h-[400px] mt-2 w-full rounded-md overflow-hidden relative">
-                 <LeafletMapDraggable onLocationChange={handleLocationChange} />
-              </div>
               <FormMessage>{form.formState.errors.lat?.message || form.formState.errors.lng?.message}</FormMessage>
             </div>
              <FormField control={form.control} name="surface" render={({ field }) => ( <FormItem> <FormLabel>Superficie aproximada (m²)</FormLabel> <FormControl><Input type="number" placeholder="Ej: 50" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
@@ -340,12 +331,6 @@ export function FormularioHuerta() {
         </Card>
         
         <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
-            <CardHeader><CardTitle>Opciones de privacidad y publicación</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-                <FormField control={form.control} name="visible" render={({ field }) => ( <FormItem className="flex flex-row items-center space-x-3 space-y-0"> <FormControl><Checkbox checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /></FormControl> <FormLabel className="font-normal">Visible en el mapa comunitario</FormLabel> </FormItem> )}/>
-                <FormField control={form.control} name="comments" render={({ field }) => ( <FormItem className="flex flex-row items-center space-x-3 space-y-0"> <FormControl><Checkbox checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /></FormControl> <FormLabel className="font-normal">Permitir comentarios en la publicación</FormLabel> </FormItem> )}/>
-                 <FormField control={form.control} name="consentimiento" render={({ field }) => ( <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mt-4 data-[state=unchecked]:border-destructive"> <FormControl><Checkbox checked={field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} /></FormControl> <div className="space-y-1 leading-none"> <FormLabel>Acepto que los datos proporcionados se hagan públicos para facilitar la visibilidad de la huerta.</FormLabel> <FormMessage /> </div> </FormItem> )}/>
-            </CardContent>
           <CardFooter className="flex justify-end gap-4">
             <Button type="button" variant="outline" onClick={() => router.back()}>Cancelar</Button>
             <Button type="submit" disabled={isPublishDisabled}>{isSubmitting || isUploading ? <><LoaderCircle className="animate-spin mr-2" /> Publicando...</> : 'Publicar Huerta'}</Button>

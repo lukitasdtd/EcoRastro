@@ -3,12 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.pnp.js
 
 # testing
 /coverage
@@ -28,49 +23,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-.genkit/*
-.env*
-
-# firebase
-firebase-debug.log
-firestore-debug.log
--mapa) cambios
-.gitignore
-.gitignore
-/.github/copilot-instructions.md
-/.vs
-/.vs/Ecorastro-v1
-/.vs/Ecorastro-v1/config
-/.vs/Ecorastro-v1/config/applicationhost.config
-/.vs/Ecorastro-v1/CopilotIndices/17.14.1147.5054
-/.vs/Ecorastro-v1/CopilotIndices/17.14.1147.5054/SemanticSymbols.db
-/.vs/Ecorastro-v1/CopilotIndices/17.14.1147.5054/SemanticSymbols.db-shm
-/.vs/Ecorastro-v1/CopilotIndices/17.14.1147.5054/SemanticSymbols.db-wal
-/.vs/Ecorastro-v1/FileContentIndex
-/.vs/Ecorastro-v1/FileContentIndex/30114f54-2553-4c7e-821e-edd9cc99f184.vsidx
-/.vs/Ecorastro-v1/FileContentIndex/7b9461b6-03be-4541-a19d-1dc150b65cee.vsidx
-/.vs/Ecorastro-v1/FileContentIndex/8a3ac0a2-cd80-45e1-97cd-7ce9a11e17e2.vsidx
-/.vs/Ecorastro-v1/FileContentIndex/95946fe2-2da4-4524-81a4-35ff6d24d642.vsidx
-/.vs/Ecorastro-v1/FileContentIndex/b1f1a75b-af98-4074-b3e6-bcf626ec56b7.vsidx
-/.vs/Ecorastro-v1/v17
-/.vs/Ecorastro-v1/v17/.wsuo
-/.vs/Ecorastro-v1/v17/DocumentLayout.backup.json
-/.vs/Ecorastro-v1/v17/DocumentLayout.json
-/.vs/Ecorastro-v1/v17/workspaceFileList.bin
-/.vs/slnx.sqlite
-/.vs/VSWorkspaceState.json
-/.gitignore
-/.gitignore
-/.gitignore
-/.gitignore
-/.vs/Ecorastro-v1/config/applicationhost.config
-/.gitignore
+# local env files
+.env*.local

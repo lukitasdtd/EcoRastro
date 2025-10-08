@@ -15,6 +15,4 @@ const Map = dynamic(() => import('@/components/leaflet-map'), {
 
 // Este es un componente "envoltorio" que renderiza el mapa.
 // Al estar en un archivo con 'use client', es seguro usar la lógica de carga dinámica aquí.
-export default function ClientMap({ points }: { points: MapPoint[] }) {
-  return <Map points={points} />;
-}
+

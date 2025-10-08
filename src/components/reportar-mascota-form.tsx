@@ -12,7 +12,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ImageUploader } from "@/components/image-uploader"; 
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import LeafletMapDraggable from "./leaflet-map-draggable";
 import { PawPrint } from "lucide-react";
 
 const mascotaSchema = z.object({
@@ -190,15 +189,6 @@ export function ReportarMascotaForm() {
             </div>
 
             <div className="space-y-4">
-              <FormLabel>Última vez vista</FormLabel>
-              <div className="h-[400px] rounded-lg overflow-hidden border">
-                <LeafletMapDraggable 
-                  onLocationChange={(lat, lng) => {
-                    form.setValue("lat", lat);
-                    form.setValue("lng", lng);
-                  }}
-                />
-              </div>
               <FormField
                 control={form.control}
                 name="ultima_ubicacion"

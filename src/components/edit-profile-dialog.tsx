@@ -65,7 +65,7 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Editar Perfil</Button>
+        <Button variant="outline" className="h-11 px-5">Editar Perfil</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
