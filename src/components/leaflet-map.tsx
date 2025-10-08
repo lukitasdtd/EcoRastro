@@ -104,6 +104,21 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         });
 
     }, [activeFilter, points]);
+    
+    useEffect(() => {
+        const handleResize = () => {
+            if (mapInstance.current) {
+                mapInstance.current.invalidateSize();
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
 
     const handleGeolocate = () => {
         if (navigator.geolocation && mapInstance.current) {
