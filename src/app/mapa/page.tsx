@@ -5,9 +5,8 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link'; 
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, PawPrint, Leaf, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, PawPrint, Leaf, Menu, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { allMapPoints } from '@/lib/data';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function MapPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -63,6 +62,13 @@ export default function MapPage() {
         } w-full md:w-[360px] h-full`}
       >
         <div className={`flex-grow flex flex-col min-w-[312px] transition-opacity duration-100 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 md:opacity-100'}`}>
+          <div className="flex justify-between items-center mb-4 md:hidden">
+              <h2 className="text-xl font-bold text-[#1F3D2A]">Menú</h2>
+              <Button onClick={() => setIsSidebarOpen(false)} variant="ghost" size="icon">
+                  <X className="h-6 w-6" />
+              </Button>
+          </div>
+
           <div className="p-4 bg-white rounded-xl shadow-sm mb-6">
             <h2 className="text-xl font-bold mb-4 text-[#1F3D2A]">Filtro</h2>
             <div className="flex items-center gap-2">
@@ -95,8 +101,6 @@ export default function MapPage() {
             <h3 className="text-xl font-bold mb-4 text-[#1F3D2A]">{listTitle}</h3>
             <div className="flex-grow space-y-3 pr-1">
                 {paginatedList.map((item) => {
-                  // Si es una mascota, el enlace apunta a la página de reporte con su ID único.
-                  // Si es una huerta, mantiene el enlace original.
                   const linkHref = item.type === 'pet' 
                     ? `/mascotas/reporte/${item.id}`
                     : item.link;
@@ -135,10 +139,10 @@ export default function MapPage() {
         </div>
       </aside>
 
-      <main className="flex-1 relative z-0">
+      <main className="absolute inset-0 md:relative md:flex-1 z-0">
         <Button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="md:hidden absolute top-4 left-4 z-30 bg-white p-2 rounded-md shadow-md"
+            className="md:hidden absolute top-4 left-4 z-[1000] bg-white p-2 rounded-md shadow-md"
         >
             <Menu className="w-6 h-6 text-gray-700" />
         </Button>
