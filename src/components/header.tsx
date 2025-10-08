@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,11 +20,11 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Menu, X, ChevronDown, UserCircle } from 'lucide-react';
+import { Menu, UserCircle, ChevronDown } from 'lucide-react';
 import { navItems, type NavItem } from '@/lib/menu-data';
 import { cn } from '@/lib/utils';
 
-// Componente para un elemento de navegación individual
+// 🔹 Componente para un enlace individual
 function NavLink({
   href,
   children,
@@ -52,7 +52,7 @@ function NavLink({
   );
 }
 
-// Componente para un elemento de menú con dropdown
+// 🔹 Componente para un menú desplegable
 function DropdownMenu({ item }: { item: NavItem }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
@@ -61,28 +61,12 @@ function DropdownMenu({ item }: { item: NavItem }) {
   const isParentActive =
     item.subItems?.some(sub => pathname === sub.href) ?? false;
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      setIsOpen(false);
-    }
-  };
-
   if (!item.subItems) {
     return <NavLink href={item.href}>{item.label}</NavLink>;
   }
 
   return (
-    <li ref={menuRef} className="relative" onKeyDown={handleKeyDown}>
+    <li ref={menuRef} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="true"
@@ -125,26 +109,12 @@ function DropdownMenu({ item }: { item: NavItem }) {
   );
 }
 
-// Componente principal del Header/Navbar
+// 🔹 Componente principal del Header/Navbar
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-50 w-full bg-primary font-sans transition-shadow',
-        isScrolled && 'shadow-md'
-      )}
-    >
+    <header className="sticky top-0 z-50 w-full bg-primary font-sans">
       <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
         {/* Logo */}
         <div className="flex-shrink-0">
@@ -166,7 +136,7 @@ export function Header() {
           </ul>
         </nav>
 
-        {/* Botón de Login y Menú Móvil */}
+        {/* Botón Perfil y Menú Móvil */}
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -179,7 +149,7 @@ export function Header() {
             </Link>
           </Button>
 
-          {/* Botón Hamburguesa para Móvil */}
+          {/* Menú móvil */}
           <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -201,10 +171,9 @@ export function Header() {
                     <Logo />
                   </div>
                   <SheetTitle className="sr-only">Menú Principal</SheetTitle>
-                  {/* Corrected: Removed the redundant trigger around the close button */}
-                  <SheetClose asChild>
-                  </SheetClose>
+                  <SheetClose asChild></SheetClose>
                 </SheetHeader>
+
                 <ScrollArea className="flex-grow">
                   <nav className="p-4">
                     <Accordion type="single" collapsible className="w-full">
@@ -248,6 +217,7 @@ export function Header() {
                     </Accordion>
                   </nav>
                 </ScrollArea>
+
                 <div className="mt-auto border-t border-primary-hover p-4 flex-shrink-0">
                   <Button
                     variant="outline"
