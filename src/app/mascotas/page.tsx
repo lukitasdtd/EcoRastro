@@ -2,7 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import AdoptionCard from '@/components/adoption-card';
 import { adoptionPets } from '@/lib/data';
 
 export default function MascotasPage() {
@@ -45,11 +44,6 @@ export default function MascotasPage() {
           <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
             Estos maravillosos animales están buscando un hogar lleno de amor. ¿Podría ser el tuyo?
           </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {adoptionPets.slice(0, 4).map(pet => (
-            <AdoptionCard key={pet.id} pet={pet} />
-          ))}
         </div>
         <div className="text-center mt-12">
             <Button asChild>
