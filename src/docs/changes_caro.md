@@ -16,3 +16,11 @@
 -"iniciar sesión" tiene un sub menú con links directo a este mismo y el "registrarse"
 -se arregló también un error (se consulto ahora con los que están en la reunión) en la sección -calendario siembra toda la tarjeta era clickeable y ya se arregló solo las temporadas quedaron clickeables
 
+#### se hicieron los siguientes cambios #### 08/10
+-se crearon carpetas para backend
+-se instalo sequelize (orm)
+
+#### se hicieron los siguientes cambios #### 09/10
+-se elimina sequelize (orm) y todos sus componentes que puedan afectar el proyecto (después de búqueda se vió que no era necesario para conectar postgresql con express )
+-se deja carpeta .env para agregar variables de entorno
+-se crea la estructura backend

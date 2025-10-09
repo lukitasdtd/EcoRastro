@@ -1,12 +1,12 @@
-// Rutas para el recurso de mascotas
 const express = require('express');
 const router = express.Router();
 const petController = require('../controllers/petController');
 
-// Ejemplo: POST /api/mascotas/reportar
-// router.post('/reportar', petController.reportPet);
-
-// Ejemplo: GET /api/mascotas
-// router.get('/', petController.getReportedPets);
+// Rutas CRUD para Mascotas
+router.post('/', petController.createPet);
+router.get('/', petController.getPets);
+router.get('/:id', petController.getPetById);
+router.put('/:id', petController.updatePet);
+router.delete('/:id', petController.deletePet);
 
 module.exports = router;
