@@ -13,16 +13,17 @@ import { ImageUploader } from "@/components/image-uploader";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { PawPrint } from "lucide-react";
+import { chileanRegions } from "@/lib/chile-locations";
 
 const mascotaSchema = z.object({
   nombre: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }).max(50, { message: "El nombre no debe exceder los 50 caracteres." }),
-  tipo: z.enum(["perro", "gato", "otro"], { required_error: "Por favor selecciona un tipo de mascota." }),
+  tipo: z.enum(["perro", "gato"], { required_error: "Por favor selecciona un tipo de mascota." }),
   raza: z.string().min(2, { message: "La raza debe tener al menos 2 caracteres." }).max(50, { message: "La raza no debe exceder los 50 caracteres." }),
   color: z.string().min(3, { message: "El color debe tener al menos 3 caracteres." }).max(30, { message: "El color no debe exceder los 30 caracteres." }),
+  direccion: z.string().min(5, { message: "La dirección debe tener al menos 5 caracteres." }),
+  region: z.string({ required_error: "Por favor selecciona una región." }),
+  comuna: z.string({ required_error: "Por favor selecciona una comuna." }),
   descripcion: z.string().max(500, { message: "La descripción no debe exceder los 500 caracteres." }).optional(),
-  ultima_ubicacion: z.string().min(5, { message: "La ubicación debe tener al menos 5 caracteres." }),
-  lat: z.number(),
-  lng: z.number(),
   fotos: z.array(z.string()).optional(),
 });
 
@@ -30,6 +31,7 @@ export function ReportarMascotaForm() {
   const { toast } = useToast();
   const [imageUploads, setImageUploads] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [communes, setCommunes] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof mascotaSchema>>({
     resolver: zodResolver(mascotaSchema),
@@ -37,22 +39,24 @@ export function ReportarMascotaForm() {
       nombre: "",
       raza: "",
       color: "",
+      direccion: "",
       descripcion: "",
-      ultima_ubicacion: "",
       fotos: [],
     },
   });
+
+  const handleRegionChange = (regionName: string) => {
+    const region = chileanRegions.find(r => r.name === regionName);
+    setCommunes(region ? region.communes : []);
+    form.setValue('comuna', ""); // Reset commune value when region changes
+  };
 
   async function onSubmit(values: z.infer<typeof mascotaSchema>) {
     setIsSubmitting(true);
     console.log("Formulario enviado:", { ...values, fotos: imageUploads });
     
     try {
-      // **INICIO: Lógica de CREATE**
-      // Aquí es donde añadiríamos la lógica para guardar en Firestore
-      // Por ahora, solo mostraremos un mensaje de éxito simulado.
       console.log("Datos listos para enviar a Firestore:", values);
-      // **FIN: Lógica de CREATE**
 
       toast({
         title: "¡Reporte enviado con éxito!",
@@ -62,6 +66,7 @@ export function ReportarMascotaForm() {
 
       form.reset();
       setImageUploads([]);
+      setCommunes([]);
 
     } catch (error) {
       console.error("Error al enviar el reporte:", error);
@@ -120,7 +125,6 @@ export function ReportarMascotaForm() {
                       <SelectContent>
                         <SelectItem value="perro">Perro</SelectItem>
                         <SelectItem value="gato">Gato</SelectItem>
-                        <SelectItem value="otro">Otro</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -159,6 +163,70 @@ export function ReportarMascotaForm() {
               />
             </div>
 
+            <div className="space-y-6 rounded-md border p-6">
+                <h3 className="font-semibold">Ubicación de la mascota</h3>
+                 <FormField
+                    control={form.control}
+                    name="direccion"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Dirección</FormLabel>
+                        <FormControl>
+                        <Input placeholder="Ej: Av. Siempre Viva 123" {...field} />
+                        </FormControl>
+                        <FormDescription>Ingresa la calle y número donde fue vista por última vez.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                    control={form.control}
+                    name="region"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Región</FormLabel>
+                        <Select onValueChange={(value) => { field.onChange(value); handleRegionChange(value); }} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una región" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {chileanRegions.map(region => (
+                                <SelectItem key={region.name} value={region.name}>{region.name}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={form.control}
+                    name="comuna"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Comuna</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value} disabled={communes.length === 0}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una comuna" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {communes.map(commune => (
+                                <SelectItem key={commune} value={commune}>{commune}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                </div>
+            </div>
+
             <FormField
               control={form.control}
               name="descripcion"
@@ -185,23 +253,6 @@ export function ReportarMascotaForm() {
                 value={imageUploads} 
                 onChange={setImageUploads} 
                 disabled={isSubmitting}
-              />
-            </div>
-
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="ultima_ubicacion"
-                render={({ field }) => (
-                  <FormItem className="mt-4">
-                    <FormLabel>Describe la ubicación</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ej: Cerca del Parque Forestal, Santiago" {...field} />
-                    </FormControl>
-                    <FormDescription>Proporciona una dirección o punto de referencia.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
               />
             </div>
 

@@ -21,9 +21,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from '@/hooks/use-toast';
 import { LoaderCircle, Upload, Trash2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { chileanRegions } from "@/lib/chile-locations";
 
 // Setup de Firebase Storage
 const storage = getStorage(app);
@@ -42,6 +44,9 @@ const phoneRegex = new RegExp(
 // Esquema de validación con Zod
 const gardenSchema = z.object({
   gardenName: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
+  address: z.string().min(5, { message: "La dirección debe tener al menos 5 caracteres." }),
+  region: z.string({ required_error: "Por favor selecciona una región." }),
+  commune: z.string({ required_error: "Por favor selecciona una comuna." }),
   lat: z.number({ required_error: "Debes seleccionar una ubicación en el mapa."}),
   lng: z.number({ required_error: "Debes seleccionar una ubicación en el mapa."}),
   surface: z.preprocess(
@@ -84,12 +89,14 @@ export function FormularioHuerta() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filesToUpload, setFilesToUpload] = useState<FileUpload[]>([]);
+  const [communes, setCommunes] = useState<string[]>([]);
 
   const form = useForm<GardenFormValues>({
     resolver: zodResolver(gardenSchema),
     mode: 'onChange',
     defaultValues: {
       gardenName: '',
+      address: '',
       surface: undefined,
       description: '',
       crops: {
@@ -109,6 +116,12 @@ export function FormularioHuerta() {
       comments: true,
     },
   });
+
+  const handleRegionChange = (regionName: string) => {
+    const region = chileanRegions.find(r => r.name === regionName);
+    setCommunes(region ? region.communes : []);
+    form.setValue('commune', "");
+  };
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
     if (rejectedFiles.length > 0) {
@@ -166,7 +179,6 @@ export function FormularioHuerta() {
 
   const startUpload = useCallback(async (fileUpload: FileUpload) => {
     const { file, id } = fileUpload;
-    // ... (Image compression logic would go here if needed)
     const storageRef = ref(storage, `garden-photos/${Date.now()}-${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
     
@@ -225,6 +237,7 @@ export function FormularioHuerta() {
         });
         form.reset();
         setFilesToUpload([]);
+        setCommunes([]);
     } catch(error: any) {
         toast({ variant: 'destructive', title: "Publicación fallida", description: error.message });
     } finally {
@@ -238,46 +251,92 @@ export function FormularioHuerta() {
 
   return (
     <FormProvider {...form}>
+      <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
           <CardHeader><CardTitle>Datos principales</CardTitle></CardHeader>
           <CardContent className="space-y-6">
             <FormField control={form.control} name="gardenName" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la huerta</FormLabel> <FormControl><Input placeholder="Ej: La huerta de María" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+            
+            <div className="space-y-6 rounded-md border p-6">
+                <h3 className="font-semibold">Ubicación de la huerta</h3>
+                 <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Dirección</FormLabel>
+                        <FormControl>
+                        <Input placeholder="Ej: Av. Siempre Viva 123" {...field} />
+                        </FormControl>
+                        <FormDescription>Ingresa la calle y número de la huerta.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                    control={form.control}
+                    name="region"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Región</FormLabel>
+                        <Select onValueChange={(value) => { field.onChange(value); handleRegionChange(value); }} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una región" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {chileanRegions.map(region => (
+                                <SelectItem key={region.name} value={region.name}>{region.name}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={form.control}
+                    name="commune"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Comuna</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value} disabled={communes.length === 0}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una comuna" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {communes.map(commune => (
+                                <SelectItem key={commune} value={commune}>{commune}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                </div>
+            </div>
+
             <div>
               <FormMessage>{form.formState.errors.lat?.message || form.formState.errors.lng?.message}</FormMessage>
             </div>
              <FormField control={form.control} name="surface" render={({ field }) => ( <FormItem> <FormLabel>Superficie aproximada (m²)</FormLabel> <FormControl><Input type="number" placeholder="Ej: 50" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
-        </Card>
 
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
             <CardHeader><CardTitle>Descripción</CardTitle></CardHeader>
             <CardContent>
                 <FormField control={form.control} name="description" render={({ field }) => ( <FormItem> <FormLabel>Descripción de la huerta</FormLabel> <FormControl><Textarea placeholder="Describe tu huerta, qué la hace especial, etc." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             </CardContent>
-        </Card>
 
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
             <CardHeader><CardTitle>Cultivos y Prácticas</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-                {['tomatoes', 'lettuces', 'herbs', 'compostable', 'efficientWatering', 'noPesticides'].map(cropName => (
-                    <FormField
-                        key={cropName}
-                        control={form.control}
-                        name={`crops.${cropName}` as any}
-                        render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                <FormLabel className="font-normal">{ {tomatoes: 'Tomates', lettuces: 'Lechugas', herbs: 'Hierbas', compostable: 'Compostable', efficientWatering: 'Riego Eficiente', noPesticides: 'Sin pesticidas químicos'}[cropName] }</FormLabel>
-                            </FormItem>
-                        )}
-                    />
-                ))}
-                 <FormField control={form.control} name="crops.other" render={({ field }) => ( <FormItem className="col-span-2"> <FormLabel>Otros</FormLabel> <FormControl><Input placeholder="Ej: Papas, zanahorias..." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                 <FormField control={form.control} name="crops.other" render={({ field }) => ( <FormItem className="col-span-2"> <FormLabel>Describe practicas internas</FormLabel> <FormControl><Textarea placeholder="Ej: Tipos de siembra, usan compostables..." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             </CardContent>
-        </Card>
 
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
           <CardHeader><CardTitle>Contacto</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField control={form.control} name="nombreContacto" render={({ field }) => ( <FormItem> <FormLabel>Nombre de contacto</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
@@ -297,9 +356,7 @@ export function FormularioHuerta() {
                 </FormItem>
             )}/>
           </CardContent>
-        </Card>
 
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
           <CardHeader>
             <CardTitle>Fotos</CardTitle>
             <CardDescription>Arrastra tus fotos aquí o haz clic para seleccionarlas (hasta 5, máx 5MB c/u).</CardDescription>
@@ -328,7 +385,6 @@ export function FormularioHuerta() {
                 </div>
             )}
           </CardContent>
-        </Card>
         
         <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
           <CardFooter className="flex justify-end gap-4">
@@ -337,6 +393,7 @@ export function FormularioHuerta() {
           </CardFooter>
         </Card>
       </form>
+      </Card>
     </FormProvider>
   );
 }
@@ -361,14 +418,12 @@ const MaskedInput = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps
     if (mask && name) {
       const handleAccept = () => {
         if (getValues(name) !== mask.value) {
-          // Fix: Cast name as any para evitar error de TypeScript
           setValue(name as any, mask.value, { shouldValidate: true, shouldDirty: true });
         }
       };
       
       mask.on('accept', handleAccept);
       
-      // Cleanup del event listener
       return () => {
         mask.off('accept', handleAccept);
       };
