@@ -3,7 +3,7 @@ const router = express.Router();
 const petController = require('../controllers/petController');
 const { petValidationRules, validate, basicAuth } = require('../middlewares');
 
-// Rutas CRUD para Mascotas
+// Rutas CRUD para Mascotas (2)
 router.post('/', petValidationRules(), validate, petController.createPet);
 router.get('/', petController.getPets);
 router.get('/:id', petController.getPetById);

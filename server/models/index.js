@@ -1,11 +1,12 @@
-//configuración de modelos
+//Exporta un solo objeto que contiene todos los modelos que se acaban de importar, así se evita tener que importar cada modelo por separado en los controladores.
+
 const User = require('./user');
 const Pet = require('./pet');
 const Garden = require('./garden');
 
-//exportación de modelos
 module.exports = {
   User,
   Pet,
   Garden,
 };
+

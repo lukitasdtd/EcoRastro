@@ -1,11 +1,12 @@
 const pool = require('../utils/db');
 
-// Crear una nueva mascota
+// Crear una nueva mascota. Crea una fila nueva en la tabla pets con estos valores para name,age,adopted. RETURNING * devuelve la fila completa que acaba de crear, * significa todas las columnas, incluyendo el id que genera
+
 exports.createPet = async (req, res) => {
-  try {
+  try { //(3)
     const { name, age, adopted } = req.body;
     const newPet = await pool.query(
-      'INSERT INTO "pets" (name, age, adopted) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO "pets" (name, age, adopted) VALUES ($1, $2, $3) RETURNING *', //(2)
       [name, age, adopted]
     );
     res.status(201).json(newPet.rows[0]);

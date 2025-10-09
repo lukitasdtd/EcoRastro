@@ -7,6 +7,12 @@ class Garden {
     if (!name) {
       throw new Error('El nombre es obligatorio.');
     }
+    if (!location) {
+      throw new Error('Ingresa una ubicación.');
+    }
+    if (!plants) {
+      throw new Error('Debes rellenar este campo.');
+    }
 
     // Tipos de datos
     this.name = String(name);
