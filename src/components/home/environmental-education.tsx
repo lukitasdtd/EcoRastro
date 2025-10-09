@@ -32,10 +32,12 @@ export function EnvironmentalEducation() {
       <div className="container mx-auto px-4">
         <Card className="p-8 md:p-12 rounded-2xl shadow-lg border">
           <div className="text-center mb-12">
-            <h2 id="education-title" className="text-3xl md:text-4xl font-bold tracking-tight">
+            <h2 id="education-title" className="text-3xl md:text-4xl font-bold tracking-tight group-hover:text-primary transition-colors">
+                <Link href="/educacion" className='hover:text-green-600 hover:underline'> 
                 Aprende y Actúa: Educación Ambiental
+                </Link>
             </h2>
-            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
+            <p className="text-lg text-gray-600 mb-8">
                 Fomentamos el respeto por la vida. Contenidos claros y visuales para un futuro sostenible.
             </p>
           </div>
