@@ -251,8 +251,8 @@ export function FormularioHuerta() {
 
   return (
     <FormProvider {...form}>
+      <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
           <CardHeader><CardTitle className="mb-2">Datos principales</CardTitle></CardHeader>
           <CardContent className="space-y-6">
             <FormField control={form.control} name="gardenName" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la huerta</FormLabel> <FormControl><Textarea placeholder="Ej: La huerta de María" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
@@ -326,17 +326,13 @@ export function FormularioHuerta() {
             </div>
              <FormField control={form.control} name="surface" render={({ field }) => ( <FormItem> <FormLabel>Superficie aproximada (m²)</FormLabel> <FormControl><Input type="number" placeholder="Ej: 50" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
-        </Card>
 
         <div className="space-y-8">
-          <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
               <CardHeader><CardTitle className="mb-2">Descripción</CardTitle></CardHeader>
               <CardContent>
                   <FormField control={form.control} name="description" render={({ field }) => ( <FormItem> <FormLabel>Descripción de la huerta</FormLabel> <FormControl><Textarea placeholder="Describe tu huerta, qué la hace especial, etc." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
               </CardContent>
-          </Card>
 
-          <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
               <CardHeader><CardTitle className="mb-2">Cultivos y Prácticas</CardTitle></CardHeader>
               <CardContent className="grid grid-cols-2 gap-4">
                   {['tomatoes', 'lettuces', 'herbs', 'compostable', 'efficientWatering', 'noPesticides'].map(cropName => (
@@ -354,10 +350,8 @@ export function FormularioHuerta() {
                   ))}
                    <FormField control={form.control} name="crops.other" render={({ field }) => ( <FormItem className="col-span-2"> <FormLabel>Otros</FormLabel> <FormControl><Textarea placeholder="Ej: Papas, zanahorias..." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
               </CardContent>
-          </Card>
         </div>
 
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
           <CardHeader><CardTitle className="mb-2">Contacto</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField control={form.control} name="nombreContacto" render={({ field }) => ( <FormItem> <FormLabel>Nombre de contacto</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
@@ -368,7 +362,6 @@ export function FormularioHuerta() {
                   <FormLabel>Medio de contacto preferido</FormLabel>
                   <FormControl>
                     <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
-                      <FormItem className="flex items-center space-x-3 space-y-0"><FormControl><RadioGroupItem value="telefono" /></FormControl><FormLabel className="font-normal">Teléfono</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0"><FormControl><RadioGroupItem value="whatsapp" /></FormControl><FormLabel className="font-normal">WhatsApp</FormLabel></FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0"><FormControl><RadioGroupItem value="correo" /></FormControl><FormLabel className="font-normal">Correo</FormLabel></FormItem>
                     </RadioGroup>
@@ -377,9 +370,7 @@ export function FormularioHuerta() {
                 </FormItem>
             )}/>
           </CardContent>
-        </Card>
 
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
           <CardHeader>
             <CardTitle className="mb-2">Fotos</CardTitle>
             <CardDescription>Arrastra tus fotos aquí o haz clic para seleccionarlas (hasta 5, máx 5MB c/u).</CardDescription>
@@ -408,16 +399,14 @@ export function FormularioHuerta() {
                 </div>
             )}
           </CardContent>
-        </Card>
         
-        <Card className="max-w-3xl mx-auto shadow-md border rounded-2xl">
-            <CardContent className="pt-6">
+        <CardContent className="pt-6">
                 <Button type="submit" disabled={isPublishDisabled} className="w-full font-bold py-6 text-lg">
                     {isSubmitting || isUploading ? <><LoaderCircle className="animate-spin mr-2" /> Publicando...</> : 'Publicar Huerta'}
                 </Button>
             </CardContent>
-        </Card>
       </form>
+      </Card>
     </FormProvider>
   );
 }
