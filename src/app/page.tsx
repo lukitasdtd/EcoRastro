@@ -8,6 +8,7 @@ import { MapFeatures } from '@/components/home/map-features';
 import { PlantingCalendar } from '@/components/home/planting-calendar';
 import { EnvironmentalEducation } from '@/components/home/environmental-education';
 import { HomeFooter } from '@/components/home/home-footer';
+import { Card } from '@/components/ui/card';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'hero');
@@ -53,10 +54,19 @@ export default function Home() {
       <PlantingCalendar />
 
       {/* Sección Post comuntarios */}
-      <section className="py-16 bg-white">
+      <section className="w-full bg-background py-16 lg:py-24"  aria-labelledby="post-title">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Historias que Conectan: Posteos Comunitarios</h2>
-          <p className="text-lg text-gray-600 mb-8">comparte y conecta con demás personas, cada historia cuenta</p>
+          <Card className='p-8 md:p-12 rounded-2xl shadow-lg border'> 
+          <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight group-hover:text-primary transition-colors">
+            <Link href='/post-comunitarios' className='hover:text-green-600 hover:underline'> 
+            Historias que Conectan: Posteos Comunitarios
+            </Link>
+          </h2>
+          <p className="text-lg text-gray-600 mb-8">
+           Únete y comparte con la comunidad, cada historia hace la diferencia.
+          </p>
+          </div>
           
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
@@ -82,36 +92,7 @@ export default function Home() {
                 </div>
             </div>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-1 text-center">
-            <div className="flex flex-col items-center justify-center">
-              <Heart className="w-10 h-10 text-green-600 mb-2" />
-              <h4 className="text-xl font-semibold text-gray-800 mb-2">
-                <Link href="/post-comunitarios" className="hover:text-green-600 hover:underline">
-                  Adopciones Exitosas
-                </Link>
-              </h4>
-              <p className="text-gray-600">“Historias inspiradoras de hogares encontrados.”</p>
-            </div>
-            <div className="flex flex-col items-center justify-center">
-              <ShieldCheck className="w-10 h-10 text-green-600 mb-2" />
-              <h4 className="text-xl font-semibold text-gray-800 mb-2">
-                <Link href="/post-comunitarios" className="hover:text-green-600 hover:underline">
-                  Animales Rescatados
-                </Link>
-              </h4>
-              <p className="text-gray-600">“Testimonios de ayuda y recuperación.”</p>
-            </div>
-            <div className="flex flex-col items-center justify-center">
-              <Sprout className="w-10 h-10 text-green-600 mb-2" />
-              <h4 className="text-xl font-semibold text-gray-800 mb-2">
-                <Link href="/post-comunitarios" className="hover:text-green-600 hover:underline">
-                  Huertos Compartidos
-                </Link>
-              </h4>
-              <p className="text-gray-600">“Consejos y logros de las comunidades.”</p>
-            </div>
-          </div>
+          </Card>
         </div>
       </section>
 

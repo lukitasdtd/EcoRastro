@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Clock, PawPrint, Leaf } from 'lucide-react';
 import Link from 'next/link';
 import { allMapPoints } from '@/lib/data';
+import { Card } from '../ui/card';
 
 export function MapFeatures() {
 
@@ -42,11 +43,14 @@ export function MapFeatures() {
   return (
     <section className="w-full bg-background py-16 lg:py-24" aria-labelledby="map-title">
         <div className="container mx-auto px-4">
+          <Card className='p-8 md:p-12 rounded-2xl shadow-lg border'> 
           <div className="text-center mb-12 lg:mb-16">
             <h2 id="map-title" className="text-3xl md:text-4xl font-bold tracking-tight group-hover:text-primary transition-colors">
+              <Link href="/mapa" className='hover:text-green-600 hover:underline'>
               Mapa Interactivo: Encuentra y Ayuda
+              </Link>
             </h2>
-            <p className="max-w-2xl mx-auto text-lg text-foreground/60 mt-2">
+            <p className="text-lg text-gray-600 mb-8">
               Explora los últimos reportes, conecta con tu comunidad y sé parte de la solución.
             </p>
           </div>
@@ -72,6 +76,7 @@ export function MapFeatures() {
               ))}
             </div>
           </div>
+         </Card>
         </div>
     </section>
   );
