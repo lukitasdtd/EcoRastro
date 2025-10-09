@@ -1,1 +1,1 @@
-// Modelo de Sequelize para Mascotas
+// TODO: Aquí se definirán los modelos manuales cuando se integre PostgreSQL.

@@ -1,1 +1,1 @@
-// Modelo de Sequelize para Huertas
+// TODO: Aquí se definirán los modelos manuales cuando se integre PostgreSQL.
