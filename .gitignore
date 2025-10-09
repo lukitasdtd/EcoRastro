@@ -26,3 +26,19 @@ yarn-error.log*
 
 # local env files
 .env*.local
+/.vs/Ecorastro-v1/CopilotIndices/17.14.1147.5054/SemanticSymbols.db
+/.vs/Ecorastro-v1/CopilotIndices/17.14.1147.5054/SemanticSymbols.db-shm
+/.vs/Ecorastro-v1/CopilotIndices/17.14.1147.5054/SemanticSymbols.db-wal
+/.vs/Ecorastro-v1/FileContentIndex
+/.vs/Ecorastro-v1/FileContentIndex/466d8adc-1fb0-4082-9ade-6ab0c190f6c4.vsidx
+/.vs/Ecorastro-v1/FileContentIndex/6d6c5ec5-dc25-4dc5-b6b6-bf3dcba27540.vsidx
+/.vs/Ecorastro-v1/FileContentIndex/719c05c9-9f7c-44bf-9dfc-71de8cd59d19.vsidx
+/.vs/Ecorastro-v1/FileContentIndex/b406b16c-da09-44ac-9641-761b23e8a514.vsidx
+/.vs/Ecorastro-v1/FileContentIndex/f1bf7122-3937-4c15-968c-682d86af4dfa.vsidx
+/.vs/Ecorastro-v1/v17
+/.vs/Ecorastro-v1/v17/.wsuo
+/.vs/Ecorastro-v1/v17/DocumentLayout.backup.json
+/.vs/Ecorastro-v1/v17/DocumentLayout.json
+/.vs/Ecorastro-v1/v17/workspaceFileList.bin
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
