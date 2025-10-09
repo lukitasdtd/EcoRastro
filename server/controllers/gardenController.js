@@ -1,64 +1,82 @@
-const { Garden } = require('../models');
+const pool = require('../utils/db');
 
-// Datos en memoria (simulando una base de datos)
-let gardens = [];
-let nextId = 1;
-
-exports.createGarden = (req, res) => {
+// Crear una nueva huerta
+exports.createGarden = async (req, res) => {
   try {
     const { name, size } = req.body;
-    const newGarden = new Garden(nextId++, name, size);
-    gardens.push(newGarden);
-    res.status(201).json(newGarden);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+    const newGarden = await pool.query(
+      'INSERT INTO "huertas" (name, size) VALUES ($1, $2) RETURNING *',
+      [name, size]
+    );
+    res.status(201).json(newGarden.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };
 
-exports.getGardens = (req, res) => {
+// Obtener todas las huertas
+exports.getGardens = async (req, res) => {
   try {
-    res.status(200).json(gardens);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+    const allGardens = await pool.query('SELECT * FROM "huertas"');
+    res.json(allGardens.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };
 
-exports.getGardenById = (req, res) => {
+// Obtener una huerta por ID
+exports.getGardenById = async (req, res) => {
   try {
-    const garden = gardens.find(g => g.id === parseInt(req.params.id));
-    if (!garden) {
-      return res.status(404).json({ message: 'Jardín no encontrado.' });
+    const { id } = req.params;
+    const garden = await pool.query('SELECT * FROM "huertas" WHERE id = $1', [id]);
+
+    if (garden.rows.length === 0) {
+      return res.status(404).json({ message: "Huerta no encontrada." });
     }
-    res.status(200).json(garden);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+
+    res.json(garden.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };
 
-exports.updateGarden = (req, res) => {
+// Actualizar una huerta
+exports.updateGarden = async (req, res) => {
   try {
+    const { id } = req.params;
     const { name, size } = req.body;
-    const gardenIndex = gardens.findIndex(g => g.id === parseInt(req.params.id));
-    if (gardenIndex === -1) {
-      return res.status(404).json({ message: 'Jardín no encontrado.' });
+    const updateGarden = await pool.query(
+      'UPDATE "huertas" SET name = $1, size = $2 WHERE id = $3 RETURNING *',
+      [name, size, id]
+    );
+
+    if (updateGarden.rows.length === 0) {
+      return res.status(404).json({ message: "Huerta no encontrada." });
     }
-    const updatedGarden = { ...gardens[gardenIndex], name: name || gardens[gardenIndex].name, size: size || gardens[gardenIndex].size };
-    gardens[gardenIndex] = updatedGarden;
-    res.status(200).json(updatedGarden);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+
+    res.json(updateGarden.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };
 
-exports.deleteGarden = (req, res) => {
+// Eliminar una huerta
+exports.deleteGarden = async (req, res) => {
   try {
-    const gardenIndex = gardens.findIndex(g => g.id === parseInt(req.params.id));
-    if (gardenIndex === -1) {
-      return res.status(404).json({ message: 'Jardín no encontrado.' });
+    const { id } = req.params;
+    const deleteGarden = await pool.query('DELETE FROM "huertas" WHERE id = $1 RETURNING *', [id]);
+
+    if (deleteGarden.rows.length === 0) {
+        return res.status(404).json({ message: "Huerta no encontrada." });
     }
-    gardens.splice(gardenIndex, 1);
-    res.status(200).json({ message: 'Jardín eliminado correctamente.' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+
+    res.json({ message: "Huerta eliminada correctamente." });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };

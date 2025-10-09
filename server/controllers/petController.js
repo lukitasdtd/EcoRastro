@@ -1,67 +1,82 @@
-const { Pet } = require('../models');
+const pool = require('../utils/db');
 
-// Datos en memoria (simulando una base de datos)
-let pets = [];
-let nextId = 1;
-
-exports.createPet = (req, res) => {
+// Crear una nueva mascota
+exports.createPet = async (req, res) => {
   try {
     const { name, age, adopted } = req.body;
-    if (!name) {
-      return res.status(400).json({ message: 'El nombre es obligatorio.' });
+    const newPet = await pool.query(
+      'INSERT INTO "pets" (name, age, adopted) VALUES ($1, $2, $3) RETURNING *',
+      [name, age, adopted]
+    );
+    res.status(201).json(newPet.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
+  }
+};
+
+// Obtener todas las mascotas
+exports.getPets = async (req, res) => {
+  try {
+    const allPets = await pool.query('SELECT * FROM "pets"');
+    res.json(allPets.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
+  }
+};
+
+// Obtener una mascota por ID
+exports.getPetById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pet = await pool.query('SELECT * FROM "pets" WHERE id = $1', [id]);
+
+    if (pet.rows.length === 0) {
+      return res.status(404).json({ message: "Mascota no encontrada." });
     }
-    const newPet = new Pet(nextId++, name, age, adopted);
-    pets.push(newPet);
-    res.status(201).json(newPet);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+
+    res.json(pet.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };
 
-exports.getPets = (req, res) => {
+// Actualizar una mascota
+exports.updatePet = async (req, res) => {
   try {
-    res.status(200).json(pets);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
-  }
-};
-
-exports.getPetById = (req, res) => {
-  try {
-    const pet = pets.find(p => p.id === parseInt(req.params.id));
-    if (!pet) {
-      return res.status(404).json({ message: 'Mascota no encontrada.' });
-    }
-    res.status(200).json(pet);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
-  }
-};
-
-exports.updatePet = (req, res) => {
-  try {
+    const { id } = req.params;
     const { name, age, adopted } = req.body;
-    const petIndex = pets.findIndex(p => p.id === parseInt(req.params.id));
-    if (petIndex === -1) {
-      return res.status(404).json({ message: 'Mascota no encontrada.' });
+    const updatePet = await pool.query(
+      'UPDATE "pets" SET name = $1, age = $2, adopted = $3 WHERE id = $4 RETURNING *',
+      [name, age, adopted, id]
+    );
+
+    if (updatePet.rows.length === 0) {
+      return res.status(404).json({ message: "Mascota no encontrada." });
     }
-    const updatedPet = { ...pets[petIndex], name: name || pets[petIndex].name, age: age !== undefined ? age : pets[petIndex].age, adopted: adopted !== undefined ? adopted : pets[petIndex].adopted };
-    pets[petIndex] = updatedPet;
-    res.status(200).json(updatedPet);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+
+    res.json(updatePet.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };
 
-exports.deletePet = (req, res) => {
+// Eliminar una mascota
+exports.deletePet = async (req, res) => {
   try {
-    const petIndex = pets.findIndex(p => p.id === parseInt(req.params.id));
-    if (petIndex === -1) {
-      return res.status(404).json({ message: 'Mascota no encontrada.' });
+    const { id } = req.params;
+    const deletePet = await pool.query('DELETE FROM "pets" WHERE id = $1 RETURNING *', [id]);
+
+    if (deletePet.rows.length === 0) {
+        return res.status(404).json({ message: "Mascota no encontrada." });
     }
-    pets.splice(petIndex, 1);
-    res.status(200).json({ message: 'Mascota eliminada correctamente.' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+
+    res.json({ message: "Mascota eliminada correctamente." });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor");
   }
 };
