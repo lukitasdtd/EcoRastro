@@ -11,7 +11,7 @@ exports.createUser = async (req, res) => {
     res.status(201).json(newUser.rows[0]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Error en el servidor");
+    res.status(500).send(err.message);
   }
 };
 
@@ -22,7 +22,7 @@ exports.getUsers = async (req, res) => {
     res.json(allUsers.rows);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Error en el servidor");
+    res.status(500).send(err.message);
   }
 };
 
@@ -39,7 +39,7 @@ exports.getUserById = async (req, res) => {
     res.json(user.rows[0]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Error en el servidor");
+    res.status(500).send(err.message);
   }
 };
 
@@ -60,7 +60,7 @@ exports.updateUser = async (req, res) => {
     res.json(updateUser.rows[0]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Error en el servidor");
+    res.status(500).send(err.message);
   }
 };
 
@@ -77,6 +77,6 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: "Usuario eliminado correctamente." });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Error en el servidor");
+    res.status(500).send(err.message);
   }
 };
