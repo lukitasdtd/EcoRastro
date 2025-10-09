@@ -6,11 +6,8 @@ let nextId = 1;
 
 exports.createGarden = (req, res) => {
   try {
-    const { name, location, plants } = req.body;
-    if (!name) {
-      return res.status(400).json({ message: 'El nombre es obligatorio.' });
-    }
-    const newGarden = new Garden(nextId++, name, location, plants);
+    const { name, size } = req.body;
+    const newGarden = new Garden(nextId++, name, size);
     gardens.push(newGarden);
     res.status(201).json(newGarden);
   } catch (error) {
@@ -40,12 +37,12 @@ exports.getGardenById = (req, res) => {
 
 exports.updateGarden = (req, res) => {
   try {
-    const { name, location, plants } = req.body;
+    const { name, size } = req.body;
     const gardenIndex = gardens.findIndex(g => g.id === parseInt(req.params.id));
     if (gardenIndex === -1) {
       return res.status(404).json({ message: 'Jardín no encontrado.' });
     }
-    const updatedGarden = { ...gardens[gardenIndex], name: name || gardens[gardenIndex].name, location: location || gardens[gardenIndex].location, plants: plants !== undefined ? plants : gardens[gardenIndex].plants };
+    const updatedGarden = { ...gardens[gardenIndex], name: name || gardens[gardenIndex].name, size: size || gardens[gardenIndex].size };
     gardens[gardenIndex] = updatedGarden;
     res.status(200).json(updatedGarden);
   } catch (error) {

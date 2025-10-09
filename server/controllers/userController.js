@@ -7,13 +7,6 @@ let nextId = 1;
 exports.createUser = (req, res) => {
   try {
     const { name, email } = req.body;
-    if (!name || !email) {
-      return res.status(400).json({ message: 'El nombre y el email son obligatorios.' });
-    }
-    // Simulación de unicidad de email
-    if (users.some(user => user.email === email)) {
-        return res.status(400).json({ message: 'El email ya está en uso.' });
-    }
     const newUser = new User(nextId++, name, email);
     users.push(newUser);
     res.status(201).json(newUser);
@@ -48,10 +41,6 @@ exports.updateUser = (req, res) => {
     const userIndex = users.findIndex(u => u.id === parseInt(req.params.id));
     if (userIndex === -1) {
       return res.status(404).json({ message: 'Usuario no encontrado.' });
-    }
-    // Simulación de unicidad de email
-    if (email && users.some(user => user.email === email && user.id !== parseInt(req.params.id))) {
-        return res.status(400).json({ message: 'El email ya está en uso.' });
     }
     const updatedUser = { ...users[userIndex], name: name || users[userIndex].name, email: email || users[userIndex].email };
     users[userIndex] = updatedUser;

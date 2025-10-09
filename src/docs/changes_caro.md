@@ -24,3 +24,5 @@
 -se elimina sequelize (orm) y todos sus componentes que puedan afectar el proyecto (después de búqueda se vió que no era necesario para conectar postgresql con express )
 -se deja carpeta .env para agregar variables de entorno
 -se crea la estructura backend
+-se crean las rutas 
+-se termina crud
