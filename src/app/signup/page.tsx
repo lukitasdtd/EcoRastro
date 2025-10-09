@@ -42,52 +42,6 @@ export default function SignupPage() {
 
   const isFormValid = firstName && lastName && email && password && rutValue && isRutValid;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError('');
-
-    if (!isFormValid) {
-      setError('Por favor, completa todos los campos correctamente.');
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nombre: firstName,
-          apellido: lastName,
-          rut: rutValue,
-          correo: email,
-          psswd: password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al registrar el usuario');
-      }
-
-      // Mostrar notificación de éxito
-      toast({
-        title: "¡Registro exitoso!",
-        description: "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.",
-        variant: "success",
-      });
-
-      // Redirigir al login después de un breve retraso
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
-
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
       <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
