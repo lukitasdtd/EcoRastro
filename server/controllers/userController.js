@@ -1,2 +1,75 @@
-// TODO: Aquí se implementará la lógica del controlador cuando se integre PostgreSQL.
-// Lógica para el recurso de usuarios
+const { User } = require('../models');
+
+// Datos en memoria (simulando una base de datos)
+let users = [];
+let nextId = 1;
+
+exports.createUser = (req, res) => {
+  try {
+    const { name, email } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ message: 'El nombre y el email son obligatorios.' });
+    }
+    // Simulación de unicidad de email
+    if (users.some(user => user.email === email)) {
+        return res.status(400).json({ message: 'El email ya está en uso.' });
+    }
+    const newUser = new User(nextId++, name, email);
+    users.push(newUser);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+  }
+};
+
+exports.getUsers = (req, res) => {
+  try {
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+  }
+};
+
+exports.getUserById = (req, res) => {
+  try {
+    const user = users.find(u => u.id === parseInt(req.params.id));
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+  }
+};
+
+exports.updateUser = (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const userIndex = users.findIndex(u => u.id === parseInt(req.params.id));
+    if (userIndex === -1) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+    // Simulación de unicidad de email
+    if (email && users.some(user => user.email === email && user.id !== parseInt(req.params.id))) {
+        return res.status(400).json({ message: 'El email ya está en uso.' });
+    }
+    const updatedUser = { ...users[userIndex], name: name || users[userIndex].name, email: email || users[userIndex].email };
+    users[userIndex] = updatedUser;
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+  }
+};
+
+exports.deleteUser = (req, res) => {
+  try {
+    const userIndex = users.findIndex(u => u.id === parseInt(req.params.id));
+    if (userIndex === -1) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+    users.splice(userIndex, 1);
+    res.status(200).json({ message: 'Usuario eliminado correctamente.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
+  }
+};

@@ -1,12 +1,12 @@
-// Rutas para el recurso de usuarios
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-// Ejemplo: POST /api/usuarios
-// router.post('/', userController.createUser);
-
-// Ejemplo: GET /api/usuarios
-// router.get('/', userController.getUsers);
+// Rutas CRUD para Usuarios
+router.post('/', userController.createUser);
+router.get('/', userController.getUsers);
+router.get('/:id', userController.getUserById);
+router.put('/:id', userController.updateUser);
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

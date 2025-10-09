@@ -1,1 +1,21 @@
-// TODO: Aquí se definirán los modelos manuales cuando se integre PostgreSQL.
+class User {
+  constructor(id, name, email) {
+    // ID único
+    this.id = id; // En una implementación real, esto sería generado por la base de datos
+
+    // Validaciones básicas
+    if (!name) {
+      throw new Error('El nombre es obligatorio.');
+    }
+    if (!email) {
+      throw new Error('El email es obligatorio.');
+    }
+
+    // Tipos de datos
+    this.name = String(name);
+    this.email = String(email);
+    // En una implementación real, la unicidad del email se manejaría a nivel de base de datos.
+  }
+}
+
+module.exports = User;
