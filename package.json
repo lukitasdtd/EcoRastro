@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:server": "nodemon server/server.js",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
@@ -69,6 +70,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "genkit-cli": "^1.14.1",
+    "nodemon": "^3.1.10",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
