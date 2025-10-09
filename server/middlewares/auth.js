@@ -5,7 +5,7 @@ const basicAuth = (req, res, next) => {
     return res.status(401).json({ message: 'No autorizado: No se proporcionó token.' });
   }
 
-  // Ejemplo de token estático: "Bearer un-token-muy-seguro"
+  // Ejemplo de token estático
   const token = authHeader.split(' ')[1];
 
   if (token === 'un-token-muy-seguro') {

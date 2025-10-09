@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// Suponiendo que tienes un reportController
 // const reportController = require('../controllers/reportController'); 
 const { basicAuth } = require('../middlewares');
 
