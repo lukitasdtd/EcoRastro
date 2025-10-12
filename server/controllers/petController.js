@@ -1,23 +1,24 @@
 const pool = require('../utils/db');
 
-// Crear una nueva mascota. Crea una fila nueva en la tabla pets con estos valores para name,age,adopted. RETURNING * devuelve la fila completa que acaba de crear, * significa todas las columnas, incluyendo el id que genera
+// Datos en memoria (simulando una base de datos)
+let pets = [];
+let nextId = 1;
 
-exports.createPet = async (req, res) => {
-  try { //(3)
+exports.createPet = (req, res) => {
+  try {
     const { name, age, adopted } = req.body;
-    const newPet = await pool.query(
-      'INSERT INTO "pets" (name, age, adopted) VALUES ($1, $2, $3) RETURNING *', //(2)
-      [name, age, adopted]
-    );
-    res.status(201).json(newPet.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
+    if (!name) {
+      return res.status(400).json({ message: 'El nombre es obligatorio.' });
+    }
+    const newPet = new Pet(nextId++, name, age, adopted);
+    pets.push(newPet);
+    res.status(201).json(newPet);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 };
 
-// Obtener todas las mascotas
-exports.getPets = async (req, res) => {
+exports.getPets = (req, res) => {
   try {
     const allPets = await pool.query('SELECT * FROM "pets"');
     res.json(allPets.rows);

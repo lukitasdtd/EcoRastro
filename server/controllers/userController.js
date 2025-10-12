@@ -1,82 +1,64 @@
 const pool = require('../utils/db');
 
-// Crear un nuevo usuario
-exports.createUser = async (req, res) => {
+// Datos en memoria (simulando una base de datos)
+let users = [];
+let nextId = 1;
+
+exports.createUser = (req, res) => {
   try {
     const { name, email } = req.body;
-    const newUser = await pool.query(
-      'INSERT INTO "user" (name, email) VALUES ($1, $2) RETURNING *',
-      [name, email]
-    );
-    res.status(201).json(newUser.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send(err.message);
+    const newUser = new User(nextId++, name, email);
+    users.push(newUser);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 };
 
-// Obtener todos los usuarios
-exports.getUsers = async (req, res) => {
+exports.getUsers = (req, res) => {
   try {
-    const allUsers = await pool.query('SELECT * FROM "user"');
-    res.json(allUsers.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send(err.message);
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 };
 
-// Obtener un usuario por ID
-exports.getUserById = async (req, res) => {
+exports.getUserById = (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await pool.query('SELECT * FROM "user" WHERE id = $1', [id]);
-
-    if (user.rows.length === 0) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
+    const user = users.find(u => u.id === parseInt(req.params.id));
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
-
-    res.json(user.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send(err.message);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 };
 
-// Actualizar un usuario
-exports.updateUser = async (req, res) => {
+exports.updateUser = (req, res) => {
   try {
-    const { id } = req.params;
     const { name, email } = req.body;
-    const updateUser = await pool.query(
-      'UPDATE "user" SET name = $1, email = $2 WHERE id = $3 RETURNING *',
-      [name, email, id]
-    );
-
-    if (updateUser.rows.length === 0) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
+    const userIndex = users.findIndex(u => u.id === parseInt(req.params.id));
+    if (userIndex === -1) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
-
-    res.json(updateUser.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send(err.message);
+    const updatedUser = { ...users[userIndex], name: name || users[userIndex].name, email: email || users[userIndex].email };
+    users[userIndex] = updatedUser;
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 };
 
-// Eliminar un usuario
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = (req, res) => {
   try {
-    const { id } = req.params;
-    const deleteUser = await pool.query('DELETE FROM "user" WHERE id = $1 RETURNING *', [id]);
-
-    if (deleteUser.rows.length === 0) {
-        return res.status(404).json({ message: "Usuario no encontrado." });
+    const userIndex = users.findIndex(u => u.id === parseInt(req.params.id));
+    if (userIndex === -1) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
-
-    res.json({ message: "Usuario eliminado correctamente." });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send(err.message);
+    users.splice(userIndex, 1);
+    res.status(200).json({ message: 'Usuario eliminado correctamente.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 };
