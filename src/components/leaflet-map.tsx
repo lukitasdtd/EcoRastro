@@ -8,7 +8,14 @@ import { Button } from '@/components/ui/button';
 import { LocateFixed, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Map, Marker, CircleMarker } from 'leaflet';
-import type { MapPoint } from '@/lib/data';
+
+interface MapPoint {
+  id: number;
+  lat: number;
+  lng: number;
+  type: 'pet' | 'garden';
+  name: string;
+}
 
 interface LeafletMapProps {
   points: MapPoint[];
@@ -59,7 +66,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
 
                 points.forEach(point => {
                     const marker = L.marker([point.lat, point.lng]).addTo(map);
-                    marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
+                    marker.bindPopup(`<b>${point.name}</b>`);
                     markersRef.current.push(marker);
                 });
 
@@ -96,9 +103,20 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         const filteredPoints = points.filter(p => p.type === pointType);
 
         import('leaflet').then(L => {
+            const petIcon = L.icon({
+                iconUrl: '/map-icons/pin-yellow.svg',
+                iconSize: [32, 32],
+            });
+
+            const gardenIcon = L.icon({
+                iconUrl: '/map-icons/pin-green.svg',
+                iconSize: [32, 32],
+            });
+
             filteredPoints.forEach(point => {
-                const marker = L.marker([point.lat, point.lng]).addTo(map);
-                marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
+                const icon = point.type === 'pet' ? petIcon : gardenIcon;
+                const marker = L.marker([point.lat, point.lng], { icon }).addTo(map);
+                marker.bindPopup(`<b>${point.name}</b>`);
                 markersRef.current.push(marker);
             });
         });

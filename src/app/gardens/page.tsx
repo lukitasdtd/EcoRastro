@@ -1,13 +1,36 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { gardenPoints } from '@/lib/data';
 import GardenCard from '@/components/garden-card';
 import { GardenFinder } from '@/components/garden-finder';
+import type { MapPoint } from '@/lib/data';
 
 export default function GardensPage() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'garden1');
+  const [gardens, setGardens] = useState<MapPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGardens = async () => {
+      try {
+        const response = await fetch('/api/gardens');
+        if (response.ok) {
+          const data = await response.json();
+          setGardens(data);
+        }
+      } catch (error) {
+        console.error("Error fetching gardens:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGardens();
+  }, []);
 
   return (
     <div className="bg-gray-50">
@@ -15,7 +38,6 @@ export default function GardensPage() {
       <div className="relative h-64 md:h-80 w-full overflow-hidden">
         {heroImage && (
             <Image 
-                // CORRECCIÓN: Se utiliza `imageUrl` en lugar de `src` para que coincida con la estructura de datos.
                 src={heroImage.imageUrl}
                 alt="Huertas comunitarias"
                 fill
@@ -36,9 +58,15 @@ export default function GardensPage() {
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Huertas Destacadas</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {gardenPoints.map(garden => (
-              <GardenCard key={garden.title} garden={garden} />
-            ))}
+            {loading ? (
+              <p>Cargando huertas...</p>
+            ) : gardens.length > 0 ? (
+              gardens.map(garden => (
+                <GardenCard key={garden.title} garden={garden} />
+              ))
+            ) : (
+              <p>No se encontraron huertas.</p>
+            )}
           </div>
         </div>
       </div>

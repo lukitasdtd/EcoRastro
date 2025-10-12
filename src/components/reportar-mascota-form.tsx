@@ -11,9 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImageUploader } from "@/components/image-uploader"; 
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PawPrint } from "lucide-react";
 import { chileanRegions } from "@/lib/chile-locations";
+import Link from 'next/link';
 
 const mascotaSchema = z.object({
   nombre: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }).max(50, { message: "El nombre no debe exceder los 50 caracteres." }),
@@ -32,6 +33,17 @@ export function ReportarMascotaForm() {
   const [imageUploads, setImageUploads] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [communes, setCommunes] = useState<string[]>([]);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [showLoginMessage, setShowLoginMessage] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setAuthToken(token);
+    } else {
+      setShowLoginMessage(true);
+    }
+  }, []);
 
   const form = useForm<z.infer<typeof mascotaSchema>>({
     resolver: zodResolver(mascotaSchema),
@@ -52,11 +64,33 @@ export function ReportarMascotaForm() {
   };
 
   async function onSubmit(values: z.infer<typeof mascotaSchema>) {
+    if (!authToken) {
+        setShowLoginMessage(true);
+        return;
+    }
+
     setIsSubmitting(true);
-    console.log("Formulario enviado:", { ...values, fotos: imageUploads });
-    
+    const userEmail = localStorage.getItem('userEmail');
+    const finalValues = { ...values, fotos: imageUploads, userEmail };
+
     try {
-      console.log("Datos listos para enviar a Firestore:", values);
+      const response = await fetch('/api/pets/report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(finalValues),
+      });
+
+      if (!response.ok) {
+        console.error('Raw response error:', response);
+        throw new Error('Error en la respuesta del servidor');
+      }
+
+      console.log('Raw response success:', response);
+      const data = await response.json();
+      console.log('Parsed JSON data:', data);
 
       toast({
         title: "¡Reporte enviado con éxito!",
@@ -78,6 +112,22 @@ export function ReportarMascotaForm() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (showLoginMessage) {
+    return (
+        <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
+            <CardHeader>
+                <CardTitle>Acceso Restringido</CardTitle>
+                <CardDescription>Debes iniciar sesión para poder reportar una mascota.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Link href="/login">
+                    <Button className="w-full">Ir a Iniciar Sesión</Button>
+                </Link>
+            </CardContent>
+        </Card>
+    );
   }
 
   return (
@@ -256,7 +306,7 @@ export function ReportarMascotaForm() {
               />
             </div>
 
-            <Button type="submit" disabled={isSubmitting} className="w-full font-bold py-6 text-lg">
+            <Button type="submit" disabled={isSubmitting || !authToken} className="w-full font-bold py-6 text-lg">
               {isSubmitting ? "Enviando reporte..." : "Enviar Reporte"}
             </Button>
           </form>
