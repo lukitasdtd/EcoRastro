@@ -1,44 +1,34 @@
 'use client';
-
 import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import { useState, useCallback, useEffect } from 'react';
 import IMask from 'imask';
 import { useDropzone } from 'react-dropzone';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
-import { app } from '@/lib/firebase/config';
 import { useFormContext } from 'react-hook-form';
-
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from '@/hooks/use-toast';
 import { LoaderCircle, Upload, Trash2 } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
 import { chileanRegions } from "@/lib/chile-locations";
-
-// SConfiguración del almacenamiento de Firebase
-const storage = getStorage(app);
 
 // Regex para validar teléfono chileno
 const phoneRegex = new RegExp(
-  /^(\?56)?(\s?)(9)(\s?)[987654321]\d{7}$/
+  /^\+56\s9\s\d{4}\s\d{4}$/
 );
 
-// Esquema de validación con Zod
+// Esquema de validación con Zod (incluyendo plantCount temporalmente)
 const gardenSchema = z.object({
-  gardenName: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
-  address: z.string().min(5, { message: "La dirección debe tener al menos 5 caracteres." }),
+  name: z.string().min(1, "El nombre es obligatorio."),
+  location: z.string().min(1, "La ubicación es obligatoria."),
   region: z.string({ required_error: "Por favor selecciona una región." }),
   commune: z.string({ required_error: "Por favor selecciona una comuna." }),
   surface: z.preprocess(
@@ -58,48 +48,40 @@ const gardenSchema = z.object({
   nombreContacto: z.string().min(1, "El nombre de contacto es requerido."),
   telefono: z.string().regex(phoneRegex, "Número de teléfono inválido."),
   correo: z.union([z.literal(''), z.string().email("Correo electrónico inválido.")]).optional(),
-  medioPreferido: z.enum(["telefono", "whatsapp", "correo"], { required_error: "Debes seleccionar un medio de contacto." }),
+  medioPreferido: z.enum(["whatsapp", "correo"], { required_error: "Debes seleccionar un medio de contacto." }),
   photos: z.array(z.string()).optional(),
   visible: z.boolean().default(true),
   comments: z.boolean().default(true),
-  consentimiento: z.literal<boolean>(true, { errorMap: () => ({ message: "Debes aceptar las condiciones." }) }),
 });
 
 type GardenFormValues = z.infer<typeof gardenSchema>;
-
-interface FileUpload {
-  file: File;
-  id: string;
-  progress: number;
-  status: 'pending' | 'uploading' | 'success' | 'error';
-  source: UploadTask | null; 
-  preview: string;
-}
 
 export function FormularioHuerta() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [filesToUpload, setFilesToUpload] = useState<FileUpload[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [communes, setCommunes] = useState<string[]>([]);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [showLoginMessage, setShowLoginMessage] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setAuthToken(token);
+    } else {
+      setShowLoginMessage(true);
+    }
+  }, []);
 
   const form = useForm<GardenFormValues>({
     resolver: zodResolver(gardenSchema),
     mode: 'onChange',
     defaultValues: {
-      gardenName: '',
-      address: '',
-      surface: undefined,
+      name: '',
+      location: '',
+      surface: undefined, // Valor por defecto
       description: '',
-      crops: {
-        tomatoes: false,
-        lettuces: false,
-        herbs: false,
-        other: '',
-        compostable: false,
-        efficientWatering: false,
-        noPesticides: false,
-      },
       nombreContacto: "",
       telefono: "",
       correo: "",
@@ -109,47 +91,33 @@ export function FormularioHuerta() {
     },
   });
 
+  // Debugging useEffect
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      console.log("Form value changed:", value);
+      console.log("Form state:", form.formState);
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   const handleRegionChange = (regionName: string) => {
     const region = chileanRegions.find(r => r.name === regionName);
     setCommunes(region ? region.communes : []);
     form.setValue('commune', "");
   };
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
-    if (rejectedFiles.length > 0) {
-      rejectedFiles.forEach(({ file, errors }) => {
-        errors.forEach((error: any) => {
-            let message = 'Error desconocido al subir el archivo.';
-            if (error.code === 'file-too-large') {
-                message = `El archivo ${file.name} es muy grande. El máximo es 5MB.`;
-            } else if (error.code === 'file-invalid-type') {
-                message = `El tipo de archivo de ${file.name} no es válido. Solo se permiten JPG y PNG.`;
-            }
-          toast({ variant: 'destructive', title: 'Error de archivo', description: message });
-        });
-      });
-    }
-
-    const newFiles = acceptedFiles.map(file => ({
-      file,
-      id: `${file.name}-${new Date().getTime()}`,
-      progress: 0,
-      status: 'pending' as const,
-      source: null,
-      preview: URL.createObjectURL(file),
-    }));
-
-    setFilesToUpload(prev => [...prev, ...newFiles].slice(0, 5));
-  }, [toast]);
-
-  useEffect(() => {
-    return () => {
-      filesToUpload.forEach(f => {
-        if (f.preview) URL.revokeObjectURL(f.preview);
-        if (f.source) f.source.cancel();
-      });
-    };
-  }, [filesToUpload]);
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    acceptedFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target && typeof event.target.result === 'string') {
+          setImagePreviews(prev => [...prev, event.target.result as string]);
+          form.setValue('photos', [...(form.getValues('photos') || []), event.target.result as string]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }, [form]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -158,252 +126,380 @@ export function FormularioHuerta() {
     maxFiles: 5,
   });
 
-  const removeFile = (id: string) => {
-    setFilesToUpload(prev => {
-        const fileToRemove = prev.find(f => f.id === id);
-        if (fileToRemove) {
-            if (fileToRemove.source) fileToRemove.source.cancel();
-            if (fileToRemove.preview) URL.revokeObjectURL(fileToRemove.preview);
-        }
-        return prev.filter(f => f.id !== id);
-    });
+  const removeFile = (index: number) => {
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    form.setValue('photos', (form.getValues('photos') || []).filter((_, i) => i !== index));
   };
 
-  const startUpload = useCallback(async (fileUpload: FileUpload) => {
-    const { file, id } = fileUpload;
-    const storageRef = ref(storage, `garden-photos/${Date.now()}-${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    
-    setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, source: uploadTask, status: 'uploading' } : f));
-    
-    uploadTask.on('state_changed',
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, progress } : f));
-        },
-        (error) => {
-            toast({ variant: 'destructive', title: 'Error de subida', description: `No se pudo subir ${file.name}.` });
-            setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, status: 'error' } : f));
-        },
-        async () => {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            form.setValue('photos', [...(form.getValues('photos') || []), downloadURL]);
-            setFilesToUpload(prev => prev.map(f => f.id === id ? { ...f, status: 'success', progress: 100 } : f));
-        }
-    );
-  }, [form, toast]);
-
-  const uploadAllFiles = useCallback(async () => {
-    const pendingFiles = filesToUpload.filter(f => f.status === 'pending');
-    await Promise.all(pendingFiles.map(startUpload));
-  }, [filesToUpload, startUpload]);
-
   async function onSubmit(data: GardenFormValues) {
+    if (!authToken) {
+      setShowLoginMessage(true);
+      return;
+    }
     setIsSubmitting(true);
-    await uploadAllFiles();
-
-    const checkUploads = () => new Promise<void>((resolve, reject) => {
-        const interval = setInterval(() => {
-            const stillUploading = filesToUpload.some(f => f.status === 'uploading' || f.status === 'pending');
-            if (!stillUploading) {
-                clearInterval(interval);
-                const hasErrors = filesToUpload.some(f => f.status === 'error');
-                if (hasErrors) {
-                    reject(new Error("Algunas imágenes no se subieron. Por favor, revisa y vuelve a intentar."));
-                } else {
-                    resolve();
-                }
-            }
-        }, 500);
-    });
-
     try {
-        await checkUploads();
-        const finalData = form.getValues();
-        console.log("Datos finales a enviar (simulando CREATE en BBDD):", finalData);
-        
-        toast({
-          title: "¡Gracias! Tu huerta fue registrada.",
-          description: "La información ha sido guardada con éxito.",
-          action: <Button variant="outline" onClick={() => router.push('/')}>Ver huertas</Button>
-        });
-        form.reset();
-        setFilesToUpload([]);
-        setCommunes([]);
+      const rawData = form.getValues();
+      const finalData = {
+        ...rawData,
+        userEmail: localStorage.getItem('userEmail'),
+        cont_type: rawData.medioPreferido === 'whatsapp' ? 0 : 1,
+      };
+      delete (finalData as any).medioPreferido;
+
+      console.log("Datos enviados al backend:", finalData); // Para debugging
+
+      const response = await fetch('/api/gardens', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(finalData),
+      });
+
+      if (!response.ok) {
+        // Manejo de errores del servidor con más detalle
+        let errorMessage = 'Error en la respuesta del servidor';
+        try {
+          const errorData = await response.json();
+          console.log("Error del servidor:", errorData); // Para debugging
+          
+          // Formatear el mensaje de error de manera más clara
+          if (errorData.errors) {
+            // Si es un array de errores, los procesamos
+            if (Array.isArray(errorData.errors)) {
+              errorMessage = errorData.errors.map((e: any) => {
+                // Manejar diferentes formatos de error
+                if (typeof e === 'string') return e;
+                if (typeof e === 'object') {
+                  const key = Object.keys(e)[0];
+                  return e[key];
+                }
+                return 'Error desconocido';
+              }).join(', ');
+            } else {
+              // Si es un objeto de errores
+              errorMessage = Object.values(errorData.errors).join(', ');
+            }
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          } else {
+            errorMessage = `Error: ${response.status} ${response.statusText}`;
+          }
+        } catch (e) {
+          // Si no podemos parsear el error, usamos el mensaje de estado
+          errorMessage = `Error: ${response.status} ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      toast({
+        title: "¡Gracias! Tu huerta fue registrada.",
+        description: "La información ha sido guardada con éxito.",
+        action: <Button variant="outline" onClick={() => router.push('/')}>Ver huertas</Button>
+      });
+
+      form.reset();
+      setImagePreviews([]);
+      setCommunes([]);
     } catch(error: any) {
-        toast({ variant: 'destructive', title: "Publicación fallida", description: error.message });
+      console.error("Error al enviar el formulario:", error);
+      toast({ variant: 'destructive', title: "Publicación fallida", description: error.message });
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   }
 
-  const isUploading = filesToUpload.some(f => f.status === 'uploading' || f.status === 'pending');
+  if (showLoginMessage) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
+        <CardHeader>
+          <CardTitle>Acceso Restringido</CardTitle>
+          <CardDescription>Debes iniciar sesión para poder publicar una huerta.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link href="/login">
+            <Button className="w-full">Ir a Iniciar Sesión</Button>
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const isFormInvalid = !form.formState.isValid;
-  const isPublishDisabled = isSubmitting || isUploading || isFormInvalid || !form.getValues('consentimiento');
+  const isPublishDisabled = isSubmitting || isFormInvalid || !authToken;
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto my-8 space-y-8">
-        <Card className="shadow-lg">
-          <CardHeader><CardTitle>Datos principales</CardTitle></CardHeader>
+      <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <CardHeader><CardTitle className="mb-2">Datos principales</CardTitle></CardHeader>
           <CardContent className="space-y-6">
-            <FormField control={form.control} name="gardenName" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la huerta</FormLabel> <FormControl><Textarea placeholder="Ej: La huerta de María" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-            
+            <FormField 
+              control={form.control} 
+              name="name" 
+              render={({ field }) => ( 
+                <FormItem> 
+                  <FormLabel>Nombre de la huerta</FormLabel> 
+                  <FormControl>
+                    <Textarea placeholder="Ej: La huerta de María" {...field} />
+                  </FormControl> 
+                  <FormMessage /> 
+                </FormItem> 
+              )}
+            />
             <div className="space-y-6 rounded-md border p-6">
-                <h3 className="font-semibold">Ubicación de la huerta</h3>
-                 <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
+              <h3 className="font-semibold">Ubicación de la huerta</h3>
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dirección</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: Av. Siempre Viva 123" {...field} />
+                    </FormControl>
+                    <FormDescription>Ingresa la calle y número de la huerta.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="region"
+                  render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Dirección</FormLabel>
+                      <FormLabel>Región</FormLabel>
+                      <Select 
+                        onValueChange={(value) => { 
+                          field.onChange(value); 
+                          handleRegionChange(value); 
+                        }} 
+                        defaultValue={field.value}
+                      >
                         <FormControl>
-                        <Input placeholder="Ej: Av. Siempre Viva 123" {...field} />
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una región" />
+                          </SelectTrigger>
                         </FormControl>
-                        <FormDescription>Ingresa la calle y número de la huerta.</FormDescription>
-                        <FormMessage />
+                        <SelectContent>
+                          {chileanRegions.map(region => (
+                            <SelectItem key={region.name} value={region.name}>{region.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
-                    )}
+                  )}
                 />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                    control={form.control}
-                    name="region"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Región</FormLabel>
-                        <Select onValueChange={(value) => { field.onChange(value); handleRegionChange(value); }} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecciona una región" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {chileanRegions.map(region => (
-                                <SelectItem key={region.name} value={region.name}>{region.name}</SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="commune"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Comuna</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value} disabled={communes.length === 0}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecciona una comuna" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {communes.map(commune => (
-                                <SelectItem key={commune} value={commune}>{commune}</SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="commune"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Comuna</FormLabel>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        value={field.value} 
+                        disabled={communes.length === 0}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una comuna" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {communes.map(commune => (
+                            <SelectItem key={commune} value={commune}>{commune}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-
-             <FormField control={form.control} name="surface" render={({ field }) => ( <FormItem> <FormLabel>Superficie aproximada (m²)</FormLabel> <FormControl><Input type="number" placeholder="Ej: 50" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField 
+                control={form.control} 
+                name="surface" 
+                render={({ field }) => ( 
+                  <FormItem> 
+                    <FormLabel>Superficie aproximada (m²)</FormLabel> 
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        placeholder="Ej: 50" 
+                        {...field} 
+                        onChange={e => field.onChange(e.target.valueAsNumber || undefined)} 
+                      />
+                    </FormControl> 
+                    <FormMessage /> 
+                  </FormItem> 
+                )}
+              />
+            </div>
           </CardContent>
-        </Card>
-
-        <Card className="shadow-lg">
-          <CardHeader><CardTitle>Descripción</CardTitle></CardHeader>
-          <CardContent>
-              <FormField control={form.control} name="description" render={({ field }) => ( <FormItem> <FormLabel>Descripción de la huerta</FormLabel> <FormControl><Textarea placeholder="Describe tu huerta, qué la hace especial, etc." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-lg">
-          <CardHeader><CardTitle>Cultivos y Prácticas</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4">
-              {['tomatoes', 'lettuces', 'herbs', 'compostable', 'efficientWatering', 'noPesticides'].map(cropName => (
-                  <FormField
-                      key={cropName}
-                      control={form.control}
-                      name={`crops.${cropName}` as any}
-                      render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                              <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                              <FormLabel className="font-normal">{ {tomatoes: 'Tomates', lettuces: 'Lechugas', herbs: 'Hierbas', compostable: 'Compostable', efficientWatering: 'Riego Eficiente', noPesticides: 'Sin pesticidas químicos'}[cropName] }</FormLabel>
-                          </FormItem>
-                      )}
-                  />
-              ))}
-               <FormField control={form.control} name="crops.other" render={({ field }) => ( <FormItem className="col-span-2"> <FormLabel>Otros</FormLabel> <FormControl><Textarea placeholder="Ej: Papas, zanahorias..." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-lg">
-          <CardHeader><CardTitle>Contacto</CardTitle></CardHeader>
+          <div className="space-y-8">
+            <CardHeader><CardTitle className="mb-2">Descripción</CardTitle></CardHeader>
+            <CardContent>
+              <FormField 
+                control={form.control} 
+                name="description" 
+                render={({ field }) => ( 
+                  <FormItem> 
+                    <FormLabel>Descripción de la huerta</FormLabel> 
+                    <FormControl>
+                      <Textarea placeholder="Describe tu huerta, qué la hace especial, incluye actividades etc." {...field} />
+                    </FormControl> 
+                    <FormMessage /> 
+                  </FormItem> 
+                )}
+              />
+            </CardContent>
+            <CardHeader><CardTitle className="mb-2">Cultivos y Prácticas</CardTitle></CardHeader>
+            <CardContent className="grid grid-cols-2 gap-4">
+              <FormField 
+                control={form.control} 
+                name="crops.other" 
+                render={({ field }) => ( 
+                  <FormItem className="col-span-2"> 
+                    <FormLabel>Actividades</FormLabel> 
+                    <FormControl>
+                      <Textarea placeholder="Ej: Tipo de plantaciones, Compostaje..." {...field} />
+                    </FormControl> 
+                    <FormMessage /> 
+                  </FormItem> 
+                )}
+              />
+            </CardContent>
+          </div>
+          <CardHeader><CardTitle className="mb-2">Contacto</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField control={form.control} name="nombreContacto" render={({ field }) => ( <FormItem> <FormLabel>Nombre de contacto</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="telefono" render={({ field }) => ( <FormItem> <FormLabel>Teléfono</FormLabel> <FormControl><MaskedInput placeholder="+56 9 XXXX XXXX" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="correo" render={({ field }) => ( <FormItem className="md:col-span-2"> <FormLabel>Correo electrónico (opcional)</FormLabel> <FormControl><Input type="email" placeholder="tu@correo.com" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="medioPreferido" render={({ field }) => (
+            <FormField 
+              control={form.control} 
+              name="nombreContacto" 
+              render={({ field }) => ( 
+                <FormItem> 
+                  <FormLabel>Nombre de contacto</FormLabel> 
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl> 
+                  <FormMessage /> 
+                </FormItem> 
+              )}
+            />
+            <FormField 
+              control={form.control} 
+              name="telefono" 
+              render={({ field }) => ( 
+                <FormItem> 
+                  <FormLabel>Teléfono</FormLabel> 
+                  <FormControl>
+                    <MaskedInput placeholder="+56 9 XXXX XXXX" {...field} />
+                  </FormControl> 
+                  <FormMessage /> 
+                </FormItem> 
+              )}
+            />
+            <FormField 
+              control={form.control} 
+              name="correo" 
+              render={({ field }) => ( 
+                <FormItem className="md:col-span-2"> 
+                  <FormLabel>Correo electrónico (opcional)</FormLabel> 
+                  <FormControl>
+                    <Input type="email" placeholder="tu@correo.com" {...field} />
+                  </FormControl> 
+                  <FormMessage /> 
+                </FormItem> 
+              )}
+            />
+            <FormField 
+              control={form.control} 
+              name="medioPreferido" 
+              render={({ field }) => (
                 <FormItem className="space-y-3 md:col-span-2">
                   <FormLabel>Medio de contacto preferido</FormLabel>
                   <FormControl>
-                    <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
-                      <FormItem className="flex items-center space-x-3 space-y-0"><FormControl><RadioGroupItem value="whatsapp" /></FormControl><FormLabel className="font-normal">WhatsApp</FormLabel></FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0"><FormControl><RadioGroupItem value="correo" /></FormControl><FormLabel className="font-normal">Correo</FormLabel></FormItem>
+                    <RadioGroup 
+                      onValueChange={field.onChange} 
+                      value={field.value} 
+                      className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="whatsapp" />
+                        </FormControl>
+                        <FormLabel className="font-normal">WhatsApp</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="correo" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Correo</FormLabel>
+                      </FormItem>
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-            )}/>
+              )}
+            />
           </CardContent>
-        </Card>
-
-        <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle>Fotos</CardTitle>
+            <CardTitle className="mb-2">Fotos</CardTitle>
             <CardDescription>Arrastra tus fotos aquí o haz clic para seleccionarlas (hasta 5, máx 5MB c/u).</CardDescription>
           </CardHeader>
           <CardContent>
-            <div {...getRootProps()} className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-primary/5 hover:bg-primary/10 transition-colors ${isDragActive ? 'border-primary' : 'border-input'}`}>
-                <input {...getInputProps()} />
-                <div className="text-center text-muted-foreground"><Upload className="mx-auto h-10 w-10 mb-2" />{isDragActive ? <p>Suelta las imágenes aquí...</p> : <p>Arrastra tus fotos o haz clic para seleccionarlas</p>}</div>
+            <div 
+              {...getRootProps()} 
+              className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-primary/5 hover:bg-primary/10 transition-colors ${isDragActive ? 'border-primary' : 'border-input'}`}
+            >
+              <input {...getInputProps()} />
+              <div className="text-center text-muted-foreground">
+                <Upload className="mx-auto h-10 w-10 mb-2" />
+                {isDragActive ? <p>Suelta las imágenes aquí...</p> : <p>Arrastra tus fotos o haz clic para seleccionarlas</p>}
+              </div>
             </div>
-            {filesToUpload.length > 0 && (
-                <div className="mt-4 space-y-2">
-                    {filesToUpload.map(f => (
-                        <div key={f.id} className="flex items-center gap-3 p-2 border rounded-md bg-muted/50">
-                           <img src={f.preview} alt={f.file.name} className="h-12 w-12 rounded-md object-cover"/>
-                           <div className="flex-1 space-y-1">
-                                <p className="text-sm font-medium truncate">{f.file.name}</p>
-                                {f.status === 'uploading' && <Progress value={f.progress} className="h-2" />}
-                                {f.status === 'success' && <p className="text-xs text-green-600">¡Subido!</p>}
-                                {f.status === 'error' && <p className="text-xs text-red-600">Error en la subida</p>}
-                                {f.status === 'pending' && <p className="text-xs text-muted-foreground">Pendiente de subida</p>}
-                           </div>
-                           {(f.status === 'pending' || f.status === 'error') && <Button type="button" size="sm" onClick={() => startUpload(f)}>{f.status === 'error' ? 'Reintentar' : 'Subir'}</Button>}
-                           <Button type="button" size="icon" variant="ghost" className="h-8 w-8" onClick={() => removeFile(f.id)}><Trash2 className="h-4 w-4"/></Button>
-                        </div>
-                    ))}
-                </div>
+            {imagePreviews.length > 0 && (
+              <div className="mt-4 space-y-2">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="flex items-center gap-3 p-2 border rounded-md bg-muted/50">
+                    <img src={preview} alt={`preview ${index}`} className="h-12 w-12 rounded-md object-cover"/>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium truncate">Imagen {index + 1}</p>
+                    </div>
+                    <Button 
+                      type="button" 
+                      size="icon" 
+                      variant="ghost" 
+                      className="h-8 w-8" 
+                      onClick={() => removeFile(index)}
+                    >
+                      <Trash2 className="h-4 w-4"/>
+                    </Button>
+                  </div>
+                ))}
+              </div>
             )}
           </CardContent>
-        </Card>
-        
-        <Card className="shadow-lg">
           <CardContent className="pt-6">
-                <Button type="submit" disabled={isPublishDisabled} className="w-full font-bold py-6 text-lg">
-                    {isSubmitting || isUploading ? <><LoaderCircle className="animate-spin mr-2" /> Publicando...</> : 'Publicar Huerta'}
-                </Button>
-            </CardContent>
-        </Card>
-      </form>
+            <Button 
+              type="submit" 
+              disabled={isPublishDisabled} 
+              className="w-full font-bold py-6 text-lg"
+            >
+              {isSubmitting ? (
+                <>
+                  <LoaderCircle className="animate-spin mr-2" /> Publicando...
+                </>
+              ) : 'Publicar Huerta'}
+            </Button>
+          </CardContent>
+        </form>
+      </Card>
     </FormProvider>
   );
 }
@@ -423,7 +519,6 @@ const MaskedInput = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps
     return () => { masked.destroy(); };
   }, []);
 
-  
   React.useEffect(() => {
     if (mask && name) {
       const handleAccept = () => {
@@ -431,9 +526,7 @@ const MaskedInput = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps
           setValue(name as any, mask.value, { shouldValidate: true, shouldDirty: true });
         }
       };
-      
       mask.on('accept', handleAccept);
-      
       return () => {
         mask.off('accept', handleAccept);
       };
@@ -449,5 +542,4 @@ const MaskedInput = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps
 
   return <Input ref={internalRef} onBlur={handleBlur} {...rest} />;
 });
-
 MaskedInput.displayName = 'MaskedInput';

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,8 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/logo';
 import { RutInput } from '@/components/ui/rut-input';
 import { validateRut } from '@/lib/rut-validator';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SignupPage() {
+  const router = useRouter();
+  const { toast } = useToast();
 
   // Estados para todos los campos del formulario
   const [firstName, setFirstName] = useState('');
@@ -21,6 +25,7 @@ export default function SignupPage() {
   
   // Estado para la validación del RUT
   const [isRutValid, setIsRutValid] = useState(true);
+  const [error, setError] = useState('');
 
   const handleRutChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rut = e.target.value;
@@ -35,10 +40,54 @@ export default function SignupPage() {
     }
   };
 
-  // Condición para habilitar el botón de envío
   const isFormValid = firstName && lastName && email && password && rutValue && isRutValid;
 
-  // función para manejar el envío del formulario
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+
+    if (!isFormValid) {
+      setError('Por favor, completa todos los campos correctamente.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: firstName,
+          apellido: lastName,
+          rut: rutValue,
+          correo: email,
+          psswd: password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al registrar el usuario');
+      }
+
+      // Mostrar notificación de éxito
+      toast({
+        title: "¡Registro exitoso!",
+        description: "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.",
+        variant: "success",
+      });
+
+      // Redirigir al login después de un breve retraso
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
       <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
@@ -50,7 +99,7 @@ export default function SignupPage() {
           <CardDescription>Únete a la comunidad de EcoRastro hoy</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-4">
+          <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="first-name">Nombre</Label>
@@ -105,6 +154,7 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {error && <p className="text-sm text-red-500 text-center">{error}</p>}
             <Button type="submit" className="w-full" disabled={!isFormValid}>
               Crear Cuenta
             </Button>

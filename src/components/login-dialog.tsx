@@ -1,16 +1,16 @@
+
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/logo';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
-//importación de iconos y se agregan los textos correspondientes
-export default function LoginPage() {
+export function LoginDialog({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,15 +38,9 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      
-      // Opcional: guardar token o info de sesión en localStorage/sessionStorage
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-      }
-      localStorage.setItem('userEmail', email); // Guardar el email en lugar del ID
-
-      // Redirigir a la página de perfil del usuario
-      router.push('/usuario');
+      localStorage.setItem('userId', data.userId);
+      onOpenChange(false); // Cierra el diálogo
+      router.push('/usuario'); // Redirige al perfil
 
     } catch (err: any) {
       setError(err.message);
@@ -54,16 +48,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
-      <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
-        <CardHeader className="text-center space-y-2">
-          <div className="inline-block mx-auto">
-            <Logo />
-          </div>
-          <CardTitle className="text-2xl font-bold">Bienvenido de Vuelta</CardTitle>
-          <CardDescription>Ingresa tus datos para acceder a tu cuenta</CardDescription>
-        </CardHeader>
-        <CardContent>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+            <div className="flex justify-center pb-4">
+                <Logo />
+            </div>
+          <DialogTitle className="text-center text-2xl font-bold">Ingresa para Publicar</DialogTitle>
+          <DialogDescription className="text-center">
+            Necesitas iniciar sesión para poder crear una publicación.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="px-4 py-2">
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Correo Electrónico</Label>
@@ -91,14 +87,8 @@ export default function LoginPage() {
               Iniciar Sesión
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
-            ¿No tienes una cuenta?{' '}
-            <Link href="/signup" className="underline text-primary font-semibold">
-              Regístrate
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

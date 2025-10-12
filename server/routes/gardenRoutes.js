@@ -1,11 +1,10 @@
-//rutas para huertas
 const express = require('express');
 const router = express.Router();
 const gardenController = require('../controllers/gardenController');
-const { gardenValidationRules, validate } = require('../middlewares');
+const { gardenValidationRules, validate, basicAuth } = require('../middlewares');
 
-// Rutas CRUD para huertas
-router.post('/', gardenValidationRules(), validate, gardenController.createGarden);
+// Rutas CRUD para Jardines
+router.post('/', basicAuth, gardenValidationRules(), validate, gardenController.createGarden);
 router.get('/', gardenController.getGardens);
 router.get('/:id', gardenController.getGardenById);
 router.put('/:id', gardenValidationRules(), validate, gardenController.updateGarden);

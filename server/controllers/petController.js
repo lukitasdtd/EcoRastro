@@ -15,6 +15,37 @@ exports.createPet = async (req, res) => {
   }
 };
 
+// Crear un nuevo reporte de mascota perdida
+exports.reportPet = async (req, res) => {
+  try {
+    const { nombre, tipo, raza, color, region, comuna, direccion, descripcion, fotos, userEmail } = req.body;
+
+    // Obtener el RUT del usuario a partir del email
+    const userResult = await pool.query('SELECT rut FROM "users" WHERE correo = $1', [userEmail]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado para el email proporcionado." });
+    }
+    const userRut = userResult.rows[0].rut;
+
+    // Creamos el objeto de ubicación
+    const ubicacion = {
+      region,
+      comuna,
+      direccion
+    };
+
+    const newReportedPet = await pool.query(
+      'INSERT INTO "pets" (nombre, tipo, raza, color, ubicacion, descripcion, fotos, status, user_rut) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      [nombre, tipo, raza, color, JSON.stringify(ubicacion), descripcion, fotos, 'perdido', userRut]
+    );
+
+    res.status(201).json(newReportedPet.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Error en el servidor al crear el reporte");
+  }
+};
+
 // Obtener todas las mascotas
 exports.getPets = async (req, res) => {
   try {
