@@ -1,15 +1,21 @@
 class Pet {
   constructor(id, name, age, adopted) {
     // ID único
-    this.id = id; // En una implementación real, esto sería generado por la base de datos
+    this.id = id; // En una implementación real, esto sería generado por la base de datos. (2)
 
-    // Validaciones básicas
+    // Validaciones básicas (3)
     if (!name) {
       throw new Error('El nombre es obligatorio.');
     }
+    if (!age) {
+      throw new Error('La edad es obligatoria.');
+    }
+    if (!adopted) {
+      throw new Error('Debes indicar adoptado/ no adoptado.');
+    }
 
-    // Tipos de datos
-    this.name = String(name);
+    // Tipos de datos (1): 
+    this.name = String(name); 
     if (age !== undefined) {
         this.age = Number(age);
     }
