@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link'; 
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, PawPrint, Leaf, Menu, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 export default function MapPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
