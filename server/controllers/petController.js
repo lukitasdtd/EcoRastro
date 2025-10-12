@@ -1,53 +1,24 @@
 const pool = require('../utils/db');
 
-// Crear una nueva mascota
-exports.createPet = async (req, res) => {
+// Datos en memoria (simulando una base de datos)
+let pets = [];
+let nextId = 1;
+
+exports.createPet = (req, res) => {
   try {
     const { name, age, adopted } = req.body;
-    const newPet = await pool.query(
-      'INSERT INTO "pets" (name, age, adopted) VALUES ($1, $2, $3) RETURNING *',
-      [name, age, adopted]
-    );
-    res.status(201).json(newPet.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
-  }
-};
-
-// Crear un nuevo reporte de mascota perdida
-exports.reportPet = async (req, res) => {
-  try {
-    const { nombre, tipo, raza, color, region, comuna, direccion, descripcion, fotos, userEmail } = req.body;
-
-    // Obtener el RUT del usuario a partir del email
-    const userResult = await pool.query('SELECT rut FROM "users" WHERE correo = $1', [userEmail]);
-    if (userResult.rows.length === 0) {
-      return res.status(404).json({ message: "Usuario no encontrado para el email proporcionado." });
+    if (!name) {
+      return res.status(400).json({ message: 'El nombre es obligatorio.' });
     }
-    const userRut = userResult.rows[0].rut;
-
-    // Creamos el objeto de ubicación
-    const ubicacion = {
-      region,
-      comuna,
-      direccion
-    };
-
-    const newReportedPet = await pool.query(
-      'INSERT INTO "pets" (nombre, tipo, raza, color, ubicacion, descripcion, fotos, status, user_rut) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-      [nombre, tipo, raza, color, JSON.stringify(ubicacion), descripcion, fotos, 'perdido', userRut]
-    );
-
-    res.status(201).json(newReportedPet.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor al crear el reporte");
+    const newPet = new Pet(nextId++, name, age, adopted);
+    pets.push(newPet);
+    res.status(201).json(newPet);
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 };
 
-// Obtener todas las mascotas
-exports.getPets = async (req, res) => {
+exports.getPets = (req, res) => {
   try {
     const allPets = await pool.query('SELECT * FROM "pets"');
     res.json(allPets.rows);
