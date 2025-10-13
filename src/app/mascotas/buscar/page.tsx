@@ -20,6 +20,7 @@ export default function SearchPetsPage() {
   });
   const [filteredPets, setFilteredPets] = useState<ReportedPet[]>(reportedPets);
 
+  // filtros de búsqueda 
   const handleFilterChange = () => {
     let pets = reportedPets.filter(pet => 
       pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,6 +42,7 @@ export default function SearchPetsPage() {
     setFilteredPets(pets);
   };
 
+  // se crea función para manejar click en botón de búsqueda
   const handleSearchClick = () => {
       handleFilterChange();
   };

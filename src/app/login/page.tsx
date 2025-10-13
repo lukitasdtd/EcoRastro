@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/logo';
 
+//importación de iconos y se agregan los textos correspondientes
 export default function LoginPage() {
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
