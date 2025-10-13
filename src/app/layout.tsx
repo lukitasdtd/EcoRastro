@@ -21,6 +21,9 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: 'EcoRastro',
   description: 'Conectando comunidades. Protegiendo ecosistemas.',
+  icons: {
+    icon: '/favicon/ecorastro%20logo%20transparente.png',
+  },
 };
 
 export default function RootLayout({

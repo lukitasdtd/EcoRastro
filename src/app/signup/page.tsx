@@ -38,6 +38,7 @@ export default function SignupPage() {
   // Condición para habilitar el botón de envío
   const isFormValid = firstName && lastName && email && password && rutValue && isRutValid;
 
+  // función para manejar el envío del formulario
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
       <Card className="mx-auto max-w-sm w-full shadow-lg border-0">

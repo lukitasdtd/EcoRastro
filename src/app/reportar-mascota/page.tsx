@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Formulario para reportar mascota',
 };
 
+// se crea la página para reportar mascotas
 export default function ReportarMascotaPage() {
   return (
     <div className="bg-muted/30 flex-grow">
