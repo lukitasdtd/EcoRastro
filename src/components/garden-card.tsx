@@ -5,6 +5,7 @@ import { MapPin } from 'lucide-react';
 import type { Garden } from '@/lib/types';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
+//componente de tarjeta de huertas (garden)
 interface GardenCardProps {
   garden: Garden;
 }

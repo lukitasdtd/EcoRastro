@@ -10,6 +10,7 @@ interface DraggableMapProps {
     onLocationChange: (lat: number, lng: number) => void;
 }
 
+//componente para el mapa arrastable
 export default function LeafletMapDraggable({ onLocationChange }: DraggableMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<Map | null>(null);
@@ -19,6 +20,7 @@ export default function LeafletMapDraggable({ onLocationChange }: DraggableMapPr
   const defaultCenter: LatLngTuple = [-33.4489, -70.6693];
   const defaultZoom = 13;
 
+  //se inicializa mapa
   useEffect(() => {
     let isMounted = true;
     if (mapRef.current && !mapInstance.current) {
@@ -71,6 +73,7 @@ export default function LeafletMapDraggable({ onLocationChange }: DraggableMapPr
       });
     }
 
+    //limpia el mapa al quitar el componente
     return () => {
       isMounted = false;
       if (mapInstance.current) {

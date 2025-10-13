@@ -11,6 +11,7 @@ interface ReportedPetCardProps {
   pet: ReportedPet;
 }
 
+// componente de tarjeta de mascota reportada
 export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
   const image = PlaceHolderImages.find(img => img.id === pet.imageId);
 

@@ -1,6 +1,6 @@
 "use client"
 
-// Inspired by react-hot-toast library
+
 import * as React from "react"
 
 import type {
@@ -8,6 +8,7 @@ import type {
   ToastProps,
 } from "@/components/ui/toast"
 
+//configuración de toast (notificaciones emergentes)
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 
@@ -74,6 +75,7 @@ const addToRemoveQueue = (toastId: string) => {
   toastTimeouts.set(toastId, timeout)
 }
 
+//reducer de toast
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
@@ -93,8 +95,8 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
+      // ! Restablecer el valor de la comuna cuando cambia la región pero la mantiene aquí por simplicidad
+    
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -129,6 +131,7 @@ export const reducer = (state: State, action: Action): State => {
   }
 }
 
+//hooks de toast
 const listeners: Array<(state: State) => void> = []
 
 let memoryState: State = { toasts: [] }
@@ -142,6 +145,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
+//función de toast
 function toast({ ...props }: Toast) {
   const id = genId()
 

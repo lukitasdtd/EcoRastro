@@ -27,7 +27,7 @@ import { LoaderCircle, Upload, Trash2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { chileanRegions } from "@/lib/chile-locations";
 
-// Setup de Firebase Storage
+// SConfiguración del almacenamiento de Firebase
 const storage = getStorage(app);
 
 // Regex para validar teléfono chileno

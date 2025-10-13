@@ -5,6 +5,7 @@ import { Instagram, Facebook, Copyright } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 
+//componente de footer
 export function Footer() {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();

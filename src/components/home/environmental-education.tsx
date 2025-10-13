@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 
+// sección de educación ambiental
 const educationalTopics = [
     {
       title: 'Huertos Sostenibles',

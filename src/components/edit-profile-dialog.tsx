@@ -36,20 +36,20 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  // State to control if the current password has been verified
+  //estado para verificar contraseña
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
 
   const handlePasswordVerification = () => {
-    // In a real app, you would make an API call here to verify the password.
-    // For this simulation, we'll just check if the password field is not empty.
+    
     if (currentPassword) {
-      // alert("Contraseña actual verificada."); // Optional: give user feedback
+      //alerta ("Contraseña actual verificada.");
       setIsPasswordVerified(true);
     } else {
       alert("Por favor, ingresa tu contraseña actual.");
     }
   };
 
+  //función para guardar cambios
   const handleSave = () => {
     if (isPasswordVerified && newPassword && newPassword !== confirmPassword) {
       alert("Las nuevas contraseñas no coinciden.");
@@ -57,7 +57,7 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
     }
     
     onSaveChanges({ firstName, lastName, email });
-    // Here you would also include the logic to send the new password to the server.
+    //alerta ("cambios guardados")
     
     setIsOpen(false);
   };
@@ -77,7 +77,7 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
         
         <div className="grid gap-6 py-4 max-h-[70vh] overflow-y-auto pr-4">
           
-          {/* User Profile Fields */}
+          {/* campo de perfil de usuario */}
           <div className="space-y-2">
             <Label htmlFor="firstName">Nombre</Label>
             <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="bg-white" />
@@ -97,7 +97,7 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
 
           <hr className="my-2" />
 
-          {/* Password Change Section */}
+          {/* sección de cambio de contraseña */}
           <div>
              <h4 className="font-semibold mb-4">Cambiar Contraseña</h4>
              <div className="grid gap-4">
@@ -111,7 +111,7 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
                             className="bg-white"
-                            disabled={isPasswordVerified} // Disable after verification
+                            disabled={isPasswordVerified} // Deshabilitar después de la verificación
                         />
                         <Button type="button" variant="secondary" onClick={handlePasswordVerification} disabled={isPasswordVerified}>
                             Verificar
@@ -127,7 +127,7 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         className="bg-white"
-                        disabled={!isPasswordVerified} // Disabled until password is verified
+                        disabled={!isPasswordVerified} // Deshabilitado hasta que se verifique la contraseña
                     />
                 </div>
                 <div className="space-y-2">
@@ -139,7 +139,7 @@ export function EditProfileDialog({ user, onSaveChanges }: EditProfileDialogProp
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         className="bg-white"
-                        disabled={!isPasswordVerified} // Disabled until password is verified
+                        disabled={!isPasswordVerified} // Deshabilitado hasta que se verifique la contraseña
                     />
                 </div>
              </div>

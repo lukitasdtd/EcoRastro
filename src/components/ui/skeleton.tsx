@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
 
+//componente esqueleto
 function Skeleton({
   className,
   ...props

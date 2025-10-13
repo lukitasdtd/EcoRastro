@@ -9,6 +9,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { CropDetail } from '@/lib/crop-details';
 import { CropIcon } from './CropIcon';
 
+// modal para mostrar detalles de cultivos
 export type ModalData = CropDetail & {
   id: string;
   imageId?: string;

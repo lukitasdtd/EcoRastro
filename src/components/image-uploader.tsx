@@ -12,8 +12,7 @@ interface ImageUploaderProps {
   disabled?: boolean;
 }
 
-// NOTA: Por ahora, este componente maneja URLs de imágenes (simulando que ya están subidas).
-// La lógica de subir el archivo a un servicio (como Firebase Storage) se añadiría aquí.
+
 export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps) {
   const { toast } = useToast();
   
@@ -36,7 +35,7 @@ export function ImageUploader({ value, onChange, disabled }: ImageUploaderProps)
         className: 'bg-green-100 border-green-400 text-green-700'
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [imagePreviews, onChange]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

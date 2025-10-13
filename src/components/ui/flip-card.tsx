@@ -4,6 +4,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
+//componente para hacer una tarjeta volteable
 interface FlipCardProps {
   frontContent: React.ReactNode;
   backContent: React.ReactNode;

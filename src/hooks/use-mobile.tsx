@@ -1,5 +1,6 @@
 import * as React from "react"
 
+//configuración de tamaño de pantalla para dispositivos móviles en la aplicación
 const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {

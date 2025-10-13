@@ -10,6 +10,7 @@ import { EnvironmentalEducation } from '@/components/home/environmental-educatio
 import { HomeFooter } from '@/components/home/home-footer';
 import { Card } from '@/components/ui/card';
 
+// página principal de EcoRastro
 export default function Home() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'hero');
 

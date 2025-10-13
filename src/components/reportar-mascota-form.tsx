@@ -1,5 +1,6 @@
 'use client';
 
+//formulario de reporte de mascota perdida
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,6 +16,7 @@ import { useState } from "react";
 import { PawPrint } from "lucide-react";
 import { chileanRegions } from "@/lib/chile-locations";
 
+//esquema de reporte de mascota perdida
 const mascotaSchema = z.object({
   nombre: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }).max(50, { message: "El nombre no debe exceder los 50 caracteres." }),
   tipo: z.enum(["perro", "gato"], { required_error: "Por favor selecciona un tipo de mascota." }),
@@ -48,7 +50,7 @@ export function ReportarMascotaForm() {
   const handleRegionChange = (regionName: string) => {
     const region = chileanRegions.find(r => r.name === regionName);
     setCommunes(region ? region.communes : []);
-    form.setValue('comuna', ""); // Reset commune value when region changes
+    form.setValue('comuna', ""); // Restablecer el valor de la comuna cuando cambia la región
   };
 
   async function onSubmit(values: z.infer<typeof mascotaSchema>) {
