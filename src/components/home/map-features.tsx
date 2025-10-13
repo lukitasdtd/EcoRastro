@@ -58,7 +58,7 @@ export function MapFeatures() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Columna del Mapa */}
             <div className="relative z-0 w-full h-[70vh] min-h-[500px] lg:h-full">
-              <Map points={allMapPoints}/>
+              <Map points={allMapPoints} activeFilter="all"/>
             </div>
 
             {/* Columna de Beneficios */}

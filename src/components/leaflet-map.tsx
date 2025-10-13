@@ -12,7 +12,7 @@ import type { MapPoint } from '@/lib/data';
 
 interface LeafletMapProps {
   points: MapPoint[];
-  activeFilter: 'mascotas' | 'huertas';
+  activeFilter: 'all' | 'mascotas' | 'huertas'; // Se añade 'all'
 }
 
 export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
@@ -54,18 +54,8 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
 
                 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-                markersRef.current.forEach(marker => marker.remove());
-                markersRef.current = [];
-
-                points.forEach(point => {
-                    const marker = L.marker([point.lat, point.lng]).addTo(map);
-                    marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
-                    markersRef.current.push(marker);
-                });
-
-                setTimeout(() => {
-                    map.invalidateSize();
-                }, 0);
+                // La creación inicial de marcadores se mueve al useEffect de activeFilter
+                setTimeout(() => map.invalidateSize(), 0);
             });
         }).catch(error => {
             console.error("Error al cargar Leaflet:", error);
@@ -83,17 +73,21 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
                 mapInstance.current = null;
             }
         };
-    }, [toast]);
+    }, [toast]); // Se quita `points` porque se maneja en el otro useEffect
 
     useEffect(() => {
         if (!mapInstance.current) return;
         
         const map = mapInstance.current;
-        const pointType = activeFilter === 'mascotas' ? 'pet' : 'garden';
 
+        // Limpia marcadores existentes
         markersRef.current.forEach(marker => map.removeLayer(marker));
+        markersRef.current = [];
 
-        const filteredPoints = points.filter(p => p.type === pointType);
+        // Determina qué puntos mostrar
+        const filteredPoints = activeFilter === 'all'
+            ? points
+            : points.filter(p => p.type === (activeFilter === 'mascotas' ? 'pet' : 'garden'));
 
         import('leaflet').then(L => {
             filteredPoints.forEach(point => {
@@ -103,7 +97,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
             });
         });
 
-    }, [activeFilter, points]);
+    }, [activeFilter, points]); // Se ejecuta cuando el filtro o los puntos cambian
     
     useEffect(() => {
         const handleResize = () => {
@@ -140,7 +134,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
                     userMarker.current?.bindPopup('<b>Estás aquí</b>').openPopup();
                 },
                 () => {
-                    ({ variant: 'destructive', title: 'Ubicación denegada', description: 'No pudimos acceder a tu ubicación.' });
+                    toast({ variant: 'destructive', title: 'Ubicación denegada', description: 'No pudimos acceder a tu ubicación.' });
                 }
             );
         }
