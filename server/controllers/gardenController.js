@@ -1,9 +1,10 @@
 const { Garden } = require('../models');
 
-// Datos en memoria (simulando una base de datos)
+// Datos en memoria para huertas
 let gardens = [];
 let nextId = 1;
 
+// creación de huerta
 exports.createGarden = (req, res) => {
   try {
     const { name, size } = req.body;
@@ -15,6 +16,7 @@ exports.createGarden = (req, res) => {
   }
 };
 
+//obtener huertas
 exports.getGardens = (req, res) => {
   try {
     res.status(200).json(gardens);
@@ -23,6 +25,7 @@ exports.getGardens = (req, res) => {
   }
 };
 
+//obtener huerta por id
 exports.getGardenById = (req, res) => {
   try {
     const garden = gardens.find(g => g.id === parseInt(req.params.id));
@@ -35,6 +38,7 @@ exports.getGardenById = (req, res) => {
   }
 };
 
+//actualizar huerta
 exports.updateGarden = (req, res) => {
   try {
     const { name, size } = req.body;
@@ -50,6 +54,7 @@ exports.updateGarden = (req, res) => {
   }
 };
 
+//eliminar huerta
 exports.deleteGarden = (req, res) => {
   try {
     const gardenIndex = gardens.findIndex(g => g.id === parseInt(req.params.id));

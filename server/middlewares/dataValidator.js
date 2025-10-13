@@ -1,5 +1,6 @@
 const { body, validationResult } = require('express-validator');
 
+//validaciones para los modelos usuarios
 const userValidationRules = () => {
   return [
     body('email').isEmail().withMessage('Debe ser un email válido.'),
@@ -7,6 +8,7 @@ const userValidationRules = () => {
   ];
 };
 
+//validaciones para los modelos mascotas
 const petValidationRules = () => {
   return [
     body('name').notEmpty().withMessage('El nombre es obligatorio.'),
@@ -15,6 +17,7 @@ const petValidationRules = () => {
   ];
 };
 
+//validaciones para los modelos huertas
 const gardenValidationRules = () => {
   return [
     body('name').notEmpty().withMessage('El nombre es obligatorio.'),
@@ -23,6 +26,7 @@ const gardenValidationRules = () => {
   ];
 };
 
+//validación de errores
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
@@ -36,6 +40,7 @@ const validate = (req, res, next) => {
   });
 };
 
+//exportación de las validaciones
 module.exports = {
   userValidationRules,
   petValidationRules,

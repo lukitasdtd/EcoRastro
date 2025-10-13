@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { Instagram, Twitter, Mail } from 'lucide-react';
 
+// componente para la página "acerca de nosotros"//
 export default function AboutPage() {
   return (
     <div className="relative bg-[#E5E5E5] min-h-screen">

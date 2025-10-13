@@ -1,9 +1,10 @@
 const { Pet } = require('../models');
 
-// Datos en memoria (simulando una base de datos)
+// Datos en memoria para mascotas
 let pets = [];
 let nextId = 1;
 
+//creación de mascota
 exports.createPet = (req, res) => {
   try {
     const { name, age, adopted } = req.body;
@@ -18,6 +19,7 @@ exports.createPet = (req, res) => {
   }
 };
 
+//obtener mascota
 exports.getPets = (req, res) => {
   try {
     res.status(200).json(pets);
@@ -26,6 +28,7 @@ exports.getPets = (req, res) => {
   }
 };
 
+//obtener mascota por id
 exports.getPetById = (req, res) => {
   try {
     const pet = pets.find(p => p.id === parseInt(req.params.id));
@@ -38,6 +41,7 @@ exports.getPetById = (req, res) => {
   }
 };
 
+//actualizar mascota
 exports.updatePet = (req, res) => {
   try {
     const { name, age, adopted } = req.body;
@@ -53,6 +57,7 @@ exports.updatePet = (req, res) => {
   }
 };
 
+//eliminar mascota
 exports.deletePet = (req, res) => {
   try {
     const petIndex = pets.findIndex(p => p.id === parseInt(req.params.id));

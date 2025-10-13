@@ -3,7 +3,7 @@ class Garden {
     // ID único
     this.id = id; // En una implementación real, esto sería generado por la base de datos
 
-    // Validaciones básicas
+    //validaciones para los modelos huertas
     if (!name) {
       throw new Error('El nombre es obligatorio.');
     }

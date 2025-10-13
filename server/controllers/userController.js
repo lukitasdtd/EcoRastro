@@ -1,9 +1,10 @@
 const { User } = require('../models');
 
-// Datos en memoria (simulando una base de datos)
+// Datos en memoria para usuarios 
 let users = [];
 let nextId = 1;
 
+// creación de usuario
 exports.createUser = (req, res) => {
   try {
     const { name, email } = req.body;
@@ -15,6 +16,7 @@ exports.createUser = (req, res) => {
   }
 };
 
+//obtener usuarios
 exports.getUsers = (req, res) => {
   try {
     res.status(200).json(users);
@@ -23,6 +25,7 @@ exports.getUsers = (req, res) => {
   }
 };
 
+//obtener usuario por id
 exports.getUserById = (req, res) => {
   try {
     const user = users.find(u => u.id === parseInt(req.params.id));
@@ -35,6 +38,7 @@ exports.getUserById = (req, res) => {
   }
 };
 
+//actualizar usuario
 exports.updateUser = (req, res) => {
   try {
     const { name, email } = req.body;
@@ -50,6 +54,7 @@ exports.updateUser = (req, res) => {
   }
 };
 
+//eliminar usuario
 exports.deleteUser = (req, res) => {
   try {
     const userIndex = users.findIndex(u => u.id === parseInt(req.params.id));

@@ -1,3 +1,4 @@
+//---IMPORTACIONES GENERALES---
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
@@ -16,12 +17,12 @@ import { cropDetails, CropDetail } from '@/lib/crop-details';
 import { CropDetailModal, ModalData } from '@/components/calendar/CropDetailModal';
 import { CropIcon } from '@/components/calendar/CropIcon';
 
-// --- Tipos ---
+// --- Tipos de datos ---
 type Category = 'Verduras' | 'Frutas' | 'Hierbas';
 type Season = 'Primavera' | 'Verano' | 'Otoño' | 'Invierno';
 type SearchableCrop = CropDetail & { id: string };
 
-// --- Lógica de Estaciones ---
+// --- Lógica de Estaciones del año ---
 const getSeason = (date: Date): Season => {
     const month = date.getMonth(); // 0-11
     if (month >= 8 && month <= 10) return 'Primavera'; // Sep, Oct, Nov (HS)
@@ -62,6 +63,7 @@ const CalendarNav = ({ currentDate, setCurrentDate, activeCategory, setActiveCat
   );
 };
 
+//--- componentes de búsqueda ---
 const SearchBar = ({ query, onQueryChange, onCancel }: { query: string, onQueryChange: (q: string) => void, onCancel: () => void }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -104,6 +106,7 @@ const SearchResults = ({ results, onSelect }: { results: SearchableCrop[], onSel
     )
 }
 
+//--- componentes de calendario ---
 const SeasonPills = ({ activeSeason }: { activeSeason: Season }) => {
     const seasonStyles: Record<Season, string> = {
         Primavera: 'bg-pink-400 text-white',

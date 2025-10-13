@@ -3,7 +3,7 @@ class User {
     // ID único
     this.id = id; // En una implementación real, esto sería generado por la base de datos
 
-    // Validaciones básicas
+    //validaciones de datos
     if (!name) {
       throw new Error('El nombre es obligatorio.');
     }
