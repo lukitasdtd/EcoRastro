@@ -30,12 +30,6 @@ import { chileanRegions } from "@/lib/chile-locations";
 // Setup de Firebase Storage
 const storage = getStorage(app);
 
-// Carga dinámica del mapa
-const LeafletMapDraggable = dynamic(() => import('@/components/leaflet-map-draggable'), {
-  ssr: false,
-  loading: () => <p className="text-sm text-muted-foreground p-4 bg-muted rounded-md mt-2">Cargando mapa...</p>,
-});
-
 // Regex para validar teléfono chileno
 const phoneRegex = new RegExp(
   /^(\+?56)?(\s?)(9)(\s?)[987654321]\d{7}$/
@@ -47,8 +41,6 @@ const gardenSchema = z.object({
   address: z.string().min(5, { message: "La dirección debe tener al menos 5 caracteres." }),
   region: z.string({ required_error: "Por favor selecciona una región." }),
   commune: z.string({ required_error: "Por favor selecciona una comuna." }),
-  lat: z.number({ required_error: "Debes seleccionar una ubicación en el mapa."}),
-  lng: z.number({ required_error: "Debes seleccionar una ubicación en el mapa."}),
   surface: z.preprocess(
     (val) => (val === "" ? undefined : Number(String(val).replace(/\D/g, ''))),
     z.number().positive("La superficie debe ser un número positivo.").optional()
@@ -321,9 +313,6 @@ export function FormularioHuerta() {
                 </div>
             </div>
 
-            <div>
-              <FormMessage>{form.formState.errors.lat?.message || form.formState.errors.lng?.message}</FormMessage>
-            </div>
              <FormField control={form.control} name="surface" render={({ field }) => ( <FormItem> <FormLabel>Superficie aproximada (m²)</FormLabel> <FormControl><Input type="number" placeholder="Ej: 50" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
 
