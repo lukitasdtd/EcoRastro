@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { HelpCircle, ArrowLeft, RotateCw, Bird, Bug, Rabbit, Sparkles, Phone } from 'lucide-react';
+import { HelpCircle, ArrowLeft, RotateCw, Bird, Bug, Rabbit, Sparkles, Phone, Siren, Building, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { FlipCard } from '@/components/ui/flip-card';
 
@@ -91,7 +91,7 @@ export default function FaunaSilvestrePage() {
             {localFauna.map((fauna) => (
               <FlipCard
                 key={fauna.name}
-                className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer h-40"
+                className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer min-h-[220px]"
                 frontContent={(
                   <div className="relative w-full h-full flex items-center justify-center p-4">
                     <h3 className="text-xl font-bold text-gray-800 px-4 text-center">{fauna.name}</h3>
@@ -138,13 +138,34 @@ export default function FaunaSilvestrePage() {
                   <CardTitle className="text-2xl font-bold text-destructive">Animal Herido o en Peligro</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6 flex flex-col items-center">
-                    <p className="text-gray-600 mb-4">Si encuentras fauna silvestre que necesita ayuda, contacta a la autoridad local. No intervengas directamente por tu seguridad y la del animal.</p>
-                    <div className="bg-destructive/10 p-4 rounded-lg w-full">
-                      <p className="font-bold text-destructive text-lg">Busca en línea:</p>
-                      <p className="text-destructive/90 font-mono text-sm">"rescate de fauna [tu ciudad]"</p>
+                    <p className="text-gray-600 mb-6">Si encuentras fauna silvestre que necesita ayuda, contacta a las autoridades. No intervengas directamente por tu seguridad y la del animal.</p>
+                    
+                    <div className="w-full space-y-4 text-left">
+                        <div className="flex items-center gap-4 p-3 bg-destructive/10 rounded-lg">
+                            <Siren className="h-6 w-6 text-destructive flex-shrink-0"/>
+                            <div>
+                                <p className="font-bold text-destructive">Carabineros</p>
+                                <p className="text-destructive/90 font-mono text-sm">133</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4 p-3 bg-destructive/10 rounded-lg">
+                            <Building className="h-6 w-6 text-destructive flex-shrink-0"/>
+                            <div>
+                                <p className="font-bold text-destructive">Municipalidad</p>
+                                <p className="text-destructive/90 text-sm">Busca el contacto de tu municipalidad</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4 p-3 bg-destructive/10 rounded-lg">
+                            <ShieldCheck className="h-6 w-6 text-destructive flex-shrink-0"/>
+                            <div>
+                                <p className="font-bold text-destructive">Servicio Agrícola Ganadero (SAG)</p>
+                                <p className="text-destructive/90 font-mono text-sm">(02) 2345 1100</p>
+                            </div>
+                        </div>
                     </div>
-                    <p className="mt-4 text-xs text-muted-foreground">
-                      El número de emergencia puede variar según tu ubicación.
+
+                    <p className="mt-6 text-xs text-muted-foreground">
+                      Los números de emergencia pueden variar según tu ubicación.
                     </p>
                 </CardContent>
             </Card>
