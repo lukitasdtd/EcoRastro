@@ -33,11 +33,11 @@ export const navItems: NavItem[] = [
   },
   {
     label: 'Huertas',
-    href: '/gardens',
+    href: '/huertas',
     subItems: [
       {
         label: 'Encontrar Huerta',
-        href: '/gardens#finder',
+        href: '/huertas#finder',
       },
       {
         label: 'Calendario de Siembra',

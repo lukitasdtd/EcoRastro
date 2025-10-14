@@ -20,6 +20,7 @@ export default function LeafletMapDraggable({ onLocationChange, position }: Drag
   const defaultCenter: LatLngTuple = [-33.4489, -70.6693];
   const defaultZoom = 13;
 
+  //se inicializa mapa
   useEffect(() => {
     let isMounted = true;
     if (mapRef.current && !mapInstance.current) {
@@ -65,6 +66,7 @@ export default function LeafletMapDraggable({ onLocationChange, position }: Drag
       });
     }
 
+    //limpia el mapa al quitar el componente
     return () => {
       isMounted = false;
       if (mapInstance.current) {

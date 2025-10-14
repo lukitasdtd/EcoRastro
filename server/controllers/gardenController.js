@@ -1,82 +1,77 @@
+'use strict';
 const pool = require('../utils/db');
 
-// Crear una nueva huerta
+const controllerName = "gardenController";
+
+// --- FUNCIN PARA CREAR UNA HUERTA ---
 exports.createGarden = async (req, res) => {
-  try {
-    const { name, size } = req.body;
-    const newGarden = await pool.query(
-      'INSERT INTO "huertas" (name, size) VALUES ($1, $2) RETURNING *',
-      [name, size]
-    );
-    res.status(201).json(newGarden.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
-  }
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "La imagen de la huerta es requerida." });
+        }
+
+        // 1. Extraer todos los datos del cuerpo y del token/middleware
+        const userRut = req.user.rut;
+        const imageUrl = req.file.path;
+        const { nombre, descripcion, direccion, comuna, region, cont_email, cont_tel } = req.body;
+
+        // 2. Construir el objeto de direccin y convertirlo a JSON
+        const addressObject = {
+            calle: direccion,
+            comuna: comuna,
+            region: region
+        };
+        const fullAddressJson = JSON.stringify(addressObject);
+
+        // 3. Insertar en la tabla "huertas" incluyendo los campos de contacto
+        const nuevaHuerta = await pool.query(
+            'INSERT INTO "huertas" (nombre, descripcion, direccion, image_url, user_rut, cont_email, cont_tel) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            [nombre, descripcion, fullAddressJson, imageUrl, userRut, cont_email, cont_tel]
+        );
+
+        res.status(201).json(nuevaHuerta.rows[0]);
+
+    } catch (err) {
+        console.error(`${controllerName}: Error al crear la huerta.`, {
+            errorMessage: err.message,
+            stack: err.stack,
+            requestBody: req.body,
+        });
+        res.status(500).json({ message: `Error del servidor: No se pudo crear la huerta. Verifique la estructura de la tabla y el formato de los datos.` });
+    }
 };
 
-// Obtener todas las huertas
+// --- FUNCIN PARA OBTENER TODAS LAS HUERTAS ---
 exports.getGardens = async (req, res) => {
-  try {
-    const allGardens = await pool.query('SELECT * FROM "huertas"');
-    res.json(allGardens.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
-  }
+    try {
+        const todasLasHuertas = await pool.query('SELECT * FROM "huertas"');
+        res.status(200).json(todasLasHuertas.rows);
+    } catch (err) {
+        console.error(`${controllerName}: Error al obtener las huertas.`, {
+            errorMessage: err.message,
+            stack: err.stack,
+        });
+        res.status(500).json({ message: "Error del servidor: No se pudieron obtener las huertas." });
+    }
 };
 
-// Obtener una huerta por ID
+// --- FUNCIN PARA OBTENER UNA HUERTA POR ID ---
 exports.getGardenById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const garden = await pool.query('SELECT * FROM "huertas" WHERE id = $1', [id]);
+    try {
+        const { id } = req.params;
+        const huerta = await pool.query('SELECT * FROM "huertas" WHERE id = $1', [id]);
 
-    if (garden.rows.length === 0) {
-      return res.status(404).json({ message: "Huerta no encontrada." });
+        if (huerta.rows.length === 0) {
+            return res.status(404).json({ message: "Huerta no encontrada." });
+        }
+
+        res.status(200).json(huerta.rows[0]);
+    } catch (err) {
+        console.error(`${controllerName}: Error al obtener la huerta por ID.`, {
+            errorMessage: err.message,
+            stack: err.stack,
+            params: req.params
+        });
+        res.status(500).json({ message: "Error del servidor: No se pudo obtener la huerta." });
     }
-
-    res.json(garden.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
-  }
-};
-
-// Actualizar una huerta
-exports.updateGarden = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, size } = req.body;
-    const updateGarden = await pool.query(
-      'UPDATE "huertas" SET name = $1, size = $2 WHERE id = $3 RETURNING *',
-      [name, size, id]
-    );
-
-    if (updateGarden.rows.length === 0) {
-      return res.status(404).json({ message: "Huerta no encontrada." });
-    }
-
-    res.json(updateGarden.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
-  }
-};
-
-// Eliminar una huerta
-exports.deleteGarden = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleteGarden = await pool.query('DELETE FROM "huertas" WHERE id = $1 RETURNING *', [id]);
-
-    if (deleteGarden.rows.length === 0) {
-        return res.status(404).json({ message: "Huerta no encontrada." });
-    }
-
-    res.json({ message: "Huerta eliminada correctamente." });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
-  }
 };

@@ -5,13 +5,13 @@ import Image from "next/image";
 interface LogoProps {
     size?: 'default' | 'large';
 }
-
+//componente logo
 export function Logo({ size = 'default' }: LogoProps) {
     const sizes = {
         default: {
             width: 240,
             height: 124,
-            className: "h-16 w-auto",
+            className: "h-16 w-auto mt-2",
         },
         large: {
             width: 360,
@@ -29,7 +29,7 @@ export function Logo({ size = 'default' }: LogoProps) {
             aria-label="EcoRastro Home"
         >
             <Image
-                src="/logo.png"
+                src="/logoeco2.png"
                 alt="EcoRastro Logo"
                 width={selectedSize.width}
                 height={selectedSize.height}

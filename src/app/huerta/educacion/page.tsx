@@ -9,6 +9,7 @@ import {
   Sprout, Sun, Droplets, Bug, Recycle, Lightbulb, Tractor, Users, Leaf, Heart, ArrowLeft, RotateCw, ListChecks, Shovel
 } from 'lucide-react';
 
+//importación de iconos de lucide react 
 export default function HuertaEducationPage() {
   const gardenTypes = [
     {
@@ -106,7 +107,7 @@ export default function HuertaEducationPage() {
             </Button>
         </div>
 
-        {/* --- Hero Section --- */}
+        {/* --- Sección del hero --- */}
         <section className="text-center mb-16">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">

@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Clock, Info } from 'lucide-react';
 
-// Helper para obtener la hora actual en Chile (GMT-4)
+// ayudante de la función para obtener la hora actual en Chile (GMT-4)
 const getChileanTime = () => {
   const now = new Date();
   const chileanOffset = -4 * 3600 * 1000;

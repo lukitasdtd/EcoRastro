@@ -5,6 +5,7 @@ import { Header } from '@/components/header';
 import { Toaster } from '@/components/ui/toaster';
 import { Footer } from '@/components/footer';
 
+// configuración de fuentes
 const quicksand = Quicksand({
   subsets: ['latin'],
   variable: '--font-quicksand',
@@ -17,12 +18,23 @@ const roboto = Roboto({
   weight: ['400', '500', '700'],
 });
 
-
+//configuración de metadatos
 export const metadata: Metadata = {
   title: 'EcoRastro',
   description: 'Conectando comunidades. Protegiendo ecosistemas.',
+  icons: {
+    icon: [
+      { url: '/favicon3.png', sizes: '32x32' },
+      { url: '/favicon3.png', sizes: '128x128' },
+      { url: '/favicon3.png', sizes: '192x192' },
+    ],
+    apple: [
+      { url: '/favicon3.png', sizes: '180x180' },
+    ],
+  },
 };
 
+//componente principal
 export default function RootLayout({
   children,
 }: Readonly<{

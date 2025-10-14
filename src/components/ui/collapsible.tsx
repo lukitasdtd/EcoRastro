@@ -1,5 +1,6 @@
 "use client"
 
+//componente colapsable para el menú lateral de la página 
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
 
 const Collapsible = CollapsiblePrimitive.Root

@@ -1,21 +1,23 @@
 class User {
-  constructor(id, name, email) {
-    // ID único
-    this.id = id; // En una implementación real, esto sería generado por la base de datos
+    constructor(id, nombre, apellido, rut, correo, contrasena) {
+        this.id = id;
 
-    // Validaciones básicas
-    if (!name) {
-      throw new Error('El nombre es obligatorio.');
-    }
-    if (!email) {
-      throw new Error('El email es obligatorio.');
-    }
+        // Validaciones básicas para asegurar que los campos esenciales no sean nulos
+        if (!nombre) throw new Error('El nombre es obligatorio.');
+        if (!apellido) throw new Error('El apellido es obligatorio.');
+        if (!rut) throw new Error('El RUT es obligatorio.');
+        if (!correo) throw new Error('El correo es obligatorio.');
+        if (!contrasena) throw new Error('La contraseña es obligatoria.');
 
-    // Tipos de datos
-    this.name = String(name);
-    this.email = String(email);
-    // En una implementación real, la unicidad del email se manejaría a nivel de base de datos.
-  }
+        // Asignación de propiedades
+        this.nombre = String(nombre);
+        this.apellido = String(apellido);
+        this.rut = String(rut);
+        this.correo = String(correo);
+        // IMPORTANTE: En una aplicación real, la contraseña nunca se guarda como texto plano.
+        // Debería ser "hasheada" (cifrada de forma irreversible) antes de llegar aquí.
+        this.contrasena = String(contrasena);
+    }
 }
 
 module.exports = User;

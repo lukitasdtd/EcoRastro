@@ -9,6 +9,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { CropDetail } from '@/lib/crop-details';
 import { CropIcon } from './CropIcon';
 
+// modal para mostrar detalles de cultivos
 export type ModalData = CropDetail & {
   id: string;
   imageId?: string;
@@ -47,6 +48,7 @@ export const CropDetailModal: React.FC<CropDetailModalProps> = ({ crop, onClose 
                   src={image.imageUrl} 
                   alt={crop.name} 
                   fill 
+                  sizes="(max-width: 768px) 90vw, 448px"
                   style={{ objectFit: 'cover' }} 
                   data-ai-hint={image.imageHint}
                 />

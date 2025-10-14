@@ -8,13 +8,22 @@ import { Button } from '@/components/ui/button';
 import { LocateFixed, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Map, Marker, CircleMarker } from 'leaflet';
-import type { MapPoint } from '@/lib/data';
 
+interface MapPoint {
+  id: number;
+  lat: number;
+  lng: number;
+  type: 'pet' | 'garden';
+  name: string;
+}
+
+//componente de mapa interactivo con leaflet
 interface LeafletMapProps {
   points: MapPoint[];
   activeFilter: 'all' | 'mascotas' | 'huertas'; // Se añade 'all'
 }
 
+//componente de mapa interactivo con leaflet
 export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstance = useRef<Map | null>(null);
@@ -25,6 +34,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
     const initialCenter: [number, number] = [-33.4489, -70.6693];
     const initialZoom = 11;
 
+    //se inicializa el mapa con leaflet
     useEffect(() => {
         let isMounted = true;
         if (typeof window === 'undefined' || !mapRef.current) return;
@@ -75,6 +85,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         };
     }, [toast]); // Se quita `points` porque se maneja en el otro useEffect
 
+// se actualiza el mapa cuando cambia el filtro
     useEffect(() => {
         if (!mapInstance.current) return;
         
@@ -90,15 +101,27 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
             : points.filter(p => p.type === (activeFilter === 'mascotas' ? 'pet' : 'garden'));
 
         import('leaflet').then(L => {
+            const petIcon = L.icon({
+                iconUrl: '/map-icons/pin-yellow.svg',
+                iconSize: [32, 32],
+            });
+
+            const gardenIcon = L.icon({
+                iconUrl: '/map-icons/pin-green.svg',
+                iconSize: [32, 32],
+            });
+
             filteredPoints.forEach(point => {
-                const marker = L.marker([point.lat, point.lng]).addTo(map);
-                marker.bindPopup(`<b>${point.title}</b><br>${point.desc}`);
+                const icon = point.type === 'pet' ? petIcon : gardenIcon;
+                const marker = L.marker([point.lat, point.lng], { icon }).addTo(map);
+                marker.bindPopup(`<b>${point.name}</b>`);
                 markersRef.current.push(marker);
             });
         });
 
     }, [activeFilter, points]); // Se ejecuta cuando el filtro o los puntos cambian
     
+    //se actualiza el mapa cuando cambia el tamaño de la ventana
     useEffect(() => {
         const handleResize = () => {
             if (mapInstance.current) {
@@ -113,7 +136,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         };
     }, []);
 
-
+    //se actualiza el mapa cuando cambia el centro del mapa
     const handleGeolocate = () => {
         if (navigator.geolocation && mapInstance.current) {
             const map = mapInstance.current;
@@ -140,6 +163,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         }
     };
 
+    //se actualiza el mapa cuando se hace click en el mapa
     const handleRecenter = () => {
         mapInstance.current?.flyTo(initialCenter, initialZoom);
     };

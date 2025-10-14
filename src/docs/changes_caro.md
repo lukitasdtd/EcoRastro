@@ -26,3 +26,8 @@
 -se crea la estructura backend
 -se crean las rutas 
 -se termina crud
+
+#### se hicieron los siguientes cambios #### 
+-se terminó de comentar correctamente los archivos
+-se cambio favicon de fireabse a logo de EcoRastro
+-ahora la carpeta favicon se encuentra en /public

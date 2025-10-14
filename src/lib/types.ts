@@ -1,61 +1,68 @@
-
-export interface Pet {
-  id: string;
-  name: string;
-  type: 'Perro' | 'Gato';
-  breed: string;
-  age: number;
-  imageId: string;
+export interface Address {
+    calle: string;
+    comuna: string;
+    region: string;
 }
 
 export interface Garden {
-  id: string;
-  name: string;
-  location: string;
-  description: string;
-  imageId: string;
+    id: number;
+    nombre: string;
+    descripcion: string;
+    direccion: Address | string; // Puede ser un objeto o un JSON string
+    image_url: string;
+    user_rut: string;
+    cont_email: string;
+    cont_tel: string;
+    fecha_creacion: string; // ISO 8601 string
 }
 
-export interface PlantingInfo {
-  month: string;
-  crops: string[];
-}
-
-export interface Shelter {
-  id: string;
-  name: string;
-  location: string;
-  imageId: string;
-  rating: number;
-  reviewCount: number;
-}
-
-// Interfaz para un comentario individual
 export interface PetComment {
-  id: string;
-  author: string;
-  date: string; // Formato ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-  location: string; // "Ciudad, Región"
-  comment: string;
+    id: string; // O number, dependiendo de la implementación futura
+    author: string;
+    date: string;
+    location: string;
+    comment: string;
 }
 
 export interface ReportedPet {
-  id: string;
-  name: string;
-  species: 'Perro' | 'Gato' | 'Otro';
-  breed: string;
-  status: 'Perdido' | 'Encontrado';
-  date: string;
-  location: string;
-  description: string;
-  imageId: string;
-  size: 'Pequeño' | 'Mediano' | 'Grande';
-  temperament?: string[];
-  distinguishingMarks?: string;
-  wearsCollar?: boolean;
-  reward?: boolean;
-  contactName?: string;
-  contactPhone?: string;
-  preferredContact?: 'telefono' | 'whatsapp' | 'correo';
-  comments?: PetComment[]; // Array de comentarios
+    id: number;
+    nombre_mascota: string;
+    especie: string;
+    raza: string;
+    color: string;
+    tamano: string;
+    descripcion: string;
+    image_url: string;
+    ultimo_lugar_visto: string;
+    fecha_reporte: string; // ISO 8601 string
+    estado_reporte: 'encontrado' | 'perdido';
+    user_rut: string;
+    // Los campos de contacto y otros detalles se podrían añadir si es necesario en el futuro
+    // Por ejemplo: contactName, contactPhone, etc.
+}
+
+// --- Tipos que ya no parecen estar en uso activo en el backend ---
+// Se mantienen por si algún componente antiguo aún los necesita, pero deberían ser deprecados.
+
+export interface Pet {
+    id: string;
+    name: string;
+    type: 'Perro' | 'Gato';
+    breed: string;
+    age: number;
+    imageId: string;
+}
+
+export interface PlantingInfo {
+    month: string;
+    crops: string[];
+}
+
+export interface Shelter {
+    id: string;
+    name: string;
+    location: string;
+    imageId: string;
+    rating: number;
+    reviewCount: number;
 }

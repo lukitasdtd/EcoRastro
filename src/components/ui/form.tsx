@@ -24,6 +24,7 @@ type FormFieldContextValue<
   name: TName
 }
 
+// se crea un contexto para el campo del formulario
 const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
 )
@@ -41,6 +42,7 @@ const FormField = <
   )
 }
 
+//se crea contexto para item de formulario
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
@@ -103,6 +105,7 @@ const FormLabel = React.forwardRef<
 })
 FormLabel.displayName = "FormLabel"
 
+//componente para el control de formulario
 const FormControlAsSlot = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
@@ -125,6 +128,7 @@ const FormControlAsSlot = React.forwardRef<
 })
 FormControlAsSlot.displayName = "FormControl"
 
+//se exporta el componente para el control de formulario
 
 export function FormControl({ children, ...rest }: React.ComponentProps<typeof FormControlAsSlot>) {
   const arr = React.Children.toArray(children);
@@ -152,6 +156,7 @@ const FormDescription = React.forwardRef<
 })
 FormDescription.displayName = "FormDescription"
 
+//se exporta el componente para el mensaje de error 
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>

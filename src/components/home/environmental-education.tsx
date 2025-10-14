@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 
+// sección de educación ambiental
 const educationalTopics = [
     {
       title: 'Huertos Sostenibles',
@@ -47,9 +48,10 @@ export function EnvironmentalEducation() {
             <div className="flex flex-col gap-6">
                 <div className="relative w-full h-64 rounded-2xl overflow-hidden shadow-md">
                     <Image
-                        src="/adopcion.webp"
+                        src="/adopcion.jpg"
                         alt="Una manada de cachorros en un entorno natural"
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         style={{ objectFit: 'cover' }}
                     />
                 </div>
@@ -58,6 +60,7 @@ export function EnvironmentalEducation() {
                         src="/cultivo_lechuga.jpg"
                         alt="Un cultivo de lechugas frescas en un huerto"
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         style={{ objectFit: 'cover' }}
                     />
                 </div>

@@ -33,9 +33,9 @@ import { allMapPoints } from '@/lib/data';
 export default function SupportNetworksPage() {
   const Map = useMemo(() => dynamic(
     () => import('@/components/leaflet-map'),
-    { 
+    {
       loading: () => <Skeleton className="w-full h-full rounded-2xl" />,
-      ssr: false 
+      ssr: false
     }
   ), []);
 
@@ -49,6 +49,7 @@ export default function SupportNetworksPage() {
           src="/gato-naranjo.jpg"
           alt="Un adorable gato naranjo mirando hacia arriba, sentado en un sillón"
           fill
+          sizes="100vw"
           style={{ objectFit: 'cover' }}
           className="brightness-50"
           priority

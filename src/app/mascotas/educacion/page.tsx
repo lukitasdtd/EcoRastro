@@ -115,7 +115,7 @@ export default function PetEducationPage() {
           </Button>
         </div>
 
-        {/* --- Hero Section --- */}
+        {/* --- sección del hero --- */}
         <section className="text-center mb-16">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">
@@ -232,7 +232,7 @@ export default function PetEducationPage() {
             </p>
             <div className="flex justify-center gap-6 flex-wrap">
                 <Button variant="outline" className="bg-white/80" asChild>
-                    <Link href="/adoption">Ver Mascotas en Adopción</Link>
+                    <Link href="/mascotas/redes-apoyo">Ver Redes de Apoyo</Link>
                 </Button>
                 <Button className="bg-orange-500 hover:bg-orange-600" asChild>
                     <Link href="/reportar-mascota">Reportar una Mascota</Link>
