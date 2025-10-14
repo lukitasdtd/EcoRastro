@@ -10,7 +10,8 @@ import ReportedPetCard from "@/components/reported-pet-card";
 import { PawPrint, Sprout } from "lucide-react";
 import { EditProfileDialog } from "@/components/edit-profile-dialog";
 import type { ReportedPet } from "@/lib/types";
-import GardenCard from "@/components/garden-card"; // Asumiendo que este componente existe
+import GardenCard from "@/components/garden-card";
+import withAuth from '@/components/withAuth';
 
 // Define un tipo para el estado del usuario para mayor claridad
 type UserProfile = {
@@ -21,7 +22,7 @@ type UserProfile = {
     avatarUrl: string;   // Este campo no viene del backend, usaremos un valor por defecto
 };
 
-export default function UserProfilePage() {
+function UserProfilePage() {
     const router = useRouter();
     const [user, setUser] = useState<UserProfile | null>(null);
     const [userReports, setUserReports] = useState<ReportedPet[]>([]);
@@ -31,22 +32,30 @@ export default function UserProfilePage() {
 
     const handleLogout = () => {
         localStorage.removeItem('userEmail');
+        localStorage.removeItem('authToken'); // También elimina el token de autenticación
         router.push('/login');
     };
 
     useEffect(() => {
         const fetchUserData = async () => {
+            // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+            console.log("--- Depurando datos de sesión en la página de perfil ---");
+            console.log("Contenido completo de localStorage:", localStorage);
             const userEmail = localStorage.getItem('userEmail');
+            console.log("Valor obtenido de localStorage.getItem('userEmail'):", userEmail);
+            // --- FIN DE CÓDIGO DE DEPURACIÓN ---
+            
             if (!userEmail) {
                 setError('No se encontró el correo del usuario. Por favor, inicie sesión de nuevo.');
                 setLoading(false);
-                router.push('/login');
+                // No redirigir inmediatamente para poder ver el error.
+                // router.push('/login'); 
                 return;
             }
 
             try {
-                // Obtener datos del usuario por email
-                const userResponse = await fetch(`/api/users/email/${userEmail}`);
+                // 1. Obtener datos del usuario por email
+                const userResponse = await fetch(`/api/users/email/${encodeURIComponent(userEmail)}`);
                 if (!userResponse.ok) throw new Error('No se pudo cargar la información del usuario.');
                 const userData = await userResponse.json();
                 setUser({
@@ -57,18 +66,23 @@ export default function UserProfilePage() {
                     avatarUrl: "https://github.com/shadcn.png"
                 });
 
-                // Obtener mascotas reportadas usando el RUT del usuario obtenido
-                const petsResponse = await fetch(`/api/users/${userData.rut}/reported-pets`);
-                if (petsResponse.ok) {
-                    const pets = await petsResponse.json();
-                    setUserReports(pets);
-                }
+                // 2. Usar el RUT del usuario para obtener sus mascotas y huertas en paralelo
+                const userRut = userData.rut;
+                if (userRut) { // Asegurarse de que el RUT existe antes de hacer las llamadas
+                    const [petsResponse, gardensResponse] = await Promise.all([
+                        fetch(`/api/users/${userRut}/reported-pets`),
+                        fetch(`/api/users/${userRut}/gardens`)
+                    ]);
 
-                // Obtener huertas del usuario usando el RUT
-                const gardensResponse = await fetch(`/api/users/${userData.rut}/gardens`);
-                if (gardensResponse.ok) {
-                    const gardens = await gardensResponse.json();
-                    setUserGardens(gardens);
+                    if (petsResponse.ok) {
+                        const pets = await petsResponse.json();
+                        setUserReports(pets);
+                    }
+
+                    if (gardensResponse.ok) {
+                        const gardens = await gardensResponse.json();
+                        setUserGardens(gardens);
+                    }
                 }
 
             } catch (err: any) {
@@ -96,7 +110,7 @@ export default function UserProfilePage() {
     }
 
     if (!user) {
-        return <div className="container mx-auto text-center py-12">No se encontró el perfil del usuario.</div>;
+        return <div className="container mx-auto text-center py-12">No se encontró el perfil del usuario. Vuelva a iniciar sesión.</div>;
     }
 
     return (
@@ -166,7 +180,7 @@ export default function UserProfilePage() {
                                 ) : (
                                     <div className="text-center py-12 text-muted-foreground">
                                         <p>Aún no has realizado publicaciones sobre huertas.</p>
-                                        <Button variant="link" className="mt-2">Crear una nueva publicación</Button>
+                                        <Button herf="/reportar-mascota/page" className="mt-2">Crear una nueva publicación</Button>
                                     </div>
                                 )}
                             </CardContent>
@@ -177,3 +191,5 @@ export default function UserProfilePage() {
         </div>
     );
 }
+
+export default withAuth(UserProfilePage);

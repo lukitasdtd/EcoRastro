@@ -1,67 +1,44 @@
+'use strict';
 const pool = require('../utils/db');
 
-// Crear una nueva huerta
+const controllerName = "gardenController";
+
+// --- FUNCIÓN PARA CREAR UNA HUERTA ---
 exports.createGarden = async (req, res) => {
-  try {
-    const { name, size } = req.body;
-    const newGarden = new Garden(nextId++, name, size);
-    gardens.push(newGarden);
-    res.status(201).json(newGarden);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
-  }
-};
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "La imagen de la huerta es requerida." });
+        }
 
-// Obtener todas las huertas
-exports.getGardens = async (req, res) => {
-  try {
-    const allGardens = await pool.query('SELECT * FROM "huertas"');
-    res.json(allGardens.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error en el servidor");
-  }
-};
+        // 1. Extraer todos los datos del cuerpo y del token/middleware
+        const userRut = req.user.rut;
+        const imageUrl = req.file.path;
+        // CORREGIDO: Se añaden cont_email y cont_tel a la desestructuración
+        const { nombre, descripcion, direccion, comuna, region, cont_email, cont_tel } = req.body;
 
-// Obtener una huerta por ID
-exports.getGardenById = async (req, res) => {
-  try {
-    const garden = gardens.find(g => g.id === parseInt(req.params.id));
-    if (!garden) {
-      return res.status(404).json({ message: 'Jardín no encontrado.' });
+        // 2. Construir el objeto de dirección y convertirlo a JSON
+        const addressObject = {
+            calle: direccion,
+            comuna: comuna,
+            region: region
+        };
+        const fullAddressJson = JSON.stringify(addressObject);
+
+        // 3. Insertar en la tabla "huertas" incluyendo los campos de contacto
+        // CORREGIDO: Se añaden las columnas y los valores para el contacto
+        const nuevaHuerta = await pool.query(
+            'INSERT INTO "huertas" (nombre, descripcion, direccion, image_url, user_rut, cont_email, cont_tel) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            [nombre, descripcion, fullAddressJson, imageUrl, userRut, cont_email, cont_tel]
+        );
+
+        res.status(201).json(nuevaHuerta.rows[0]);
+
+    } catch (err) {
+        console.error(`${controllerName}: Error al crear la huerta.`, {
+            errorMessage: err.message,
+            stack: err.stack,
+            requestBody: req.body,
+        });
+        res.status(500).json({ message: `Error del servidor: No se pudo crear la huerta. Verifique la estructura de la tabla y el formato de los datos.` });
     }
-    res.status(200).json(garden);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
-  }
-};
-
-// Actualizar una huerta
-exports.updateGarden = async (req, res) => {
-  try {
-    const { name, size } = req.body;
-    const gardenIndex = gardens.findIndex(g => g.id === parseInt(req.params.id));
-    if (gardenIndex === -1) {
-      return res.status(404).json({ message: 'Jardín no encontrado.' });
-    }
-    const updatedGarden = { ...gardens[gardenIndex], name: name || gardens[gardenIndex].name, size: size || gardens[gardenIndex].size };
-    gardens[gardenIndex] = updatedGarden;
-    res.status(200).json(updatedGarden);
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
-  }
-};
-
-// Eliminar una huerta
-exports.deleteGarden = async (req, res) => {
-  try {
-    const gardenIndex = gardens.findIndex(g => g.id === parseInt(req.params.id));
-    if (gardenIndex === -1) {
-      return res.status(404).json({ message: 'Jardín no encontrado.' });
-    }
-    gardens.splice(gardenIndex, 1);
-    res.status(200).json({ message: 'Jardín eliminado correctamente.' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
-  }
 };
