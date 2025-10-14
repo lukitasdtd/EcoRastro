@@ -2,28 +2,34 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import GardenCard from '@/components/garden-card';
 import { GardenFinder } from '@/components/garden-finder';
-import type { MapPoint } from '@/lib/data';
+import type { Garden } from '@/lib/types';
 
 export default function GardensPage() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'garden1');
-  const [gardens, setGardens] = useState<MapPoint[]>([]);
+  
+  const [allGardens, setAllGardens] = useState<Garden[]>([]);
+  const [filteredGardens, setFilteredGardens] = useState<Garden[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchGardens = async () => {
       try {
-        const response = await fetch('/api/gardens');
+        // Usar la ruta correcta de la API
+        const response = await fetch('http://localhost:3001/api/gardens');
         if (response.ok) {
-          const data = await response.json();
-          setGardens(data);
+          const data: Garden[] = await response.json();
+          setAllGardens(data);
+          setFilteredGardens(data);
+        } else {
+          console.error("Error al obtener las huertas:", response.statusText);
         }
       } catch (error) {
-        console.error("Error fetching gardens:", error);
+        console.error("Error de red al obtener las huertas:", error);
       } finally {
         setLoading(false);
       }
@@ -31,6 +37,23 @@ export default function GardensPage() {
 
     fetchGardens();
   }, []);
+
+  // Efecto para filtrar las huertas cuando cambia el término de búsqueda
+  useEffect(() => {
+    const lowercasedFilter = searchTerm.toLowerCase();
+    const filtered = allGardens.filter(garden => {
+      // Asumimos que la dirección es un string JSON o un objeto
+      const addressString = typeof garden.direccion === 'string' 
+        ? garden.direccion 
+        : JSON.stringify(garden.direccion);
+      
+      return (
+        garden.nombre.toLowerCase().includes(lowercasedFilter) ||
+        addressString.toLowerCase().includes(lowercasedFilter)
+      );
+    });
+    setFilteredGardens(filtered);
+  }, [searchTerm, allGardens]);
 
   return (
     <div className="bg-gray-50">
@@ -51,8 +74,8 @@ export default function GardensPage() {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        {/* TAREA 8: Formulario de Búsqueda con IA (Server Action) */}
-        <GardenFinder />
+        {/* Pasar el estado y la función de actualización al componente de búsqueda */}
+        <GardenFinder searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
         {/* Sección de la Grilla de Huertas */}
         <div className="mt-16">
@@ -60,12 +83,12 @@ export default function GardensPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
               <p>Cargando huertas...</p>
-            ) : gardens.length > 0 ? (
-              gardens.map(garden => (
-                <GardenCard key={garden.title} garden={garden} />
+            ) : filteredGardens.length > 0 ? (
+              filteredGardens.map(garden => (
+                <GardenCard key={garden.id} garden={garden} />
               ))
             ) : (
-              <p>No se encontraron huertas.</p>
+              <p>No se encontraron huertas que coincidan con tu búsqueda.</p>
             )}
           </div>
         </div>

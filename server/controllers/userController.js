@@ -4,18 +4,15 @@ const jwt = require('jsonwebtoken');
 
 const controllerName = "userController";
 
-// ---- VERIFICACIÓN DE SEGURIDAD CRÍTICA AL INICIO ----
 if (!process.env.JWT_SECRET) {
-    console.error('\n---\n');
-    console.error('¡ERROR FATAL! La variable de entorno JWT_SECRET no está definida.');
-    console.error('El servidor no puede firmar tokens de autenticación de forma segura.');
-    console.error('Añada la variable JWT_SECRET a su archivo .env para continuar.');
-    console.error('\n---\n');
-    process.exit(1);
+  console.error('\n---\n');
+  console.error('¡ERROR FATAL! La variable de entorno JWT_SECRET no está definida.');
+  console.error('El servidor no puede firmar tokens de autenticación de forma segura.');
+  console.error('Añada la variable JWT_SECRET a su archivo .env para continuar.');
+  console.error('\n---\n');
+  process.exit(1);
 }
-// --------------------------------------------------
 
-// Crear un nuevo usuario
 exports.createUser = async (req, res) => {
     try {
         const { rut, nombre, apellido, correo, contrasena } = req.body;
@@ -35,7 +32,6 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// Iniciar sesión (Seguro)
 exports.loginUser = async (req, res) => {
     try {
         const { correo, contrasena } = req.body;
@@ -58,8 +54,7 @@ exports.loginUser = async (req, res) => {
     }
 };
 
-// Obtener todos los usuarios
-exports.getUsers = async (req, res) => {
+exports.getUsers = async (req, res) => { 
     try {
         const allUsers = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios"');
         res.json(allUsers.rows);
@@ -69,8 +64,7 @@ exports.getUsers = async (req, res) => {
     }
 };
 
-// Obtener usuario por RUT
-exports.getUserById = async (req, res) => {
+exports.getUserById = async (req, res) => { 
     try {
         const { id } = req.params;
         const user = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios" WHERE rut = $1', [id]);
@@ -84,7 +78,6 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-// Actualizar un usuario
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -104,7 +97,6 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-// Eliminar un usuario
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
