@@ -10,6 +10,7 @@ interface ReportedPetCardProps {
     pet: ReportedPet;
 }
 
+// componente de tarjeta de mascota reportada
 export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
     // Construir la URL completa de la imagen. Asume que el backend sirve los archivos est�ticos.
     const imageUrl = pet.image_url ? `http://localhost:3001/${pet.image_url}` : '/placeholder.jpg';

@@ -4,12 +4,12 @@ const jwt = require('jsonwebtoken');
 
 const controllerName = "userController";
 
-// ---- VERIFICACI”N DE SEGURIDAD CRÕTICA AL INICIO ----
+// ---- VERIFICACI√ìN DE SEGURIDAD CR√çTICA AL INICIO ----
 if (!process.env.JWT_SECRET) {
     console.error('\n---\n');
-    console.error('°ERROR FATAL! La variable de entorno JWT_SECRET no est· definida.');
-    console.error('El servidor no puede firmar tokens de autenticaciÛn de forma segura.');
-    console.error('AÒada la variable JWT_SECRET a su archivo .env para continuar.');
+    console.error('¬°ERROR FATAL! La variable de entorno JWT_SECRET no est√° definida.');
+    console.error('El servidor no puede firmar tokens de autenticaci√≥n de forma segura.');
+    console.error('A√±ada la variable JWT_SECRET a su archivo .env para continuar.');
     console.error('\n---\n');
     process.exit(1);
 }
@@ -20,7 +20,7 @@ exports.createUser = async (req, res) => {
     try {
         const { rut, nombre, apellido, correo, contrasena } = req.body;
         if (!contrasena) {
-            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vacÌo.' });
+            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vac√≠o.' });
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(contrasena, salt);
@@ -35,26 +35,26 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// Iniciar sesiÛn (Seguro)
+// Iniciar sesi√≥n (Seguro)
 exports.loginUser = async (req, res) => {
     try {
         const { correo, contrasena } = req.body;
         if (!contrasena) {
-            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vacÌo.' });
+            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vac√≠o.' });
         }
         const user = await pool.query('SELECT * FROM "usuarios" WHERE correo = $1', [correo]);
         if (user.rows.length === 0) {
-            return res.status(401).json({ message: "Credenciales inv·lidas." });
+            return res.status(401).json({ message: "Credenciales inv√°lidas." });
         }
         const validPassword = await bcrypt.compare(contrasena, user.rows[0].psswd);
         if (!validPassword) {
-            return res.status(401).json({ message: "Credenciales inv·lidas." });
+            return res.status(401).json({ message: "Credenciales inv√°lidas." });
         }
         const token = jwt.sign({ rut: user.rows[0].rut }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token, userId: user.rows[0].rut });
     } catch (err) {
-        console.error(`${controllerName}: Error al iniciar sesiÛn - ${err.message}`);
-        res.status(500).json({ message: `Error del servidor: No se pudo iniciar sesiÛn.` });
+        console.error(`${controllerName}: Error al iniciar sesi√≥n - ${err.message}`);
+        res.status(500).json({ message: `Error del servidor: No se pudo iniciar sesi√≥n.` });
     }
 };
 

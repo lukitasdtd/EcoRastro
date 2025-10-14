@@ -17,11 +17,13 @@ interface MapPoint {
   name: string;
 }
 
+//componente de mapa interactivo con leaflet
 interface LeafletMapProps {
   points: MapPoint[];
   activeFilter: 'mascotas' | 'huertas';
 }
 
+//componente de mapa interactivo con leaflet
 export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstance = useRef<Map | null>(null);
@@ -32,6 +34,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
     const initialCenter: [number, number] = [-33.4489, -70.6693];
     const initialZoom = 11;
 
+    //se inicializa el mapa con leaflet
     useEffect(() => {
         let isMounted = true;
         if (typeof window === 'undefined' || !mapRef.current) return;
@@ -92,6 +95,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         };
     }, [toast]);
 
+// se actualiza el mapa cuando cambia el filtro
     useEffect(() => {
         if (!mapInstance.current) return;
         
@@ -123,6 +127,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
 
     }, [activeFilter, points]);
     
+    //se actualiza el mapa cuando cambia el tamaño de la ventana
     useEffect(() => {
         const handleResize = () => {
             if (mapInstance.current) {
@@ -137,7 +142,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         };
     }, []);
 
-
+    //se actualiza el mapa cuando cambia el centro del mapa
     const handleGeolocate = () => {
         if (navigator.geolocation && mapInstance.current) {
             const map = mapInstance.current;
@@ -164,6 +169,7 @@ export default function LeafletMap({ points, activeFilter }: LeafletMapProps) {
         }
     };
 
+    //se actualiza el mapa cuando se hace click en el mapa
     const handleRecenter = () => {
         mapInstance.current?.flyTo(initialCenter, initialZoom);
     };

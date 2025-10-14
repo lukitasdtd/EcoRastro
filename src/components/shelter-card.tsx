@@ -11,6 +11,7 @@ interface ShelterCardProps {
   className?: string;
 }
 
+//componente de tarjeta de albergue en el mapa de EcoRastro 
 export default function ShelterCard({ shelter, className }: ShelterCardProps) {
   const image = PlaceHolderImages.find(img => img.id === shelter.imageId);
 
@@ -33,7 +34,7 @@ export default function ShelterCard({ shelter, className }: ShelterCardProps) {
     return stars;
   };
 
-
+  
   return (
     <Card className={cn("shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl border overflow-hidden bg-card flex flex-col", className)}>
       <div className="relative w-full aspect-video">

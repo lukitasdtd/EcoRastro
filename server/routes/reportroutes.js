@@ -7,6 +7,7 @@ const { authenticateToken } = require('../middlewares');
 // Rutas para Reportes
 
 // Ruta pública para ver reportes (ejemplo)
+// Rutas para Reportes 
 router.get('/', (req, res) => res.status(200).send('List of reports')); // Placeholder
 
 // Corregido: Proteger la creación de reportes con authenticateToken en lugar de basicAuth

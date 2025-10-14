@@ -44,6 +44,7 @@ export default function MapPage() {
     }),
   []);
 
+  // se filtra la lista de puntos según el filtro activo
   const activeList = useMemo(() => 
     activeFilter === 'mascotas' 
       ? allMapPoints.filter(p => p.type === 'pet') 
@@ -51,32 +52,38 @@ export default function MapPage() {
     [activeFilter, allMapPoints]
   );
 
+  // se paginan los puntos según el filtro activo
   const totalPages = Math.ceil(activeList.length / itemsPerPage);
   const paginatedList = activeList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
   
+  //se cambia el título de la lista según el filtro activo
   const listTitle = activeFilter === 'mascotas' ? 'Mascotas Cercanas' : 'Huertas Cercanas';
   const ItemIcon = activeFilter === 'mascotas' ? PawPrint : Leaf;
 
+  //se manejan los cambios de página
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
 
+  //se manejan los cambios de página
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
+  //se maneja los cambios de filtro
   const handleFilterChange = (filter: 'mascotas' | 'huertas') => {
     setActiveFilter(filter);
     setCurrentPage(1);
   };
 
+  //se renderiza el componente
   return (
     <div className="relative min-h-[calc(100vh-80px)] bg-[#F7F9F7] md:flex">
       <aside
@@ -161,7 +168,7 @@ export default function MapPage() {
           </div>
         </div>
       </aside>
-
+      
       <main className="absolute inset-0 md:relative md:flex-1 z-0">
         <Button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}

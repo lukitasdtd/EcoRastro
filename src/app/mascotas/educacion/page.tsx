@@ -115,7 +115,7 @@ export default function PetEducationPage() {
           </Button>
         </div>
 
-        {/* --- Hero Section --- */}
+        {/* --- sección del hero --- */}
         <section className="text-center mb-16">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">

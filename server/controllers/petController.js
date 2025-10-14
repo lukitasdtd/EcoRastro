@@ -2,7 +2,7 @@ const pool = require('../utils/db');
 
 const controllerName = "petController";
 
-// --- FUNCIÓN CORREGIDA CON DIRECCIÓN COMO JSON ---
+// --- FUNCIÃ“N CORREGIDA CON DIRECCIÃ“N COMO JSON ---
 exports.createPetReport = async (req, res) => {
     try {
         if (!req.file) {
@@ -13,14 +13,14 @@ exports.createPetReport = async (req, res) => {
         const imageUrl = req.file.path;
         const { nombre, tipo, raza, color, direccion, region, comuna, descripcion } = req.body;
 
-        // CORRECCIÓN: La columna "direccion" es de tipo JSON.
-        // 1. Se crea un objeto JavaScript con los datos de la dirección.
+        // CORRECCIÃ“N: La columna "direccion" es de tipo JSON.
+        // 1. Se crea un objeto JavaScript con los datos de la direcciÃ³n.
         const addressObject = {
             calle: direccion,
             comuna: comuna,
             region: region
         };
-        // 2. Se convierte el objeto a un string JSON para la inserción en la base de datos.
+        // 2. Se convierte el objeto a un string JSON para la inserciÃ³n en la base de datos.
         const fullAddressJson = JSON.stringify(addressObject);
 
         // 3. Se inserta el string JSON en la columna "direccion".

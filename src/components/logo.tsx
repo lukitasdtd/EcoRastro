@@ -5,7 +5,7 @@ import Image from "next/image";
 interface LogoProps {
     size?: 'default' | 'large';
 }
-
+//componente logo
 export function Logo({ size = 'default' }: LogoProps) {
     const sizes = {
         default: {

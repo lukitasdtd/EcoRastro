@@ -5,7 +5,7 @@ import * as RechartsPrimitive from "recharts"
 
 import { cn } from "@/lib/utils"
 
-// Format: { THEME_NAME: CSS_SELECTOR }
+// ayudante para confugurar tema de los gráficos
 const THEMES = { light: "", dark: ".dark" } as const
 
 export type ChartConfig = {
@@ -18,6 +18,7 @@ export type ChartConfig = {
   )
 }
 
+//ayudante para contexto de los gráficos
 type ChartContextProps = {
   config: ChartConfig
 }
@@ -34,6 +35,7 @@ function useChart() {
   return context
 }
 
+//ayudante para contenedor de gráficos
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
@@ -67,6 +69,7 @@ const ChartContainer = React.forwardRef<
 })
 ChartContainer.displayName = "Chart"
 
+//ayudante para estilos de gráficos
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
     ([, config]) => config.theme || config.color
@@ -100,6 +103,7 @@ ${colorConfig
   )
 }
 
+//ayudante tooltips de gráficos
 const ChartTooltip = RechartsPrimitive.Tooltip
 
 const ChartTooltipContent = React.forwardRef<
@@ -256,6 +260,7 @@ const ChartTooltipContent = React.forwardRef<
 )
 ChartTooltipContent.displayName = "ChartTooltip"
 
+//ayudante para leyenda de gráficos
 const ChartLegend = RechartsPrimitive.Legend
 
 const ChartLegendContent = React.forwardRef<
@@ -276,6 +281,7 @@ const ChartLegendContent = React.forwardRef<
       return null
     }
 
+    // ayudante para alineación de la leyenda
     return (
       <div
         ref={ref}
@@ -316,7 +322,7 @@ const ChartLegendContent = React.forwardRef<
 )
 ChartLegendContent.displayName = "ChartLegend"
 
-// Helper to extract item config from a payload.
+//selección de configuración de payload
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
@@ -325,7 +331,7 @@ function getPayloadConfigFromPayload(
   if (typeof payload !== "object" || payload === null) {
     return undefined
   }
-
+  
   const payloadPayload =
     "payload" in payload &&
     typeof payload.payload === "object" &&
@@ -350,6 +356,7 @@ function getPayloadConfigFromPayload(
     ] as string
   }
 
+  //acá se selecciona la configuración de la etiqueta
   return configLabelKey in config
     ? config[configLabelKey]
     : config[key as keyof typeof config]

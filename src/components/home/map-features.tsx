@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { allMapPoints } from '@/lib/data';
 import { Card } from '../ui/card';
 
+// sección de mapa y sus beneficios
 export function MapFeatures() {
 
   const Map = useMemo(() => dynamic(
@@ -40,6 +41,7 @@ export function MapFeatures() {
     },
   ];
 
+  //sección de mapa
   return (
     <section className="w-full bg-background py-16 lg:py-24" aria-labelledby="map-title">
         <div className="container mx-auto px-4">

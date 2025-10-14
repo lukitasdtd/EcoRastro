@@ -1,6 +1,6 @@
 const { body, validationResult } = require('express-validator');
 
-// REGLAS DE VALIDACIÓN DE USUARIO (AHORA EN ESPAÑOL)
+//validaciones para los modelos usuarios
 const userValidationRules = () => {
     return [
         // El RUT no debe estar vacío
@@ -20,6 +20,7 @@ const userValidationRules = () => {
     ];
 };
 
+//validaciones para los modelos mascotas
 const petValidationRules = () => {
     return [
         body('name').notEmpty().withMessage('El nombre es obligatorio.'),
@@ -28,6 +29,7 @@ const petValidationRules = () => {
     ];
 };
 
+//validaciones para los modelos huertas
 const gardenValidationRules = () => {
     return [
         body('name').notEmpty().withMessage('El nombre es obligatorio.'),
@@ -35,7 +37,7 @@ const gardenValidationRules = () => {
     ];
 };
 
-// Función que ejecuta la validación
+//validación de errores
 const validate = (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -55,6 +57,7 @@ const validate = (req, res, next) => {
     });
 };
 
+//exportación de las validaciones
 module.exports = {
     userValidationRules,
     petValidationRules,

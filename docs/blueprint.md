@@ -1,6 +1,6 @@
-# **App Name**: EcoTrack
+# Proyecto EcoRastro
 
-## Core Features:
+## Características principales:
 
 - Autenticación de Usuario: Permitir a los usuarios crear cuentas e iniciar sesión de forma segura.
 - Mapa Interactivo: Mostrar un mapa interactivo que muestre las ubicaciones de mascotas perdidas/encontradas reportadas, huertos comunitarios y animales disponibles para adopción.
@@ -10,12 +10,12 @@
 - Calendario de Siembra: Mostrar un calendario que indique las mejores épocas para plantar diferentes cultivos durante todo el año.
 - Funcionalidad de Búsqueda: Permitir a los usuarios buscar mascotas, jardines o consejos de siembra específicos dentro de la aplicación.
 
-## Style Guidelines:
+## Estilos:
 
 - Color primario: Verde bosque (#386641) para evocar la naturaleza y el crecimiento.
 - Color de fondo: Beige claro (#F2E8CF) para una sensación natural y calmante.
-- Color de acento: Marrón suave (#A68A64) para resaltes y elementos interactivos.
-- Fuente del titular: 'Belleza', una sans-serif humanista.
-- Fuente del cuerpo: 'Alegreya', una serif humanista; para complementar Belleza y hacer que los párrafos del cuerpo sean más legibles.
+- Color de acento: Naranja (#F79A3E) para resaltes y elementos interactivos.
+- Fuente del titular: 'Quicksand', da frescura y legibilidad.
+- Fuente del cuerpo: 'Quicksand', da frescura y legibilidad
 - Usar iconos inspirados en la naturaleza (hojas, animales, plantas) para representar diferentes categorías.
 - Un diseño limpio y organizado, para presentar mucha información sin desorden.

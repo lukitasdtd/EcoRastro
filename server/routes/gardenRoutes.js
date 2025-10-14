@@ -1,4 +1,5 @@
 'use strict';
+//rutas para huertas
 const express = require('express');
 const router = express.Router();
 const gardenController = require('../controllers/gardenController');
@@ -13,5 +14,11 @@ router.post('/create', authenticateToken, upload.single('gardenImage'), gardenCo
 
 // Aquí puedes añadir otras rutas para "gardens" en el futuro (ej. obtener todas, obtener por id, etc.)
 
+// Rutas CRUD para huertas
+router.post('/', gardenValidationRules(), validate, gardenController.createGarden);
+router.get('/', gardenController.getGardens);
+router.get('/:id', gardenController.getGardenById);
+router.put('/:id', gardenValidationRules(), validate, gardenController.updateGarden);
+router.delete('/:id', gardenController.deleteGarden);
 
 module.exports = router;

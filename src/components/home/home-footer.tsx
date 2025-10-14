@@ -10,10 +10,12 @@ export function HomeFooter() {
     { label: 'Cuidado de mascotas', href: '/mascotas/educacion' },
   ];
 
+// se calcula el punto medio de los enlaces y se dividen en dos grupos
   const midPoint = Math.ceil(navLinks.length / 2);
   const leftLinks = navLinks.slice(0, midPoint);
   const rightLinks = navLinks.slice(midPoint);
 
+  //se renderiza footer con estilos 
   return (
     <footer
     className="relative w-full py-10 md:py-14 px-4 text-center text-foreground overflow-hidden bg-no-repeat bg-cover bg-center m-0 border-none"

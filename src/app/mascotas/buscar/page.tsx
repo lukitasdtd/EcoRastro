@@ -40,6 +40,7 @@ export default function SearchPetsPage() {
     fetchPets();
   }, []);
 
+  // filtros de búsqueda 
   const handleFilterChange = () => {
     let pets = allPets.filter(pet => 
       (pet.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
@@ -61,6 +62,7 @@ export default function SearchPetsPage() {
     setFilteredPets(pets);
   };
 
+  // se crea función para manejar click en botón de búsqueda
   const handleSearchClick = () => {
       handleFilterChange();
   };

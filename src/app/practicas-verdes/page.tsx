@@ -62,7 +62,7 @@ export default function PracticasVerdesPage() {
           </Button>
         </div>
 
-        {/* --- Hero --- */}
+        {/* --- Sección del Hero --- */}
         <section className="text-center mb-16">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin } from 'lucide-react';
 import type { Garden } from '@/lib/types';
 
+//componente de tarjeta de huertas (garden)
 interface GardenCardProps {
     garden: Garden;
 }
