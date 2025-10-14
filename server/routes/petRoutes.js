@@ -13,7 +13,7 @@ router.post(
     '/report',
     authenticateToken,
     upload.single('petImage'), // El nombre 'petImage' debe coincidir con el del campo en el formulario
-    petController.createPetReport // Nueva función que crearemos en el controlador
+    petController.createPetReport // Nueva funciÃ³n que crearemos en el controlador
 );
 
 // --- Rutas existentes ---
@@ -21,7 +21,7 @@ router.post('/', authenticateToken, petValidationRules(), validate, petControlle
 router.put('/:id', authenticateToken, petValidationRules(), validate, petController.updatePet);
 router.delete('/:id', authenticateToken, petController.deletePet);
 
-// Rutas públicas
+// Rutas pÃºblicas
 router.get('/', petController.getPets);
 router.get('/:id', petController.getPetById);
 

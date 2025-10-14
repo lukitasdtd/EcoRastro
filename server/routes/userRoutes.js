@@ -6,17 +6,17 @@ const userController = require('../controllers/userController');
 const { userValidationRules, validate } = require('../middlewares/dataValidator');
 const { authenticateToken } = require('../middlewares');
 
-// --- Rutas P鷅licas ---
-// Registrar un nuevo usuario (con validaci髇)
+// --- Rutas P煤blicas ---
+// Registrar un nuevo usuario (con validaci贸n)
 router.post('/', userValidationRules(), validate, userController.createUser);
 
-// Iniciar sesi髇
+// Iniciar sesi贸n
 router.post('/login', userController.loginUser);
 
-// Obtener informaci髇 p鷅lica de todos los usuarios
+// Obtener informaci贸n p煤blica de todos los usuarios
 router.get('/', userController.getUsers);
 
-// Obtener informaci髇 de un usuario por su correo electr髇ico
+// Obtener informaci贸n de un usuario por su correo electr贸nico
 router.get('/email/:email', userController.getUserByEmail);
 
 // Obtener las mascotas reportadas por un usuario (por su RUT/ID)
@@ -25,11 +25,11 @@ router.get('/:id/reported-pets', userController.getReportedPetsByUser);
 // Obtener las huertas de un usuario (por su RUT/ID)
 router.get('/:id/gardens', userController.getUserGardens);
 
-// Obtener informaci髇 p鷅lica de un usuario por su RUT
+// Obtener informaci贸n p煤blica de un usuario por su RUT
 router.get('/:id', userController.getUserById);
 
 // --- Rutas Protegidas (Requieren Token) ---
-// Actualizar un usuario (requiere token y validaci髇)
+// Actualizar un usuario (requiere token y validaci贸n)
 router.put('/:id', authenticateToken, userValidationRules(), validate, userController.updateUser);
 
 // Eliminar un usuario (requiere token)

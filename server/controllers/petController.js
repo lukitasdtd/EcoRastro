@@ -2,6 +2,7 @@ const pool = require('../utils/db');
 
 const controllerName = "petController";
 
+// controlador para crear un reporte de mascota
 exports.createPetReport = async (req, res) => {
     try {
         if (!req.file) {
@@ -36,6 +37,7 @@ exports.createPetReport = async (req, res) => {
     }
 };
 
+// controlador para obtener los reportes de mascotas
 exports.createPet = async (req, res) => {
     try {
         const ownerRut = req.user.rut;
@@ -63,6 +65,7 @@ exports.getPets = async (req, res) => {
     }
 };
 
+//controlador para obtener una mascota por su id
 exports.getPetById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -79,6 +82,7 @@ exports.getPetById = async (req, res) => {
     }
 };
 
+// controlador para obtener las mascotas de un usuario
 exports.updatePet = async (req, res) => {
     try {
         const { id } = req.params;
@@ -101,6 +105,7 @@ exports.updatePet = async (req, res) => {
     }
 };
 
+// controlador para eliminar una mascota
 exports.deletePet = async (req, res) => {
     try {
         const { id } = req.params;

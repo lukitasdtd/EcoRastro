@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../utils/db');
 
-// Obtener todos los puntos del mapa
+// aquí se obtiene todos los puntos del mapa
 router.get('/map-points', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM map_points');

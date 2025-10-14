@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const controllerName = "userController";
 
+// verifica si la variable de entorno jwt_secret está definida
 if (!process.env.JWT_SECRET) {
   console.error('\n---\n');
   console.error('¡ERROR FATAL! La variable de entorno JWT_SECRET no está definida.');
@@ -13,6 +14,7 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
+// se crea un nuevo usuario
 exports.createUser = async (req, res) => {
     try {
         const { rut, nombre, apellido, correo, contrasena } = req.body;
@@ -32,6 +34,7 @@ exports.createUser = async (req, res) => {
     }
 };
 
+//inicio de sesión de usuario
 exports.loginUser = async (req, res) => {
     try {
         const { correo, contrasena } = req.body;
@@ -54,6 +57,7 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+//obtiene todos los usuarios
 exports.getUsers = async (req, res) => { 
     try {
         const allUsers = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios"');
@@ -64,6 +68,7 @@ exports.getUsers = async (req, res) => {
     }
 };
 
+//se obtiene usuario por rut (id)
 exports.getUserById = async (req, res) => { 
     try {
         const { id } = req.params;
@@ -78,6 +83,7 @@ exports.getUserById = async (req, res) => {
     }
 };
 
+//se actualiza usuario
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -97,6 +103,7 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+//aquí se elimina usuario
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.params;

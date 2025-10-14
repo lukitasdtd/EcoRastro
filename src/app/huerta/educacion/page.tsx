@@ -34,6 +34,7 @@ export default function HuertaEducationPage() {
     },
   ];
 
+  // aquí la lista de beneficios de la huerta
   const gardenBenefits = [
       {
         title: "Nutrición y Salud",
@@ -57,6 +58,7 @@ export default function HuertaEducationPage() {
       }
   ]
 
+  // aquí la lista del ciclo de vida de plantas
   const lifeCycle = [
       { title: "Semilla", icon: <Lightbulb className="w-8 h-8 mx-auto text-green-600"/>, description: "El punto de partida de toda planta." },
       { title: "Germinación", icon: <Sprout className="w-8 h-8 mx-auto text-orange-500"/>, description: "La semilla 'despierta' y brota." },
@@ -84,6 +86,7 @@ export default function HuertaEducationPage() {
     },
   ]
 
+  // lista de herramientas esenciales
   const checklistItems = [
     "Sustrato de buena calidad",
     "Compost o humus de lombriz",
