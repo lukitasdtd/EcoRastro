@@ -2,7 +2,6 @@ const pool = require('../utils/db');
 
 const controllerName = "petController";
 
-// --- FUNCIÓN CORREGIDA CON DIRECCIÓN COMO JSON ---
 exports.createPetReport = async (req, res) => {
     try {
         if (!req.file) {
@@ -13,17 +12,13 @@ exports.createPetReport = async (req, res) => {
         const imageUrl = req.file.path;
         const { nombre, tipo, raza, color, direccion, region, comuna, descripcion } = req.body;
 
-        // CORRECCIÓN: La columna "direccion" es de tipo JSON.
-        // 1. Se crea un objeto JavaScript con los datos de la dirección.
         const addressObject = {
             calle: direccion,
             comuna: comuna,
             region: region
         };
-        // 2. Se convierte el objeto a un string JSON para la inserción en la base de datos.
         const fullAddressJson = JSON.stringify(addressObject);
 
-        // 3. Se inserta el string JSON en la columna "direccion".
         const newPetReport = await pool.query(
             'INSERT INTO "pets" (nombre, tipo, raza, color, direccion, descripcion, image_url, user_rut) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
             [nombre, tipo, raza, color, fullAddressJson, descripcion, imageUrl, userRut]
@@ -41,10 +36,6 @@ exports.createPetReport = async (req, res) => {
     }
 };
 
-
-// --- FUNCIONES EXISTENTES ---
-
-// Crear una mascota
 exports.createPet = async (req, res) => {
     try {
         const ownerRut = req.user.rut;
@@ -62,7 +53,6 @@ exports.createPet = async (req, res) => {
     }
 };
 
-// Obtener todas las mascotas
 exports.getPets = async (req, res) => {
     try {
         const allPets = await pool.query('SELECT * FROM "pets"');
@@ -73,7 +63,6 @@ exports.getPets = async (req, res) => {
     }
 };
 
-// Obtener una mascota por ID
 exports.getPetById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -90,7 +79,6 @@ exports.getPetById = async (req, res) => {
     }
 };
 
-// Actualizar una mascota
 exports.updatePet = async (req, res) => {
     try {
         const { id } = req.params;
@@ -113,7 +101,6 @@ exports.updatePet = async (req, res) => {
     }
 };
 
-// Eliminar una mascota
 exports.deletePet = async (req, res) => {
     try {
         const { id } = req.params;

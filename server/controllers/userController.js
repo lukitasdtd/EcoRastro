@@ -4,23 +4,20 @@ const jwt = require('jsonwebtoken');
 
 const controllerName = "userController";
 
-// ---- VERIFICACIÓN DE SEGURIDAD CRÍTICA AL INICIO ----
 if (!process.env.JWT_SECRET) {
-    console.error('\n---\n');
-    console.error('¡ERROR FATAL! La variable de entorno JWT_SECRET no está definida.');
-    console.error('El servidor no puede firmar tokens de autenticación de forma segura.');
-    console.error('Añada la variable JWT_SECRET a su archivo .env para continuar.');
-    console.error('\n---\n');
-    process.exit(1);
+  console.error('\n---\n');
+  console.error('Â¡ERROR FATAL! La variable de entorno JWT_SECRET no estÃ¡ definida.');
+  console.error('El servidor no puede firmar tokens de autenticaciÃ³n de forma segura.');
+  console.error('AÃ±ada la variable JWT_SECRET a su archivo .env para continuar.');
+  console.error('\n---\n');
+  process.exit(1);
 }
-// --------------------------------------------------
 
-// Crear un nuevo usuario
 exports.createUser = async (req, res) => {
     try {
         const { rut, nombre, apellido, correo, contrasena } = req.body;
         if (!contrasena) {
-            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vacío.' });
+            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vacÃ­o.' });
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(contrasena, salt);
@@ -35,31 +32,29 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// Iniciar sesión (Seguro)
 exports.loginUser = async (req, res) => {
     try {
         const { correo, contrasena } = req.body;
         if (!contrasena) {
-            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vacío.' });
+            return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vacÃ­o.' });
         }
         const user = await pool.query('SELECT * FROM "usuarios" WHERE correo = $1', [correo]);
         if (user.rows.length === 0) {
-            return res.status(401).json({ message: "Credenciales inválidas." });
+            return res.status(401).json({ message: "Credenciales invÃ¡lidas." });
         }
         const validPassword = await bcrypt.compare(contrasena, user.rows[0].psswd);
         if (!validPassword) {
-            return res.status(401).json({ message: "Credenciales inválidas." });
+            return res.status(401).json({ message: "Credenciales invÃ¡lidas." });
         }
         const token = jwt.sign({ rut: user.rows[0].rut }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token, userId: user.rows[0].rut });
     } catch (err) {
-        console.error(`${controllerName}: Error al iniciar sesión - ${err.message}`);
-        res.status(500).json({ message: `Error del servidor: No se pudo iniciar sesión.` });
+        console.error(`${controllerName}: Error al iniciar sesiÃ³n - ${err.message}`);
+        res.status(500).json({ message: `Error del servidor: No se pudo iniciar sesiÃ³n.` });
     }
 };
 
-// Obtener todos los usuarios
-exports.getUsers = async (req, res) => {
+exports.getUsers = async (req, res) => { 
     try {
         const allUsers = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios"');
         res.json(allUsers.rows);
@@ -69,8 +64,7 @@ exports.getUsers = async (req, res) => {
     }
 };
 
-// Obtener usuario por RUT
-exports.getUserById = async (req, res) => {
+exports.getUserById = async (req, res) => { 
     try {
         const { id } = req.params;
         const user = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios" WHERE rut = $1', [id]);
@@ -84,7 +78,6 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-// Actualizar un usuario
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -104,7 +97,6 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-// Eliminar un usuario
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
