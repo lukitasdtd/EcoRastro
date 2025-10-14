@@ -13,7 +13,6 @@ exports.createGarden = async (req, res) => {
         // 1. Extraer todos los datos del cuerpo y del token/middleware
         const userRut = req.user.rut;
         const imageUrl = req.file.path;
-        // CORREGIDO: Se aaden cont_email y cont_tel a la desestructuracin
         const { nombre, descripcion, direccion, comuna, region, cont_email, cont_tel } = req.body;
 
         // 2. Construir el objeto de direccin y convertirlo a JSON
@@ -25,7 +24,6 @@ exports.createGarden = async (req, res) => {
         const fullAddressJson = JSON.stringify(addressObject);
 
         // 3. Insertar en la tabla "huertas" incluyendo los campos de contacto
-        // CORREGIDO: Se aaden las columnas y los valores para el contacto
         const nuevaHuerta = await pool.query(
             'INSERT INTO "huertas" (nombre, descripcion, direccion, image_url, user_rut, cont_email, cont_tel) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
             [nombre, descripcion, fullAddressJson, imageUrl, userRut, cont_email, cont_tel]
@@ -43,7 +41,7 @@ exports.createGarden = async (req, res) => {
     }
 };
 
-// --- FUNCIÓN PARA OBTENER TODAS LAS HUERTAS ---
+// --- FUNCIN PARA OBTENER TODAS LAS HUERTAS ---
 exports.getGardens = async (req, res) => {
     try {
         const todasLasHuertas = await pool.query('SELECT * FROM "huertas"');
@@ -54,5 +52,26 @@ exports.getGardens = async (req, res) => {
             stack: err.stack,
         });
         res.status(500).json({ message: "Error del servidor: No se pudieron obtener las huertas." });
+    }
+};
+
+// --- FUNCIN PARA OBTENER UNA HUERTA POR ID ---
+exports.getGardenById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const huerta = await pool.query('SELECT * FROM "huertas" WHERE id = $1', [id]);
+
+        if (huerta.rows.length === 0) {
+            return res.status(404).json({ message: "Huerta no encontrada." });
+        }
+
+        res.status(200).json(huerta.rows[0]);
+    } catch (err) {
+        console.error(`${controllerName}: Error al obtener la huerta por ID.`, {
+            errorMessage: err.message,
+            stack: err.stack,
+            params: req.params
+        });
+        res.status(500).json({ message: "Error del servidor: No se pudo obtener la huerta." });
     }
 };

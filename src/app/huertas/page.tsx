@@ -64,7 +64,7 @@ export default function GardensPage() {
                 src={heroImage.imageUrl}
                 alt="Huertas comunitarias"
                 fill
-                style={{ objectFit: 'cover' }}
+                className="object-cover"
             />
         )}
         <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
