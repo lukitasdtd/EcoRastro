@@ -13,160 +13,158 @@ import { validateRut } from '@/lib/rut-validator';
 import { useToast } from '@/hooks/use-toast';
 
 export default function SignupPage() {
-  const router = useRouter();
-  const { toast } = useToast();
+    const router = useRouter();
+    const { toast } = useToast();
 
-  // Estados para todos los campos del formulario
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [rutValue, setRutValue] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  
-  // Estado para la validación del RUT
-  const [isRutValid, setIsRutValid] = useState(true);
-  const [error, setError] = useState('');
+    // Estados para todos los campos del formulario
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [rutValue, setRutValue] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  const handleRutChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rut = e.target.value;
-    setRutValue(rut);
-    
-    // Validar solo si el campo no está vacío
-    if (rut) {
-      setIsRutValid(validateRut(rut));
-    } else {
-      // Considerar válido si está vacío para no mostrar error al inicio
-      setIsRutValid(true); 
-    }
-  };
+    // Estado para la validación del RUT
+    const [isRutValid, setIsRutValid] = useState(true);
+    const [error, setError] = useState('');
 
-  const isFormValid = firstName && lastName && email && password && rutValue && isRutValid;
+    const handleRutChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const rut = e.target.value;
+        setRutValue(rut);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError('');
+        if (rut) {
+            setIsRutValid(validateRut(rut));
+        } else {
+            setIsRutValid(true);
+        }
+    };
 
-    if (!isFormValid) {
-      setError('Por favor, completa todos los campos correctamente.');
-      return;
-    }
+    const isFormValid = firstName && lastName && email && password && rutValue && isRutValid;
 
-    try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nombre: firstName,
-          apellido: lastName,
-          rut: rutValue,
-          correo: email,
-          psswd: password,
-        }),
-      });
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError('');
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al registrar el usuario');
-      }
+        if (!isFormValid) {
+            setError('Por favor, completa todos los campos correctamente.');
+            return;
+        }
 
-      // Mostrar notificación de éxito
-      toast({
-        title: "¡Registro exitoso!",
-        description: "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.",
-        variant: "success",
-      });
+        try {
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // REFACTOR: Volvemos a enviar las claves en español para que coincidan con el backend actualizado
+                body: JSON.stringify({
+                    nombre: firstName,
+                    apellido: lastName,
+                    rut: rutValue,
+                    correo: email,
+                    contrasena: password,
+                }),
+            });
 
-      // Redirigir al login después de un breve retraso
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                const errorMessage = errorData?.message || response.statusText || 'Error al registrar el usuario';
+                throw new Error(errorMessage);
+            }
 
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
+            toast({
+                title: "¡Registro exitoso!",
+                description: "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.",
+                variant: "success",
+            });
 
-  return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
-      <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
-        <CardHeader className="text-center space-y-2">
-           <div className="inline-block mx-auto">
-            <Logo />
-          </div>
-          <CardTitle className="text-2xl font-bold">Crea tu Cuenta</CardTitle>
-          <CardDescription>Únete a la comunidad de EcoRastro hoy</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="first-name">Nombre</Label>
-                <Input 
-                  id="first-name" 
-                  placeholder="Juan" 
-                  required 
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="last-name">Apellido</Label>
-                <Input 
-                  id="last-name" 
-                  placeholder="Pérez" 
-                  required 
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
-            </div>
-             <div className="grid gap-2">
-                <Label htmlFor="rut">RUT</Label>
-                <RutInput 
-                  id="rut" 
-                  required 
-                  value={rutValue}
-                  onChange={handleRutChange}
-                  className={!isRutValid && rutValue ? "border-red-500 focus-visible:ring-red-500" : ""}
-                />
-                {!isRutValid && rutValue && <p className="text-xs text-red-500">El RUT ingresado no es válido.</p>}
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Correo Electrónico</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="tu@correo.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                required 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-            <Button type="submit" className="w-full" disabled={!isFormValid}>
-              Crear Cuenta
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            ¿Ya tienes una cuenta?{' '}
-            <Link href="/login" className="underline text-primary font-semibold">
-              Inicia Sesión
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+            setTimeout(() => {
+                router.push('/login');
+            }, 2000);
+
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    return (
+        <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+            <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
+                <CardHeader className="text-center space-y-2">
+                    <div className="inline-block mx-auto">
+                        <Logo />
+                    </div>
+                    <CardTitle className="text-2xl font-bold">Crea tu Cuenta</CardTitle>
+                    <CardDescription>Únete a la comunidad de EcoRastro hoy</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="grid gap-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="first-name">Nombre</Label>
+                                <Input
+                                    id="first-name"
+                                    placeholder="Juan"
+                                    required
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="last-name">Apellido</Label>
+                                <Input
+                                    id="last-name"
+                                    placeholder="Pérez"
+                                    required
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="rut">RUT</Label>
+                            <RutInput
+                                id="rut"
+                                required
+                                value={rutValue}
+                                onChange={handleRutChange}
+                                className={!isRutValid && rutValue ? "border-red-500 focus-visible:ring-red-500" : ""}
+                            />
+                            {!isRutValid && rutValue && <p className="text-xs text-red-500">El RUT ingresado no es válido.</p>}
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">Correo Electrónico</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="tu@correo.com"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="password">Contraseña</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+                        <Button type="submit" className="w-full" disabled={!isFormValid}>
+                            Crear Cuenta
+                        </Button>
+                    </form>
+                    <div className="mt-4 text-center text-sm">
+                        ¿Ya tienes una cuenta?{' '}
+                        <Link href="/login" className="underline text-primary font-semibold">
+                            Inicia Sesión
+                        </Link>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
 }

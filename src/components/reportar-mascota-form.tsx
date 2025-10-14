@@ -1,317 +1,131 @@
-'use client';
+const pool = require('../utils/db');
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ImageUploader } from "@/components/image-uploader"; 
-import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
-import { PawPrint } from "lucide-react";
-import { chileanRegions } from "@/lib/chile-locations";
-import Link from 'next/link';
+const controllerName = "petController";
 
-const mascotaSchema = z.object({
-  nombre: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }).max(50, { message: "El nombre no debe exceder los 50 caracteres." }),
-  tipo: z.enum(["perro", "gato"], { required_error: "Por favor selecciona un tipo de mascota." }),
-  raza: z.string().min(2, { message: "La raza debe tener al menos 2 caracteres." }).max(50, { message: "La raza no debe exceder los 50 caracteres." }),
-  color: z.string().min(3, { message: "El color debe tener al menos 3 caracteres." }).max(30, { message: "El color no debe exceder los 30 caracteres." }),
-  direccion: z.string().min(5, { message: "La dirección debe tener al menos 5 caracteres." }),
-  region: z.string({ required_error: "Por favor selecciona una región." }),
-  comuna: z.string({ required_error: "Por favor selecciona una comuna." }),
-  descripcion: z.string().max(500, { message: "La descripción no debe exceder los 500 caracteres." }).optional(),
-  fotos: z.array(z.string()).optional(),
-});
-
-export function ReportarMascotaForm() {
-  const { toast } = useToast();
-  const [imageUploads, setImageUploads] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [communes, setCommunes] = useState<string[]>([]);
-  const [authToken, setAuthToken] = useState<string | null>(null);
-  const [showLoginMessage, setShowLoginMessage] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      setAuthToken(token);
-    } else {
-      setShowLoginMessage(true);
-    }
-  }, []);
-
-  const form = useForm<z.infer<typeof mascotaSchema>>({
-    resolver: zodResolver(mascotaSchema),
-    defaultValues: {
-      nombre: "",
-      raza: "",
-      color: "",
-      direccion: "",
-      descripcion: "",
-      fotos: [],
-    },
-  });
-
-  const handleRegionChange = (regionName: string) => {
-    const region = chileanRegions.find(r => r.name === regionName);
-    setCommunes(region ? region.communes : []);
-    form.setValue('comuna', ""); // Reset commune value when region changes
-  };
-
-  async function onSubmit(values: z.infer<typeof mascotaSchema>) {
-    if (!authToken) {
-        setShowLoginMessage(true);
-        return;
-    }
-
-    setIsSubmitting(true);
-    const userEmail = localStorage.getItem('userEmail');
-    const finalValues = { ...values, fotos: imageUploads, userEmail };
-
+// --- FUNCIÓN CORREGIDA PARA REPORTAR MASCOTA ---
+exports.createPetReport = async (req, res) => {
     try {
-      const response = await fetch('/api/pets/report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
-        },
-        body: JSON.stringify(finalValues),
-      });
+        if (!req.file) {
+            return res.status(400).json({ message: "La imagen de la mascota es requerida." });
+        }
 
-      if (!response.ok) {
-        console.error('Raw response error:', response);
-        throw new Error('Error en la respuesta del servidor');
-      }
+        // 1. Extraer RUT del token y la ruta de la imagen
+        const reporterRut = req.user.rut;
+        const imageUrl = req.file.path;
 
-      console.log('Raw response success:', response);
-      const data = await response.json();
-      console.log('Parsed JSON data:', data);
+        // 2. Extraer los datos del formulario (los nombres coinciden con el schema de Zod)
+        const { nombre, tipo, raza, color, direccion, region, comuna, descripcion } = req.body;
 
-      toast({
-        title: "¡Reporte enviado con éxito!",
-        description: "Gracias por ayudarnos a encontrar a esta mascota.",
-        className: "bg-green-100 border-green-400 text-green-700",
-      });
+        // 3. Insertar en la tabla "pets" (nombre correcto de la tabla)
+        // Asumimos nombres de columna en inglés como convención.
+        const newPetReport = await pool.query(
+            'INSERT INTO "pets" (name, species, breed, color, address, region, commune, description, image_url, reporter_rut) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+            [nombre, tipo, raza, color, direccion, region, comuna, descripcion, imageUrl, reporterRut]
+        );
 
-      form.reset();
-      setImageUploads([]);
-      setCommunes([]);
+        res.status(201).json(newPetReport.rows[0]);
 
-    } catch (error) {
-      console.error("Error al enviar el reporte:", error);
-      toast({
-        variant: "destructive",
-        title: "Error al enviar el reporte",
-        description: "Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo.",
-      });
-    } finally {
-      setIsSubmitting(false);
+    } catch (err) {
+        // Mejorar el log de errores para ver qué está fallando
+        console.error(`${controllerName}: Error al crear reporte de mascota.`, {
+            errorMessage: err.message,
+            stack: err.stack,
+            requestBody: req.body,
+        });
+        res.status(500).json({ message: `Error del servidor: No se pudo crear el reporte.` });
     }
-  }
+};
 
-  if (showLoginMessage) {
-    return (
-        <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
-            <CardHeader>
-                <CardTitle>Acceso Restringido</CardTitle>
-                <CardDescription>Debes iniciar sesión para poder reportar una mascota.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Link href="/login">
-                    <Button className="w-full">Ir a Iniciar Sesión</Button>
-                </Link>
-            </CardContent>
-        </Card>
-    );
-  }
 
-  return (
-    <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-            <PawPrint className="w-8 h-8 text-primary" />
-            <div>
-                <CardTitle className="text-2xl font-bold">Reportar Mascota Perdida</CardTitle>
-                <CardDescription>Completa el formulario para ayudarnos a encontrarla.</CardDescription>
-            </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="nombre"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nombre de la mascota</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ej: Firulais" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+// --- FUNCIONES EXISTENTES ---
 
-              <FormField
-                control={form.control}
-                name="tipo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecciona el tipo de animal" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="perro">Perro</SelectItem>
-                        <SelectItem value="gato">Gato</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+// Crear una mascota
+exports.createPet = async (req, res) => {
+    try {
+        const ownerRut = req.user.rut;
+        const { nombre, edad, adopted } = req.body;
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="raza"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Raza</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ej: Quiltro" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        const newPet = await pool.query(
+            'INSERT INTO "pets" (name, age, adopted, owner_rut) VALUES ($1, $2, $3, $4) RETURNING *',
+            [nombre, edad, adopted, ownerRut]
+        );
 
-              <FormField
-                control={form.control}
-                name="color"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Color</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ej: Negro con manchas blancas" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+        res.status(201).json(newPet.rows[0]);
+    } catch (err) {
+        console.error(`${controllerName}: Error al crear mascota - ${err.message}`);
+        res.status(500).json({ message: `Error del servidor: No se pudo crear la mascota.` });
+    }
+};
 
-            <div className="space-y-6 rounded-md border p-6">
-                <h3 className="font-semibold">Ubicación de la mascota</h3>
-                 <FormField
-                    control={form.control}
-                    name="direccion"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Dirección</FormLabel>
-                        <FormControl>
-                        <Input placeholder="Ej: Av. Siempre Viva 123" {...field} />
-                        </FormControl>
-                        <FormDescription>Ingresa la calle y número donde fue vista por última vez.</FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                    control={form.control}
-                    name="region"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Región</FormLabel>
-                        <Select onValueChange={(value) => { field.onChange(value); handleRegionChange(value); }} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecciona una región" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {chileanRegions.map(region => (
-                                <SelectItem key={region.name} value={region.name}>{region.name}</SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="comuna"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Comuna</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value} disabled={communes.length === 0}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecciona una comuna" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {communes.map(commune => (
-                                <SelectItem key={commune} value={commune}>{commune}</SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                </div>
-            </div>
+// Obtener todas las mascotas
+exports.getPets = async (req, res) => {
+    try {
+        const allPets = await pool.query('SELECT * FROM "pets"');
+        res.json(allPets.rows);
+    } catch (err) {
+        console.error(`${controllerName}: Error al obtener mascotas - ${err.message}`);
+        res.status(500).json({ message: `Error del servidor: No se pudo obtener las mascotas.` });
+    }
+};
 
-            <FormField
-              control={form.control}
-              name="descripcion"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descripción adicional</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Cualquier detalle extra que pueda ayudar a identificar a la mascota..."
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription> Collar, cicatrices, comportamiento, etc. </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+// Obtener una mascota por ID
+exports.getPetById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pet = await pool.query('SELECT * FROM "pets" WHERE id = $1', [id]);
 
-            <div>
-              <FormLabel>Fotos de la mascota</FormLabel>
-              <FormDescription className="mb-3"> Sube una o más imágenes claras. </FormDescription>
-              <ImageUploader 
-                value={imageUploads} 
-                onChange={setImageUploads} 
-                disabled={isSubmitting}
-              />
-            </div>
+        if (pet.rows.length === 0) {
+            return res.status(404).json({ message: "Mascota no encontrada." });
+        }
 
-            <Button type="submit" disabled={isSubmitting || !authToken} className="w-full font-bold py-6 text-lg">
-              {isSubmitting ? "Enviando reporte..." : "Enviar Reporte"}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
-  );
-}
+        res.json(pet.rows[0]);
+    } catch (err) {
+        console.error(`${controllerName}: Error al obtener mascota por ID - ${err.message}`);
+        res.status(500).json({ message: `Error del servidor: No se pudo obtener la mascota.` });
+    }
+};
+
+// Actualizar una mascota
+exports.updatePet = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const ownerRut = req.user.rut;
+        const { nombre, edad, adopted } = req.body;
+
+        const updatePet = await pool.query(
+            'UPDATE "pets" SET name = $1, age = $2, adopted = $3 WHERE id = $4 AND owner_rut = $5 RETURNING *',
+            [nombre, edad, adopted, id, ownerRut]
+        );
+
+        if (updatePet.rows.length === 0) {
+            return res.status(404).json({ message: "Mascota no encontrada o no tienes permiso para modificarla." });
+        }
+
+        res.json(updatePet.rows[0]);
+    } catch (err) {
+        console.error(`${controllerName}: Error al actualizar mascota - ${err.message}`);
+        res.status(500).json({ message: `Error del servidor: No se pudo actualizar el usuario.` });
+    }
+};
+
+// Eliminar una mascota
+exports.deletePet = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const ownerRut = req.user.rut;
+
+        const deletePet = await pool.query(
+            'DELETE FROM "pets" WHERE id = $1 AND owner_rut = $2 RETURNING *',
+            [id, ownerRut]
+        );
+
+        if (deletePet.rows.length === 0) {
+            return res.status(404).json({ message: "Mascota no encontrada o no tienes permiso para eliminarla." });
+        }
+
+        res.json({ message: "Mascota eliminada correctamente." });
+    } catch (err) {
+        console.error(`${controllerName}: Error al eliminar mascota - ${err.message}`);
+        res.status(500).json({ message: `Error del servidor: No se pudo eliminar la mascota.` });
+    }
+};
