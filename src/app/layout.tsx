@@ -23,7 +23,14 @@ export const metadata: Metadata = {
   title: 'EcoRastro',
   description: 'Conectando comunidades. Protegiendo ecosistemas.',
   icons: {
-    icon: '/favicon/ecorastro%20logo%20transparente.png',
+    icon: [
+      { url: '/favicon3.png', sizes: '32x32' },
+      { url: '/favicon3.png', sizes: '128x128' },
+      { url: '/favicon3.png', sizes: '192x192' },
+    ],
+    apple: [
+      { url: '/favicon3.png', sizes: '180x180' },
+    ],
   },
 };
 
