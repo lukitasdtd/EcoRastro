@@ -32,7 +32,7 @@ const storage = getStorage(app);
 
 // Regex para validar teléfono chileno
 const phoneRegex = new RegExp(
-  /^(\+?56)?(\s?)(9)(\s?)[987654321]\d{7}$/
+  /^(\?56)?(\s?)(9)(\s?)[987654321]\d{7}$/
 );
 
 // Esquema de validación con Zod
@@ -243,9 +243,9 @@ export function FormularioHuerta() {
 
   return (
     <FormProvider {...form}>
-      <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <CardHeader><CardTitle className="mb-2">Datos principales</CardTitle></CardHeader>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto my-8 space-y-8">
+        <Card className="shadow-lg">
+          <CardHeader><CardTitle>Datos principales</CardTitle></CardHeader>
           <CardContent className="space-y-6">
             <FormField control={form.control} name="gardenName" render={({ field }) => ( <FormItem> <FormLabel>Nombre de la huerta</FormLabel> <FormControl><Textarea placeholder="Ej: La huerta de María" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             
@@ -315,33 +315,37 @@ export function FormularioHuerta() {
 
              <FormField control={form.control} name="surface" render={({ field }) => ( <FormItem> <FormLabel>Superficie aproximada (m²)</FormLabel> <FormControl><Input type="number" placeholder="Ej: 50" {...field} onChange={e => field.onChange(e.target.valueAsNumber || undefined)} /></FormControl> <FormMessage /> </FormItem> )}/>
           </CardContent>
+        </Card>
 
-        <div className="space-y-8">
-              <CardHeader><CardTitle className="mb-2">Descripción</CardTitle></CardHeader>
-              <CardContent>
-                  <FormField control={form.control} name="description" render={({ field }) => ( <FormItem> <FormLabel>Descripción de la huerta</FormLabel> <FormControl><Textarea placeholder="Describe tu huerta, qué la hace especial, etc." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-              </CardContent>
+        <Card className="shadow-lg">
+          <CardHeader><CardTitle>Descripción</CardTitle></CardHeader>
+          <CardContent>
+              <FormField control={form.control} name="description" render={({ field }) => ( <FormItem> <FormLabel>Descripción de la huerta</FormLabel> <FormControl><Textarea placeholder="Describe tu huerta, qué la hace especial, etc." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-lg">
+          <CardHeader><CardTitle>Cultivos y Prácticas</CardTitle></CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+              {['tomatoes', 'lettuces', 'herbs', 'compostable', 'efficientWatering', 'noPesticides'].map(cropName => (
+                  <FormField
+                      key={cropName}
+                      control={form.control}
+                      name={`crops.${cropName}` as any}
+                      render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                              <FormLabel className="font-normal">{ {tomatoes: 'Tomates', lettuces: 'Lechugas', herbs: 'Hierbas', compostable: 'Compostable', efficientWatering: 'Riego Eficiente', noPesticides: 'Sin pesticidas químicos'}[cropName] }</FormLabel>
+                          </FormItem>
+                      )}
+                  />
+              ))}
+               <FormField control={form.control} name="crops.other" render={({ field }) => ( <FormItem className="col-span-2"> <FormLabel>Otros</FormLabel> <FormControl><Textarea placeholder="Ej: Papas, zanahorias..." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+          </CardContent>
+        </Card>
 
-              <CardHeader><CardTitle className="mb-2">Cultivos y Prácticas</CardTitle></CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                  {['tomatoes', 'lettuces', 'herbs', 'compostable', 'efficientWatering', 'noPesticides'].map(cropName => (
-                      <FormField
-                          key={cropName}
-                          control={form.control}
-                          name={`crops.${cropName}` as any}
-                          render={({ field }) => (
-                              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                  <FormLabel className="font-normal">{ {tomatoes: 'Tomates', lettuces: 'Lechugas', herbs: 'Hierbas', compostable: 'Compostable', efficientWatering: 'Riego Eficiente', noPesticides: 'Sin pesticidas químicos'}[cropName] }</FormLabel>
-                              </FormItem>
-                          )}
-                      />
-                  ))}
-                   <FormField control={form.control} name="crops.other" render={({ field }) => ( <FormItem className="col-span-2"> <FormLabel>Otros</FormLabel> <FormControl><Textarea placeholder="Ej: Papas, zanahorias..." {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-              </CardContent>
-        </div>
-
-          <CardHeader><CardTitle className="mb-2">Contacto</CardTitle></CardHeader>
+        <Card className="shadow-lg">
+          <CardHeader><CardTitle>Contacto</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField control={form.control} name="nombreContacto" render={({ field }) => ( <FormItem> <FormLabel>Nombre de contacto</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             <FormField control={form.control} name="telefono" render={({ field }) => ( <FormItem> <FormLabel>Teléfono</FormLabel> <FormControl><MaskedInput placeholder="+56 9 XXXX XXXX" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
@@ -359,9 +363,11 @@ export function FormularioHuerta() {
                 </FormItem>
             )}/>
           </CardContent>
+        </Card>
 
+        <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="mb-2">Fotos</CardTitle>
+            <CardTitle>Fotos</CardTitle>
             <CardDescription>Arrastra tus fotos aquí o haz clic para seleccionarlas (hasta 5, máx 5MB c/u).</CardDescription>
           </CardHeader>
           <CardContent>
@@ -388,14 +394,16 @@ export function FormularioHuerta() {
                 </div>
             )}
           </CardContent>
+        </Card>
         
-        <CardContent className="pt-6">
+        <Card className="shadow-lg">
+          <CardContent className="pt-6">
                 <Button type="submit" disabled={isPublishDisabled} className="w-full font-bold py-6 text-lg">
                     {isSubmitting || isUploading ? <><LoaderCircle className="animate-spin mr-2" /> Publicando...</> : 'Publicar Huerta'}
                 </Button>
             </CardContent>
+        </Card>
       </form>
-      </Card>
     </FormProvider>
   );
 }
