@@ -21,6 +21,7 @@ export default function GardenCard({ garden }: GardenCardProps) {
                 src={image.imageUrl}
                 alt={garden.name}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 style={{ objectFit: 'cover' }}
                 data-ai-hint={image.imageHint}
             />

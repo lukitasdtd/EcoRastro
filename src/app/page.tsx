@@ -43,7 +43,8 @@ export default function Home() {
                 src="/foto_hero.png"
                 alt="Comunidad unida por mascotas y huertas"
                 fill
-                priority 
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className=" !rounded-none object-contain object-[20%_50%]"
             />
           </div>
@@ -73,22 +74,22 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
                 {/* Fila 1 */}
                 <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden">
-                  <Image src="/perro_dueña.png" alt="Adopción exitosa" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                  <Image src="/perro_dueña.png" alt="Adopción exitosa" fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
                 </div>
                 <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden">
-                  <Image src="/cultivos_casa.jpg" alt="Huerto en casa" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                  <Image src="/cultivos_casa.jpg" alt="Huerto en casa" fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
                 </div>
                 <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden">
-                  <Image src="/familia_adopta.jpg" alt="Mujer en su huerta" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                  <Image src="/familia_adopta.jpg" alt="Mujer en su huerta" fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
                 </div>
 
                 {/* Fila 2 */}
                 <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden sm:col-span-1">
-                        <Image src="/cultivos-10.jpg" alt="Gata con sus bebés" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                        <Image src="/cultivos-10.jpg" alt="Gata con sus bebés" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
                     </div>
                     <div className="relative h-40 rounded-2xl shadow-lg overflow-hidden sm:col-span-1">
-                        <Image src="/gata_bebes.jpg" alt="Familia adoptando" fill className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
+                        <Image src="/gata_bebes.jpg" alt="Familia adoptando" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover transition duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-1" />
                     </div>
                 </div>
             </div>

@@ -15,11 +15,10 @@ export default function GardensPage() {
       <div className="relative h-64 md:h-80 w-full overflow-hidden">
         {heroImage && (
             <Image 
-                // CORRECCIÓN: Se utiliza `imageUrl` en lugar de `src` para que coincida con la estructura de datos.
                 src={heroImage.imageUrl}
                 alt="Huertas comunitarias"
                 fill
-                className="object-cover"
+                style={{ objectFit: 'cover' }}
             />
         )}
         <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">

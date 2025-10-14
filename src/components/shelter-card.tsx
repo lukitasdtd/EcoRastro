@@ -43,6 +43,7 @@ export default function ShelterCard({ shelter, className }: ShelterCardProps) {
             src={image.imageUrl}
             alt={`Logo de ${shelter.name}`}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{ objectFit: 'cover' }}
             data-ai-hint={image.imageHint}
             className="rounded-t-xl"

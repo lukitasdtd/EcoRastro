@@ -24,6 +24,7 @@ export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
               src={image.imageUrl}
               alt={`Foto de ${pet.name}`}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               data-ai-hint={pet.species?.toLowerCase() ?? 'animal'}
             />
@@ -51,7 +52,7 @@ export default function ReportedPetCard({ pet }: ReportedPetCardProps) {
             </div>
              <div className="flex items-center gap-2">
                 <CalendarDays className="h-4 w-4 text-primary flex-shrink-0" />
-                <span>{new Date(pet.date).toLocaleDateString('es-CL')}</span>
+                <span>{new Date(pet.date).toLocaleDateString('es-CL', { timeZone: 'UTC' })}</span>
             </div>
         </div>
 

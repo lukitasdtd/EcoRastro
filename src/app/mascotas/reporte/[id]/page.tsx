@@ -86,6 +86,7 @@ export default function ReporteDetallePage({ params }: { params: { id: string } 
                     src={image.imageUrl}
                     alt={`Foto de ${pet.name}`}
                     fill
+                    sizes="(max-width: 1024px) 100vw, 33vw"
                     style={{ objectFit: 'cover' }}
                     data-ai-hint={pet.species.toLowerCase()}
                     priority

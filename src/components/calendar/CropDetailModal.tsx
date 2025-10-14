@@ -48,6 +48,7 @@ export const CropDetailModal: React.FC<CropDetailModalProps> = ({ crop, onClose 
                   src={image.imageUrl} 
                   alt={crop.name} 
                   fill 
+                  sizes="(max-width: 768px) 90vw, 448px"
                   style={{ objectFit: 'cover' }} 
                   data-ai-hint={image.imageHint}
                 />

@@ -1,4 +1,5 @@
 export const PlaceHolderImages = [
+  { id: 'garden1', imageUrl: '/huertas.jpg', imageHint: 'Una huerta comunitaria' },
   { id: 'img1', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
   { id: 'img2', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
   { id: 'img3', imageUrl: '/gato-naranjo.jpg', imageHint: 'Un gato naranja' },
