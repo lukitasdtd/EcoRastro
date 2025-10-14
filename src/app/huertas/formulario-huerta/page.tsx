@@ -1,27 +1,69 @@
-      import { FormularioHuerta } from "@/components/formulario-huerta";
-      import type { Metadata } from 'next';
-      import { Logo } from "@/components/logo";
-      
-      export const metadata: Metadata = {
-        title: 'Formulario para registrar una huerta',
-      };
-      
-      export default function FormularioHuertaPage() {
-       return (
-         <div className="bg-muted/30 flex-grow">
-             <div className="container mx-auto px-4 py-8 md:py-16">
-                 <header className="text-center mb-8">
-                     <div className="inline-block mx-auto mb-4">
-                     </div>
-                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                     Formulario de Huerta
-                     </h1>
-                 </header>
-                 
-                 <main>
-                     <FormularioHuerta />
-                 </main>
-             </div>
-         </div>
-       );
-     }
+'use client';
+
+import { useState, useEffect } from 'react';
+import { FormularioHuerta } from "@/components/formulario-huerta";
+import { LoginDialog } from '@/components/login-dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Logo } from "@/components/logo";
+
+// Metadata se mantiene para el SEO
+// export const metadata: Metadata = {
+//   title: 'Registrar una Huerta',
+// };
+
+export default function FormularioHuertaPage() {
+    const [isClient, setIsClient] = useState(false);
+    const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+
+    useEffect(() => {
+        // Se ejecuta solo en el navegador
+        setIsClient(true);
+    }, []);
+
+    // Mientras no estemos seguros de estar en el cliente, no renderizamos nada
+    // para evitar errores de hidrataci�n con localStorage.
+    if (!isClient) {
+        return null;
+    }
+
+    const isAuthenticated = !!localStorage.getItem('token');
+
+    return (
+        <div className="bg-muted/30 flex-grow">
+            <div className="container mx-auto px-4 py-8 md:py-16">
+                <header className="text-center mb-6">
+                    <div className="inline-block mx-auto mb-4">
+                        <Logo />
+                    </div>
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+                        Formulario de Huerta
+                    </h1>
+                </header>
+
+                <main>
+                    {isAuthenticated ? (
+                        // Si el usuario est� autenticado, muestra el formulario
+                        <FormularioHuerta />
+                    ) : (
+                        // Si no, muestra el mensaje de acceso restringido y el di�logo
+                        <>
+                            <LoginDialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen} />
+                            <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
+                                <CardHeader>
+                                    <CardTitle>Acceso Restringido</CardTitle>
+                                    <CardDescription>Debes iniciar sesi�n para poder registrar una huerta.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <Button className="w-full" onClick={() => setIsLoginDialogOpen(true)}>
+                                        Iniciar Sesi�n para Publicar
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
+                </main>
+            </div>
+        </div>
+    );
+}

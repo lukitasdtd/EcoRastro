@@ -1,42 +1,120 @@
-
 'use client';
-import Link from 'next/link';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { reportedPets } from "@/lib/data";
 import ReportedPetCard from "@/components/reported-pet-card";
-import { PawPrint, Sprout, MessageSquare } from "lucide-react";
+import { PawPrint, Sprout } from "lucide-react";
 import { EditProfileDialog } from "@/components/edit-profile-dialog";
+import type { ReportedPet } from "@/lib/types";
+import GardenCard from "@/components/garden-card";
+import withAuth from '@/components/withAuth';
 
-export default function UserProfilePage() {
+// Define un tipo para el estado del usuario para mayor claridad
+type UserProfile = {
+    firstName: string;
+    lastName: string;
+    rut: string;
+    email: string;
+    avatarUrl: string;   // Este campo no viene del backend, usaremos un valor por defecto
+};
 
-    // Estado del usuario que puede ser modificado por el diálogo de edición
-    const [user, setUser] = useState({
-        firstName: "Juan",
-        lastName: "Pérez",
-        rut: "12.345.678-9",
-        email: "juan.perez@example.com",
-        memberSince: "2023-05-15",
-        avatarUrl: "https://github.com/shadcn.png"
-    });
+function UserProfilePage() {
+    const router = useRouter();
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [userReports, setUserReports] = useState<ReportedPet[]>([]);
+    const [userGardens, setUserGardens] = useState<any[]>([]); // Reemplazar 'any' con el tipo de dato de huerta
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Datos de ejemplo para las mascotas reportadas por el usuario
-    const userReports = reportedPets.slice(0, 2);
-    // Contador de ejemplo para las huertas (será dinámico en el futuro)
-    const gardenPublicationsCount = 0;
-    
-    // Función para actualizar el estado del usuario desde el diálogo
-    const handleProfileUpdate = (updatedData: Partial<typeof user>) => {
-        setUser(currentUser => ({...currentUser, ...updatedData}));
+    const handleLogout = () => {
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('authToken'); // También elimina el token de autenticación
+        router.push('/login');
     };
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            // --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+            console.log("--- Depurando datos de sesión en la página de perfil ---");
+            console.log("Contenido completo de localStorage:", localStorage);
+            const userEmail = localStorage.getItem('userEmail');
+            console.log("Valor obtenido de localStorage.getItem('userEmail'):", userEmail);
+            // --- FIN DE CÓDIGO DE DEPURACIÓN ---
+            
+            if (!userEmail) {
+                setError('No se encontró el correo del usuario. Por favor, inicie sesión de nuevo.');
+                setLoading(false);
+                // No redirigir inmediatamente para poder ver el error.
+                // router.push('/login'); 
+                return;
+            }
+
+            try {
+                // 1. Obtener datos del usuario por email
+                const userResponse = await fetch(`/api/users/email/${encodeURIComponent(userEmail)}`);
+                if (!userResponse.ok) throw new Error('No se pudo cargar la información del usuario.');
+                const userData = await userResponse.json();
+                setUser({
+                    firstName: userData.nombre,
+                    lastName: userData.apellido,
+                    email: userData.correo,
+                    rut: userData.rut,
+                    avatarUrl: "https://github.com/shadcn.png"
+                });
+
+                // 2. Usar el RUT del usuario para obtener sus mascotas y huertas en paralelo
+                const userRut = userData.rut;
+                if (userRut) { // Asegurarse de que el RUT existe antes de hacer las llamadas
+                    const [petsResponse, gardensResponse] = await Promise.all([
+                        fetch(`/api/users/${userRut}/reported-pets`),
+                        fetch(`/api/users/${userRut}/gardens`)
+                    ]);
+
+                    if (petsResponse.ok) {
+                        const pets = await petsResponse.json();
+                        setUserReports(pets);
+                    }
+
+                    if (gardensResponse.ok) {
+                        const gardens = await gardensResponse.json();
+                        setUserGardens(gardens);
+                    }
+                }
+
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, [router]);
+
+    const handleProfileUpdate = (updatedData: Partial<UserProfile>) => {
+        if (user) {
+            setUser(currentUser => ({...currentUser!, ...updatedData}));
+        }
+    };
+
+    if (loading) {
+        return <div className="container mx-auto text-center py-12">Cargando perfil...</div>;
+    }
+
+    if (error) {
+        return <div className="container mx-auto text-center py-12 text-red-500">Error: {error}</div>;
+    }
+
+    if (!user) {
+        return <div className="container mx-auto text-center py-12">No se encontró el perfil del usuario. Vuelva a iniciar sesión.</div>;
+    }
 
     return (
         <div className="container mx-auto px-4 py-8 md:py-12">
-            
-            {/* Encabezado del Perfil */}
             <header className="flex flex-col md:flex-row items-center gap-6 md:gap-8 mb-8">
                 <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-primary">
                     <AvatarImage src={user.avatarUrl} alt={`${user.firstName} ${user.lastName}`} />
@@ -45,13 +123,13 @@ export default function UserProfilePage() {
                 <div className="text-center md:text-left">
                     <h1 className="text-3xl md:text-4xl font-bold">{`${user.firstName} ${user.lastName}`}</h1>
                     <p className="text-muted-foreground">{user.email}</p>
-                    <div className="mt-4">
+                    <div className="mt-4 flex items-center gap-2">
                         <EditProfileDialog user={user} onSaveChanges={handleProfileUpdate} />
+                        <Button variant="outline" onClick={handleLogout}>Desconectar</Button>
                     </div>
                 </div>
             </header>
 
-            {/* Contenido Principal con Pestañas para Mascotas y Huertas */}
             <main>
                 <Tabs defaultValue="mascotas" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto h-auto mb-8">
@@ -65,7 +143,6 @@ export default function UserProfilePage() {
                         </TabsTrigger>
                     </TabsList>
 
-                    {/* Pestaña de Mascotas */}
                     <TabsContent value="mascotas">
                         <Card>
                             <CardHeader>
@@ -88,15 +165,24 @@ export default function UserProfilePage() {
                         </Card>
                     </TabsContent>
 
-                    {/* Pestaña de Huertas */}                    <TabsContent value="huertas">
+                    <TabsContent value="huertas">
                          <Card>
                             <CardHeader>
                                 <CardTitle>Publicaciones de Huertas</CardTitle>
                             </CardHeader>
-                            <CardContent className="text-center py-12 text-muted-foreground">
-                                <p>Aún no has realizado publicaciones sobre huertas.</p>
-                                <p className="text-sm">Aquí aparecerán las huertas que registres en la comunidad.</p>
-                                <Button variant="link" className="mt-2">Crear una nueva publicación</Button>
+                            <CardContent>
+                                {userGardens.length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {userGardens.map(garden => (
+                                            <GardenCard key={garden.id} garden={garden} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-12 text-muted-foreground">
+                                        <p>Aún no has realizado publicaciones sobre huertas.</p>
+                                        <Button herf="/reportar-mascota/page" className="mt-2">Crear una nueva publicación</Button>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -105,3 +191,5 @@ export default function UserProfilePage() {
         </div>
     );
 }
+
+export default withAuth(UserProfilePage);

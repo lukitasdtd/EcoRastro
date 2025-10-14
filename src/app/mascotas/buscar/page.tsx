@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { reportedPets } from '@/lib/data';
+import { useState, useEffect } from 'react';
 import type { ReportedPet } from '@/lib/types';
 import ReportedPetCard from '@/components/reported-pet-card';
 import { Input } from '@/components/ui/input';
@@ -18,15 +17,36 @@ export default function SearchPetsPage() {
     status: 'all',
     size: 'all',
   });
-  const [filteredPets, setFilteredPets] = useState<ReportedPet[]>(reportedPets);
+  const [allPets, setAllPets] = useState<ReportedPet[]>([]);
+  const [filteredPets, setFilteredPets] = useState<ReportedPet[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const response = await fetch('/api/reported-pets');
+        if (response.ok) {
+          const pets = await response.json();
+          setAllPets(pets);
+          setFilteredPets(pets);
+        }
+      } catch (error) {
+        console.error("Error fetching pets:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPets();
+  }, []);
 
   // filtros de búsqueda 
   const handleFilterChange = () => {
-    let pets = reportedPets.filter(pet => 
-      pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pet.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pet.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pet.breed.toLowerCase().includes(searchTerm.toLowerCase())
+    let pets = allPets.filter(pet => 
+      (pet.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (pet.description?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (pet.location?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (pet.breed?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
 
     if (filters.species !== 'all') {
@@ -137,7 +157,11 @@ export default function SearchPetsPage() {
 
       {/* Resultados */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {filteredPets.length > 0 ? (
+        {loading ? (
+          <div className="col-span-full text-center py-16">
+            <p className="text-xl text-foreground/70">Cargando mascotas...</p>
+          </div>
+        ) : filteredPets.length > 0 ? (
           filteredPets.map(pet => (
             <ReportedPetCard key={pet.id} pet={pet} />
           ))
