@@ -1,5 +1,4 @@
 
-import Link from "next/link";
 import Image from "next/image";
 
 interface LogoProps {
@@ -23,10 +22,7 @@ export function Logo({ size = 'default' }: LogoProps) {
     const selectedSize = sizes[size];
 
     return (
-        <Link
-            href="/"
-            className="inline-flex items-center gap-2"
-        >
+        <div className="inline-flex items-center gap-2">
             <span className="sr-only">Ir a la página de inicio de EcoRastro</span>
             <Image
                 src="/logoeco2.png"
@@ -36,6 +32,6 @@ export function Logo({ size = 'default' }: LogoProps) {
                 priority
                 className={selectedSize.className}
             />
-        </Link>
+        </div>
     );
 }
