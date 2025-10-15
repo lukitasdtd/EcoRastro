@@ -64,7 +64,7 @@ export default function AboutPage() {
 
   return (
     <div className="relative bg-[#E5E5E5] min-h-screen">
-      <Image src="/three.png" alt="Fondo de página" fill className="object-cover opacity-10 -z-10" />
+      <Image src="/three.png" alt="Fondo de página" fill className="object-cover opacity-10 -z-10" sizes="100vw" />
       <main className="container mx-auto px-4 py-12">
         <section className="text-center">
           <div className="inline-block">
@@ -122,14 +122,14 @@ export default function AboutPage() {
           </p>
         </section>
 
-        <section className="mt-16 flex flex-col md:flex-row items-center gap-12">
+        <section className="mt-16 flex flex-col md:flex-row items-stretch gap-12">
           <div className="md:w-1/2">
              <Image
               src="/huertas.jpg"
               alt="Huertas de la comunidad"
               width={500}
               height={500}
-              className="rounded-lg shadow-md object-contain transform transition-transform duration-300 hover:scale-105"
+              className="rounded-lg shadow-md w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
             />
           </div>
           <div className="md:w-1/2 bg-white p-8 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:scale-105">
@@ -152,7 +152,7 @@ export default function AboutPage() {
               alt="Equipo de desarrollo de EcoRastro"
               width={800}
               height={600}
-              className="rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105"
+              className="rounded-lg shadow-md w-2/3 h-auto transform transition-transform duration-300 hover:scale-105"
             />
           </div>
         </section>
@@ -169,6 +169,7 @@ export default function AboutPage() {
                     src={member.image}
                     alt={`Foto de ${member.name}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="rounded-full border-4 border-white shadow-md object-cover"
                 />
               </div>
@@ -204,7 +205,7 @@ export default function AboutPage() {
               alt="Gatos y Perros de la comunidad"
               width={720}
               height={180}
-              className="mx-auto"
+              className="mx-auto w-2/3 h-auto"
             />
         </section>
       </main>
