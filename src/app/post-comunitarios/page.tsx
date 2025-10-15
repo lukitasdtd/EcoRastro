@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import PostCard from '@/components/post-card';
+import { Button } from '@/components/ui/button';
 
 // aquí se crea la vista post comunitarios con ejemplos visuales 
 export default function PostComunitarios() {
@@ -21,6 +23,17 @@ export default function PostComunitarios() {
         <p className="text-gray-600 text-lg mb-8">
     Aquí podrás explorar historias compartidas por la comunidad. Desde mascotas que encontraron su camino a casa hasta vecinos que transformaron espacios en huertas urbanas. Cada post es un testimonio de amor, solidaridad y compromiso con el medio ambiente. ¡Inspírate y comparte tu propia historia!
   </p>
+
+        {/* Botones para crear nuevos posts */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/reportar-mascota">Reportar una Mascota</Link>
+          </Button>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/huertas/formulario-huerta">Crear Post de Huerta</Link>
+          </Button>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post, index) => (
             <PostCard key={index} post={post} />
