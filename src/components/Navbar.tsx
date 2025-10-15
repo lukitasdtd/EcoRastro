@@ -28,7 +28,6 @@ const Navbar = () => {
         { name: 'Educación', href: '/mascotas/educacion' },
         { name: 'Reportar Mascota', href: '/reportar-mascota' },
         { name: 'Ver Mascotas', href: '/mascotas' },
-        { name: 'Redes de Apoyo', href: '/mascotas/redes-apoyo' },
       ],
     },
     { 

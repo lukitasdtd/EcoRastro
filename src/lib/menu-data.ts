@@ -25,10 +25,6 @@ export const navItems: NavItem[] = [
         label: 'Buscar Mascota Reportada',
         href: '/mascotas/buscar',
       },
-      {
-        label: 'Redes de Apoyo',
-        href: '/mascotas/redes-apoyo',
-      },
     ],
   },
   {
