@@ -2,6 +2,7 @@ import { Garden } from "@/lib/types";
 import Image from 'next/image';
 import { MapPin, Mail, Phone } from 'lucide-react';
 
+// función para obtener los datos de la huerta
 async function getGardenData(id: string): Promise<Garden | null> {
   try {
     const res = await fetch(`http://localhost:3001/api/gardens/${id}`);
@@ -16,6 +17,7 @@ async function getGardenData(id: string): Promise<Garden | null> {
   }
 }
 
+// función para formatear la dirección en huerta
 const formatAddress = (address: Garden['direccion']) => {
     if (typeof address === 'string') {
         try {
@@ -31,6 +33,7 @@ const formatAddress = (address: Garden['direccion']) => {
     return 'Ubicación no disponible';
 };
 
+//componente de página de detalle de huertas
 export default async function GardenDetailPage({ params }: { params: { id: string } }) {
   const garden = await getGardenData(params.id);
 
@@ -45,6 +48,7 @@ export default async function GardenDetailPage({ params }: { params: { id: strin
   const imageUrl = garden.image_url ? `http://localhost:3001/${garden.image_url}` : '/placeholder.jpg';
   const location = formatAddress(garden.direccion);
 
+  //contenido de la página
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

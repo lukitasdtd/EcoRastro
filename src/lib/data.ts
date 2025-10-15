@@ -61,11 +61,64 @@ export const allMapPoints: MapPoint[] = [
 ];
 
 // --- Lista de Reportes de Mascotas ---
+// CORREGIDO: Se ajustan los datos para que coincidan con el tipo `ReportedPet`
 export const reportedPets: ReportedPet[] = [
-  { id: 'rp1', name: 'Toby', species: 'Perro', breed: 'Golden Retriever', status: 'Encontrado', location: 'Providencia, cerca del Costanera Center', date: '2024-07-20', description: 'Encontrado cerca del Costanera Center. Es muy amigable y parece bien cuidado. Llevaba un collar azul pero sin placa de identificación.', reward: false, imageId: 'img1', size: 'Grande' },
-  { id: 'rp2', name: 'Milo', species: 'Gato', breed: 'Naranja atigrado', status: 'Perdido', location: 'La Cisterna, Paradero 21', date: '2024-07-19', description: 'Gato macho, muy cariñoso. Se perdió desde casa. Es de color naranja con rayas y tiene la punta de la cola blanca.', reward: true, imageId: 'img2', size: 'Mediano' },
-  { id: 'rp3', name: 'Cachorros en Adopción', species: 'Perro', breed: 'Mestizos', status: 'Encontrado', location: 'Parque Araucano, Las Condes', date: '2024-07-21', description: 'Jornada de adopción este fin de semana. Varios cachorros mestizos de tamaño mediano buscan un hogar responsable y cariñoso.', reward: false, imageId: 'img3', size: 'Mediano' },
-  { id: 'rp4', name: 'Piolín', species: 'Otro', breed: 'Canario', status: 'Perdido', location: 'Recoleta, cerca del Cerro San Cristóbal', date: '2024-07-22', description: 'Canario de color amarillo intenso. Se escapó de su jaula. Responde al nombre de Piolín y le gusta cantar por las mañanas.', reward: false, imageId: 'img4', size: 'Pequeño' },
+  {
+    id: 1,
+    nombre_mascota: 'Toby',
+    especie: 'Perro',
+    raza: 'Golden Retriever',
+    color: 'Dorado',
+    tamano: 'Grande',
+    descripcion: 'Encontrado cerca del Costanera Center. Es muy amigable y parece bien cuidado. Llevaba un collar azul pero sin placa de identificación.',
+    image_url: '/img1.jpg',
+    ultimo_lugar_visto: 'Providencia, cerca del Costanera Center',
+    fecha_reporte: '2024-07-20',
+    estado_reporte: 'encontrado',
+    user_rut: '11111111-1',
+  },
+  {
+    id: 2,
+    nombre_mascota: 'Milo',
+    especie: 'Gato',
+    raza: 'Naranja atigrado',
+    color: 'Naranja',
+    tamano: 'Mediano',
+    descripcion: 'Gato macho, muy cariñoso. Se perdió desde casa. Es de color naranja con rayas y tiene la punta de la cola blanca.',
+    image_url: '/img2.jpg',
+    ultimo_lugar_visto: 'La Cisterna, Paradero 21',
+    fecha_reporte: '2024-07-19',
+    estado_reporte: 'perdido',
+    user_rut: '22222222-2',
+  },
+  {
+    id: 3,
+    nombre_mascota: 'Cachorros en Adopción',
+    especie: 'Perro',
+    raza: 'Mestizos',
+    color: 'Varios',
+    tamano: 'Mediano',
+    descripcion: 'Jornada de adopción este fin de semana. Varios cachorros mestizos de tamaño mediano buscan un hogar responsable y cariñoso.',
+    image_url: '/img3.jpg',
+    ultimo_lugar_visto: 'Parque Araucano, Las Condes',
+    fecha_reporte: '2024-07-21',
+    estado_reporte: 'encontrado',
+    user_rut: '33333333-3',
+  },
+  {
+    id: 4,
+    nombre_mascota: 'Piolín',
+    especie: 'Otro',
+    raza: 'Canario',
+    color: 'Amarillo',
+    tamano: 'Pequeño',
+    descripcion: 'Canario de color amarillo intenso. Se escapó de su jaula. Responde al nombre de Piolín y le gusta cantar por las mañanas.',
+    image_url: '/img4.jpg',
+    ultimo_lugar_visto: 'Recoleta, cerca del Cerro San Cristóbal',
+    fecha_reporte: '2024-07-22',
+    estado_reporte: 'perdido',
+    user_rut: '44444444-4',
+  },
 ];
 
 // --- Datos para el Calendario de Siembra ---
@@ -132,4 +185,5 @@ export const plantingData: PlantingData = {
 // --- Datos Derivados (para componentes específicos) ---
 export const petPoints = allMapPoints.filter(p => p.type === 'pet');
 export const gardenPoints = allMapPoints.filter(p => p.type === 'garden');
-export const adoptionPets = reportedPets.filter(p => p.status === 'Encontrado');
+// CORREGIDO: Se usa `estado_reporte` para filtrar las mascotas en adopción
+export const adoptionPets = reportedPets.filter(p => p.estado_reporte === 'encontrado');

@@ -180,7 +180,7 @@ function UserProfilePage() {
                                 ) : (
                                     <div className="text-center py-12 text-muted-foreground">
                                         <p>Aún no has realizado publicaciones sobre huertas.</p>
-                                        <Button herf="/reportar-mascota/page" className="mt-2">Crear una nueva publicación</Button>
+                                        <Button href="/reportar-mascota/page" className="mt-2">Crear una nueva publicación</Button>
                                     </div>
                                 )}
                             </CardContent>

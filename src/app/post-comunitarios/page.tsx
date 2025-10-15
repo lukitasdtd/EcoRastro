@@ -1,5 +1,6 @@
 import PostCard from '@/components/post-card';
 
+// aquí se crea la vista post comunitarios con ejemplos visuales 
 export default function PostComunitarios() {
   const posts = Array(10).fill({
     tipo: 'mascota',
