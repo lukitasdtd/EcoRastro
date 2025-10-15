@@ -20,7 +20,7 @@ export default function GardensPage() {
     const fetchGardens = async () => {
       try {
         // Usar la ruta correcta de la API
-        const response = await fetch('http://localhost:3001/api/gardens');
+        const response = await fetch('/api/gardens');
         if (response.ok) {
           const data: Garden[] = await response.json();
           setAllGardens(data);

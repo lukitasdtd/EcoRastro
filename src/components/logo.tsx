@@ -5,7 +5,7 @@ import Image from "next/image";
 interface LogoProps {
     size?: 'default' | 'large';
 }
-//componente logo
+
 export function Logo({ size = 'default' }: LogoProps) {
     const sizes = {
         default: {
@@ -26,11 +26,11 @@ export function Logo({ size = 'default' }: LogoProps) {
         <Link
             href="/"
             className="inline-flex items-center gap-2"
-            aria-label="EcoRastro Home"
         >
+            <span className="sr-only">Ir a la página de inicio de EcoRastro</span>
             <Image
                 src="/logoeco2.png"
-                alt="EcoRastro Logo"
+                alt="" // La imagen es decorativa, el span oculto describe el enlace.
                 width={selectedSize.width}
                 height={selectedSize.height}
                 priority
