@@ -2,7 +2,7 @@ import PostCard from '@/components/post-card';
 
 // aquí se crea la vista post comunitarios con ejemplos visuales 
 export default function PostComunitarios() {
-  const posts = Array(10).fill({
+  const posts = Array(5).fill({
     tipo: 'mascota',
     imagen_url: '/gato-ejemplo.jpg',
     titulo: 'Título del Post de Ejemplo',
@@ -11,7 +11,7 @@ export default function PostComunitarios() {
     fecha: 'hace 2 días',
     contenido: 'Este es un extracto del contenido del post. Es un texto de ejemplo para mostrar cómo se vería el contenido en la tarjeta.',
     likes: 42,
-    comentarios: 15,
+    comentarios: 2,
   });
 
   return (
