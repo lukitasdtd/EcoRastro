@@ -58,7 +58,7 @@ export default function LoginPage() {
             <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
                 <CardHeader className="text-center space-y-2">
                     <div className="inline-block mx-auto">
-                        <Logo />
+                   
                     </div>
                     <CardTitle className="text-2xl font-bold">Bienvenido de Vuelta</CardTitle>
                     <CardDescription>Ingresa tus datos para acceder a tu cuenta</CardDescription>

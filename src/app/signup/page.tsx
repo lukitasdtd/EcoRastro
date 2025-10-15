@@ -91,7 +91,6 @@ export default function SignupPage() {
             <Card className="mx-auto max-w-sm w-full shadow-lg border-0">
                 <CardHeader className="text-center space-y-2">
                     <div className="inline-block mx-auto">
-                        <Logo />
                     </div>
                     <CardTitle className="text-2xl font-bold">Crea tu Cuenta</CardTitle>
                     <CardDescription>Únete a la comunidad de EcoRastro hoy</CardDescription>
