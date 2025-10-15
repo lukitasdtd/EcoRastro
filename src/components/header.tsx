@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,9 +28,11 @@ import { cn } from '@/lib/utils';
 function NavLink({
   href,
   children,
+  onClick,
 }: {
   href: string;
   children: React.ReactNode;
+  onClick?: () => void;
 }) {
   const pathname = usePathname();
   const isActive = pathname === href;
@@ -38,6 +40,7 @@ function NavLink({
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={cn(
         'relative block whitespace-nowrap rounded-md px-2 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary',
         isActive ? 'font-bold' : ''
@@ -53,10 +56,18 @@ function NavLink({
 }
 
 // 🔹 Componente para un menú desplegable
-function DropdownMenu({ item }: { item: NavItem }) {
-  const [isOpen, setIsOpen] = useState(false);
+function DropdownMenu({
+  item,
+  isOpen,
+  onToggle,
+  onClose,
+}: {
+  item: NavItem;
+  isOpen: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+}) {
   const pathname = usePathname();
-  const menuRef = useRef<HTMLLIElement>(null);
 
   const isParentActive =
     item.subItems?.some(sub => pathname === sub.href) ?? false;
@@ -66,9 +77,9 @@ function DropdownMenu({ item }: { item: NavItem }) {
   }
 
   return (
-    <li ref={menuRef} className="relative">
+    <li className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={onToggle}
         aria-haspopup="true"
         aria-expanded={isOpen}
         className={cn(
@@ -96,7 +107,7 @@ function DropdownMenu({ item }: { item: NavItem }) {
                 key={subItem.href}
                 href={subItem.href}
                 role="menuitem"
-                onClick={() => setIsOpen(false)}
+                onClick={onClose} // Cierra el menú al hacer clic
                 className="block rounded-md p-2 text-sm hover:bg-gray-700 focus:bg-gray-700 focus:outline-none"
               >
                 {subItem.label}
@@ -112,24 +123,55 @@ function DropdownMenu({ item }: { item: NavItem }) {
 // 🔹 Componente principal del Header/Navbar
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+
+  // Efecto para cerrar el dropdown si se hace clic afuera
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [navRef]);
+
+  const handleToggleDropdown = (label: string) => {
+    setOpenDropdown(prev => (prev === label ? null : label));
+  };
+
+  const handleCloseDropdown = () => {
+    setOpenDropdown(null);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-primary font-sans">
       <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
         {/* Logo */}
         <div className="flex-shrink-0">
-          <Logo />
+            <Link href="/" onClick={handleCloseDropdown}>
+                <Logo />
+            </Link>
         </div>
 
         {/* Navegación Desktop */}
-        <nav className="hidden md:flex flex-1 items-center justify-center">
+        <nav ref={navRef} className="hidden md:flex flex-1 items-center justify-center">
           <ul className="flex items-center gap-2">
             {navItems.map(item =>
               item.subItems ? (
-                <DropdownMenu key={item.label} item={item} />
+                <DropdownMenu
+                  key={item.label}
+                  item={item}
+                  isOpen={openDropdown === item.label}
+                  onToggle={() => handleToggleDropdown(item.label)}
+                  onClose={handleCloseDropdown}
+                />
               ) : (
                 <li key={item.href}>
-                  <NavLink href={item.href}>{item.label}</NavLink>
+                  <NavLink href={item.href} onClick={handleCloseDropdown}>{item.label}</NavLink>
                 </li>
               )
             )}
