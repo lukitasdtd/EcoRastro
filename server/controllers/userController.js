@@ -16,6 +16,7 @@ if (!process.env.JWT_SECRET) {
 
 // se crea un nuevo usuario
 exports.createUser = async (req, res) => {
+    const client = await pool.connect();
     try {
         const { rut, nombre, apellido, correo, contrasena } = req.body;
         if (!contrasena) {
@@ -23,7 +24,7 @@ exports.createUser = async (req, res) => {
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(contrasena, salt);
-        const newUser = await pool.query(
+        const newUser = await client.query(
             'INSERT INTO "usuarios" (rut, nombre, apellido, correo, psswd) VALUES ($1, $2, $3, $4, $5) RETURNING rut, nombre, correo',
             [rut, nombre, apellido, correo, hashedPassword]
         );
@@ -31,17 +32,20 @@ exports.createUser = async (req, res) => {
     } catch (err) {
         console.error(`${controllerName}: Error al crear usuario - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo crear el usuario.` });
+    } finally {
+        client.release();
     }
 };
 
 //inicio de sesión de usuario
 exports.loginUser = async (req, res) => {
+    const client = await pool.connect();
     try {
         const { correo, contrasena } = req.body;
         if (!contrasena) {
             return res.status(400).json({ message: 'El campo contrasena es requerido y no puede estar vacío.' });
         }
-        const user = await pool.query('SELECT * FROM "usuarios" WHERE correo = $1', [correo]);
+        const user = await client.query('SELECT * FROM "usuarios" WHERE correo = $1', [correo]);
         if (user.rows.length === 0) {
             return res.status(401).json({ message: "Credenciales inválidas." });
         }
@@ -54,25 +58,31 @@ exports.loginUser = async (req, res) => {
     } catch (err) {
         console.error(`${controllerName}: Error al iniciar sesión - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo iniciar sesión.` });
+    } finally {
+        client.release();
     }
 };
 
 //obtiene todos los usuarios
 exports.getUsers = async (req, res) => { 
+    const client = await pool.connect();
     try {
-        const allUsers = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios"');
+        const allUsers = await client.query('SELECT rut, nombre, apellido, correo FROM "usuarios"');
         res.json(allUsers.rows);
     } catch (err) {
         console.error(`${controllerName}: Error al obtener usuarios - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo obtener los usuarios.` });
+    } finally {
+        client.release();
     }
 };
 
 //se obtiene usuario por rut (id)
 exports.getUserById = async (req, res) => { 
+    const client = await pool.connect();
     try {
         const { id } = req.params;
-        const user = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios" WHERE rut = $1', [id]);
+        const user = await client.query('SELECT rut, nombre, apellido, correo FROM "usuarios" WHERE rut = $1', [id]);
         if (user.rows.length === 0) {
             return res.status(404).json({ message: "Usuario no encontrado." });
         }
@@ -80,16 +90,19 @@ exports.getUserById = async (req, res) => {
     } catch (err) {
         console.error(`${controllerName}: Error al obtener usuario por ID - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo obtener el usuario.` });
+    } finally {
+        client.release();
     }
 };
 
 //se actualiza usuario
 exports.updateUser = async (req, res) => {
+    const client = await pool.connect();
     try {
         const { id } = req.params;
         const requesterRut = req.user.rut;
         const { nombre, apellido, correo } = req.body;
-        const updateUser = await pool.query(
+        const updateUser = await client.query(
             'UPDATE "usuarios" SET nombre = $1, apellido = $2, correo = $3 WHERE rut = $4 AND rut = $5 RETURNING rut, nombre, apellido, correo',
             [nombre, apellido, correo, id, requesterRut]
         );
@@ -100,15 +113,18 @@ exports.updateUser = async (req, res) => {
     } catch (err) {
         console.error(`${controllerName}: Error al actualizar usuario - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo actualizar el usuario.` });
+    } finally {
+        client.release();
     }
 };
 
 //aquí se elimina usuario
 exports.deleteUser = async (req, res) => {
+    const client = await pool.connect();
     try {
         const { id } = req.params;
         const requesterRut = req.user.rut;
-        const deleteUser = await pool.query(
+        const deleteUser = await client.query(
             'DELETE FROM "usuarios" WHERE rut = $1 AND rut = $2 RETURNING rut, correo',
             [id, requesterRut]
         );
@@ -119,14 +135,17 @@ exports.deleteUser = async (req, res) => {
     } catch (err) {
         console.error(`${controllerName}: Error al eliminar usuario - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo eliminar el usuario.` });
+    } finally {
+        client.release();
     }
 };
 
 // Obtener usuario por Email
 exports.getUserByEmail = async (req, res) => {
+    const client = await pool.connect();
     try {
         const { email } = req.params;
-        const user = await pool.query('SELECT rut, nombre, apellido, correo FROM "usuarios" WHERE correo = $1', [email]);
+        const user = await client.query('SELECT rut, nombre, apellido, correo FROM "usuarios" WHERE correo = $1', [email]);
         if (user.rows.length === 0) {
             return res.status(404).json({ message: "Usuario no encontrado." });
         }
@@ -134,29 +153,37 @@ exports.getUserByEmail = async (req, res) => {
     } catch (err) {
         console.error(`${controllerName}: Error al obtener usuario por Email - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo obtener el usuario.` });
+    } finally {
+        client.release();
     }
 };
 
 // Obtener mascotas reportadas por un usuario
 exports.getReportedPetsByUser = async (req, res) => {
+    const client = await pool.connect();
     try {
         const { rut } = req.params;
-        const userPets = await pool.query('SELECT * FROM "pets" WHERE user_rut = $1', [rut]);
+        const userPets = await client.query('SELECT * FROM "pets" WHERE user_rut = $1', [rut]);
         res.json(userPets.rows);
     } catch (err) {
         console.error(`${controllerName}: Error al obtener mascotas reportadas por usuario - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo obtener los reportes de mascotas.` });
+    } finally {
+        client.release();
     }
 };
 
 // Obtener huertas de un usuario
 exports.getUserGardens = async (req, res) => {
+    const client = await pool.connect();
     try {
         const { rut } = req.params;
-        const userGardens = await pool.query('SELECT * FROM "huertas" WHERE user_rut = $1 ORDER BY fecha_c DESC', [rut]);
+        const userGardens = await client.query('SELECT * FROM "huertas" WHERE user_rut = $1 ORDER BY fecha_c DESC', [rut]);
         res.json(userGardens.rows);
     } catch (err) {
         console.error(`${controllerName}: Error al obtener huertas del usuario - ${err.message}`);
         res.status(500).json({ message: `Error del servidor: No se pudo obtener las huertas del usuario.` });
+    } finally {
+        client.release();
     }
 };

@@ -5,6 +5,7 @@ const controllerName = "gardenController";
 
 // --- FUNCIN PARA CREAR UNA HUERTA ---
 exports.createGarden = async (req, res) => {
+    const client = await pool.connect(); // Acquire client
     try {
         if (!req.file) {
             return res.status(400).json({ message: "La imagen de la huerta es requerida." });
@@ -24,7 +25,7 @@ exports.createGarden = async (req, res) => {
         const fullAddressJson = JSON.stringify(addressObject);
 
         // 3. Insertar en la tabla "huertas" incluyendo los campos de contacto
-        const nuevaHuerta = await pool.query(
+        const nuevaHuerta = await client.query( // Use client
             'INSERT INTO "huertas" (nombre, descripcion, direccion, image_url, user_rut, cont_email, cont_tel) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
             [nombre, descripcion, fullAddressJson, imageUrl, userRut, cont_email, cont_tel]
         );
@@ -38,13 +39,16 @@ exports.createGarden = async (req, res) => {
             requestBody: req.body,
         });
         res.status(500).json({ message: `Error del servidor: No se pudo crear la huerta. Verifique la estructura de la tabla y el formato de los datos.` });
+    } finally {
+        client.release(); // Release client
     }
 };
 
 // --- FUNCIN PARA OBTENER TODAS LAS HUERTAS ---
 exports.getGardens = async (req, res) => {
+    const client = await pool.connect(); // Acquire client
     try {
-        const todasLasHuertas = await pool.query('SELECT * FROM "huertas"');
+        const todasLasHuertas = await client.query('SELECT * FROM "huertas"'); // Use client
         res.status(200).json(todasLasHuertas.rows);
     } catch (err) {
         console.error(`${controllerName}: Error al obtener las huertas.`, {
@@ -52,14 +56,17 @@ exports.getGardens = async (req, res) => {
             stack: err.stack,
         });
         res.status(500).json({ message: "Error del servidor: No se pudieron obtener las huertas." });
+    } finally {
+        client.release(); // Release client
     }
 };
 
 // --- FUNCIN PARA OBTENER UNA HUERTA POR ID ---
 exports.getGardenById = async (req, res) => {
+    const client = await pool.connect(); // Acquire client
     try {
         const { id } = req.params;
-        const huerta = await pool.query('SELECT * FROM "huertas" WHERE id = $1', [id]);
+        const huerta = await client.query('SELECT * FROM "huertas" WHERE id = $1', [id]); // Use client
 
         if (huerta.rows.length === 0) {
             return res.status(404).json({ message: "Huerta no encontrada." });
@@ -73,5 +80,7 @@ exports.getGardenById = async (req, res) => {
             params: req.params
         });
         res.status(500).json({ message: "Error del servidor: No se pudo obtener la huerta." });
+    } finally {
+        client.release(); // Release client
     }
 };
