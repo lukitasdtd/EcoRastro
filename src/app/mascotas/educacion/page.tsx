@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FlipCard } from '@/components/ui/flip-card';
 import {
   Accordion,
   AccordionContent,
@@ -11,54 +10,84 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import {
-  Bone,
-  Home,
   Shield,
   ArrowRight,
   HelpCircle,
-  Stethoscope,
-  ShowerHead,
   Search,
-  Users,
   Building,
   Scale,
   ArrowLeft,
-  RotateCw,
-  PawPrint
+  CheckSquare,
+  HeartPulse,
+  Utensils,
+  Smile,
 } from 'lucide-react';
 
 export default function PetEducationPage() {
   // --- Datos para las secciones ---
-  const careTips = [
+  const fundamentalTips = [
     {
-      icon: <Bone className="h-8 w-8 text-orange-500" />,
-      title: 'Alimentación Balanceada',
-      text: 'Una dieta adecuada a su edad, tamaño y nivel de actividad es la base de su salud. Siempre con agua fresca disponible.',
+      icon: <Search className="h-8 w-8 text-orange-500" />,
+      title: 'Si pierdes una mascota',
+      points: [
+        'Actúa de inmediato: revisa tu casa, patio y alrededores.',
+        'Comunicación con vecinos: pregunta puerta a puerta y deja tu número de contacto.',
+        'Redes sociales: publica fotos recientes con descripción en grupos locales.',
+        'Carteles físicos: coloca avisos con foto y datos en lugares concurridos.',
+        'Oficinas y veterinarios: avisa a municipalidad, clínicas y refugios.',
+        'Constancia: realiza reportes periódicos durante al menos 30 días.',
+      ],
     },
     {
-      icon: <PawPrint className="h-8 w-8 text-green-600" />,
-      title: 'Ejercicio Diario',
-      text: 'El ejercicio regular es crucial para su salud física y mental. Adapta la rutina a las necesidades específicas de tu mascota.',
+      icon: <HelpCircle className="h-8 w-8 text-blue-500" />,
+      title: 'Si encuentras una mascota',
+      points: [
+        'Asegúrala: evita que se lastime o escape; dale agua y alimento.',
+        'Identificación: revisa si tiene collar o placa y llévala a un veterinario para escanear el microchip.',
+        'Difunde responsablemente: publica en redes sociales sin dar información sensible.',
+        'Contacto oficial: informa en la municipalidad o Registro Nacional de Mascotas.',
+        'Entrega segura: pide pruebas de propiedad antes de devolverla (fotos, carnet de vacunas).',
+      ],
     },
     {
-      icon: <Stethoscope className="h-8 w-8 text-orange-500" />,
-      title: 'Salud y Prevención',
-      text: 'Mantén sus vacunas y desparasitaciones al día. Las visitas periódicas al veterinario previenen problemas a largo plazo.',
+      icon: <CheckSquare className="h-8 w-8 text-green-500" />,
+      title: 'Consejos Prácticos',
+      points: [
+        'Mantén el chip y los datos de tus mascotas siempre actualizados.',
+        'Guarda los teléfonos de emergencias veterinarias de tu zona.',
+        'Usa siempre un collar con una placa de identificación visible.',
+      ],
     },
-     {
-      icon: <ShowerHead className="h-8 w-8 text-green-600" />,
-      title: 'Higiene y Aseo',
-      text: 'El cepillado regular, baños adecuados y cuidado dental son esenciales para su comodidad y para prevenir enfermedades.',
+  ];
+
+  const dailyPractices = [
+    {
+      icon: <Utensils className="h-8 w-8 text-cyan-500" />,
+      title: 'Alimentación',
+      points: [
+        'Proporciona alimento balanceado de acuerdo con la especie, edad y estado de salud.',
+        'Mantén agua fresca y limpia disponible todo el día.',
+        'Evita dar comida casera dañina (chocolate, cebolla, uvas, etc.).',
+      ],
     },
     {
-      icon: <Users className="h-8 w-8 text-orange-500" />,
-      title: 'Socialización',
-      text: 'Una correcta socialización desde cachorro con personas y otros animales previene miedos y comportamientos agresivos.',
+      icon: <HeartPulse className="h-8 w-8 text-rose-500" />,
+      title: 'Salud',
+      points: [
+        'Vacunas al día según el calendario veterinario.',
+        'Desparasitación interna y externa periódica.',
+        'Chequeos veterinarios anuales y atención inmediata en caso de enfermedad o accidente.',
+        'Esterilización/castración para controlar la población y mejorar la salud del animal.',
+      ],
     },
     {
-      icon: <Home className="h-8 w-8 text-green-600" />,
-      title: 'Un Espacio Seguro',
-      text: 'Tu mascota necesita un lugar propio donde se sienta segura y protegida, especialmente durante ruidos fuertes o visitas.',
+      icon: <Smile className="h-8 w-8 text-amber-500" />,
+      title: 'Afecto y Recreación',
+      points: [
+        'Paseos diarios, juegos y socialización con otros animales y personas.',
+        'Tiempo de calidad con la mascota para reforzar el vínculo afectivo.',
+        'Espacio adecuado y seguro, con sombra y protección contra el frío o calor extremo.',
+      ],
     },
   ];
 
@@ -137,37 +166,69 @@ export default function PetEducationPage() {
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-24 h-1 bg-orange-500 rounded-full"></div>
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {careTips.map((tip) => (
-                <FlipCard
-                  key={tip.title}
-                  className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 cursor-pointer h-40"
-                  frontContent={(
-                    <div className="relative w-full h-full flex items-center justify-center p-4">
-                      <h3 className="text-xl font-bold text-gray-800 px-4 text-center">{tip.title}</h3>
-                      <RotateCw className="absolute top-4 right-4 h-5 w-5 text-gray-400" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+              {fundamentalTips.map((tip) => (
+                <Card key={tip.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0 bg-orange-100/70 p-3 rounded-full">{tip.icon}</div>
+                        <CardTitle className="text-xl font-bold text-gray-800">{tip.title}</CardTitle>
                     </div>
-                  )}
-                  backContent={(
-                    <div className="text-center p-4 flex flex-col items-center justify-center h-full">
-                      <div className="mx-auto bg-green-100/70 rounded-full p-3 w-fit mb-3">
-                        {tip.icon}
-                      </div>
-                      <p className="text-gray-600 text-sm">{tip.text}</p>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <ul className="space-y-2 text-gray-600 text-sm text-left pl-5">
+                      {tip.points.map((point) => (
+                        <li key={point} className="flex items-start">
+                          <span className="mr-2 mt-1">•</span>
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          {/* --- Buenas Prácticas Diarias --- */}
+          <section>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 inline-block relative">
+                Buenas Prácticas Diarias
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-24 h-1 bg-orange-500 rounded-full"></div>
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+              {dailyPractices.map((practice) => (
+                <Card key={practice.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0 bg-cyan-100/70 p-3 rounded-full">{practice.icon}</div>
+                        <CardTitle className="text-xl font-bold text-gray-800">{practice.title}</CardTitle>
                     </div>
-                  )}
-                />
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <ul className="space-y-2 text-gray-600 text-sm text-left pl-5">
+                      {practice.points.map((point) => (
+                        <li key={point} className="flex items-start">
+                          <span className="mr-2 mt-1">•</span>
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </section>
 
           {/* --- Normativas y Consulta --- */}
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 h-full">
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 flex flex-col">
                 <CardHeader className="text-center border-b pb-4">
                     <CardTitle className="text-2xl font-bold">Leyes y Normativas</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4 pt-6">
+                <CardContent className="space-y-4 pt-6 flex-grow">
                    {regulations.map((reg) => (
                         <div key={reg.title} className="flex items-start gap-4 p-2 rounded-lg hover:bg-gray-50">
                           <div className="bg-green-100/80 rounded-full p-3 flex-shrink-0 mt-1">{reg.icon}</div>
@@ -180,28 +241,28 @@ export default function PetEducationPage() {
                 </CardContent>
             </Card>
 
-            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 h-full text-center">
+            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 flex flex-col text-center">
                 <CardHeader className="border-b pb-4">
                   <div className="mx-auto bg-orange-500 text-white rounded-full p-4 w-fit mb-3">
                       <Search className="h-8 w-8" />
                   </div>
                   <CardTitle className="text-2xl font-bold">Verifica el Registro del Microchip</CardTitle>
                 </CardHeader>
-                <CardContent className="pt-6 flex flex-col items-center">
+                <CardContent className="pt-6 flex flex-col items-center flex-grow">
                     <p className="text-gray-600 mb-6">
-                        Es vital que tus datos de contacto estén actualizados en la base de datos del microchip. Si no recuerdas dónde lo registraste, puedes usar un buscador universal.
+                        Mantén tus datos actualizados en la plataforma oficial del gobierno de Chile para asegurar que puedan contactarte si encuentran a tu mascota.
                     </p>
                     <Button asChild size="lg" className="rounded-full bg-orange-500 hover:bg-orange-600 w-full mt-auto">
-                        <Link href="https://petmicrochiplookup.org/" target="_blank" rel="noopener noreferrer">
-                            Buscador Universal (AAHA)
+                        <Link href="https://registratumascota.cl/inicio.xhtml" target="_blank" rel="noopener noreferrer">
+                            Ir al Registro Nacional (Chile)
                             <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                     </Button>
                     <p className="mt-4 text-xs text-orange-900/70">
-                      Esta herramienta ayuda a identificar la base de datos del registro de un chip.
+                      Plataforma oficial del gobierno de Chile para el registro de mascotas.
                     </p>
                 </CardContent>
-            </Card>
+              </Card>
           </section>
           
           {/* --- FAQ --- */}
