@@ -21,6 +21,7 @@ import {
   HeartPulse,
   Utensils,
   Smile,
+  PawPrint,
 } from 'lucide-react';
 
 export default function PetEducationPage() {
@@ -64,6 +65,7 @@ export default function PetEducationPage() {
     {
       icon: <Utensils className="h-8 w-8 text-cyan-500" />,
       title: 'Alimentación',
+      bgColor: 'bg-cyan-100/70',
       points: [
         'Proporciona alimento balanceado de acuerdo con la especie, edad y estado de salud.',
         'Mantén agua fresca y limpia disponible todo el día.',
@@ -73,6 +75,7 @@ export default function PetEducationPage() {
     {
       icon: <HeartPulse className="h-8 w-8 text-rose-500" />,
       title: 'Salud',
+      bgColor: 'bg-rose-100/70',
       points: [
         'Vacunas al día según el calendario veterinario.',
         'Desparasitación interna y externa periódica.',
@@ -83,6 +86,7 @@ export default function PetEducationPage() {
     {
       icon: <Smile className="h-8 w-8 text-amber-500" />,
       title: 'Afecto y Recreación',
+      bgColor: 'bg-amber-100/70',
       points: [
         'Paseos diarios, juegos y socialización con otros animales y personas.',
         'Tiempo de calidad con la mascota para reforzar el vínculo afectivo.',
@@ -203,7 +207,7 @@ export default function PetEducationPage() {
                 <Card key={practice.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100 flex flex-col">
                   <CardHeader>
                     <div className="flex items-center gap-4">
-                        <div className="flex-shrink-0 bg-cyan-100/70 p-3 rounded-full">{practice.icon}</div>
+                        <div className={`flex-shrink-0 ${practice.bgColor} p-3 rounded-full`}>{practice.icon}</div>
                         <CardTitle className="text-xl font-bold text-gray-800">{practice.title}</CardTitle>
                     </div>
                   </CardHeader>
@@ -221,6 +225,42 @@ export default function PetEducationPage() {
               ))}
             </div>
           </section>
+
+          {/* --- Sección de Adopción y Refugios --- */}
+<section>
+  <div className="text-center mb-10">
+    <h2 className="text-3xl md:text-4xl font-bold text-gray-800 inline-block relative">
+      Busca un Refugio y Adopta
+      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-24 h-1 bg-orange-500 rounded-full"></div>
+    </h2>
+  </div>
+  <div className="max-w-2xl mx-auto px-4 sm:px-0">
+    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl border-gray-100">
+      <CardHeader className="text-center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex-shrink-0 bg-orange-100/70 p-3 rounded-full">
+            <PawPrint className="h-8 w-8 text-orange-500" />
+          </div>
+          <CardTitle className="text-xl font-bold text-gray-800">
+            Encuentra a tu nuevo mejor amigo
+          </CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="text-center">
+        <p className="text-gray-600 mb-6">
+          ¿Estás pensando en agrandar tu familia? La adopción es una de las mejores formas de hacerlo. Hay miles de mascotas esperando un hogar lleno de amor. Encuentra refugios cerca de ti y conoce a tu futuro compañero.
+        </p>
+        <Button asChild size="lg" className="rounded-full bg-orange-500 hover:bg-orange-600 w-full sm:w-auto">
+          <Link href="https://www.petmatch.cl/refugios" target="_blank" rel="noopener noreferrer">
+            Buscar Refugios y Mascotas para Adoptar
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  </div>
+</section>
+
 
           {/* --- Normativas y Consulta --- */}
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -292,9 +332,6 @@ export default function PetEducationPage() {
               La tenencia responsable es un acto de amor que dura toda la vida. Investiga, edúcate y prepárate para darle a tu mascota el hogar que merece.
             </p>
             <div className="flex justify-center gap-6 flex-wrap">
-                <Button variant="outline" className="bg-white/80" asChild>
-                    <Link href="/mascotas/redes-apoyo">Ver Redes de Apoyo</Link>
-                </Button>
                 <Button className="bg-orange-500 hover:bg-orange-600" asChild>
                     <Link href="/reportar-mascota">Reportar una Mascota</Link>
                 </Button>
