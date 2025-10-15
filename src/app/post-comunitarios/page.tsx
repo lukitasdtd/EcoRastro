@@ -26,10 +26,10 @@ export default function PostComunitarios() {
 
         {/* Botones para crear nuevos posts */}
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <Button asChild className="w-full sm:w-auto">
+          <Button asChild className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600">
             <Link href="/reportar-mascota">Reportar una Mascota</Link>
           </Button>
-          <Button asChild className="w-full sm:w-auto">
+          <Button asChild className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600">
             <Link href="/huertas/formulario-huerta">Crear Post de Huerta</Link>
           </Button>
         </div>
