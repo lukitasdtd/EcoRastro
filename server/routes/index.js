@@ -1,16 +1,21 @@
+
 const express = require('express');
 const router = express.Router(); 
 
-//importar rutas
+// Importar rutas
 const petRoutes = require('./petRoutes');
 const reportRoutes = require('./reportroutes');
 const userRoutes = require('./userRoutes');
 const gardenRoutes = require('./gardenRoutes');
+const postRoutes = require('./postRoutes');
+const mapaRoutes = require('./mapaRoutes'); // Importamos las nuevas rutas
 
-//las rutas principales 
-router.use('/pets', petRoutes);
+// Las rutas principales
+router.use('/mascotas', petRoutes);
 router.use('/reports', reportRoutes);
 router.use('/users', userRoutes);
 router.use('/gardens', gardenRoutes);
+router.use('/posts', postRoutes);
+router.use('/mapa', mapaRoutes); // Usamos las nuevas rutas
 
 module.exports = router;
