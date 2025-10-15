@@ -44,7 +44,7 @@ export default function MapPage() {
       setLoading(true);
       try {
         const [petsResponse, gardensResponse] = await Promise.all([
-          fetch('/api/pets'),
+          fetch('/api/mascotas'),
           fetch('/api/gardens'),
         ]);
 
