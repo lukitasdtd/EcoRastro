@@ -133,9 +133,9 @@ export default function PracticasVerdesPage() {
                 </CardHeader>
                 <CardContent className="pt-6 flex flex-col items-center">
                     <p className="text-gray-600 mb-6">Mide el impacto de tus hábitos diarios y descubre cómo reducir tu huella de carbono de manera efectiva.</p>
-                     <Button asChild className="bg-teal-500 hover:bg-teal-600 w-full mt-4">
-                        <Link href="https://footprint.wwf.org.uk" target="_blank" rel="noopener noreferrer">
-                          Calcular mi Huella (WWF)
+                    <Button asChild className="bg-teal-500 hover:bg-green-600 w-full mt-4">
+                        <Link href="https://consumoresponsable.greenpeace.org.mx/calcula-tu-huella-de-carbono" target="_blank" rel="noopener noreferrer">
+                          Calcular mi Huella (Greenpeace)
                         </Link>
                     </Button>
                 </CardContent>

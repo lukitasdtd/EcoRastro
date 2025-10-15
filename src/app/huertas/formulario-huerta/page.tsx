@@ -22,7 +22,7 @@ export default function FormularioHuertaPage() {
     }, []);
 
     // Mientras no estemos seguros de estar en el cliente, no renderizamos nada
-    // para evitar errores de hidrataci�n con localStorage.
+    // para evitar errores de hidratacion con localStorage.
     if (!isClient) {
         return null;
     }
@@ -43,20 +43,20 @@ export default function FormularioHuertaPage() {
 
                 <main>
                     {isAuthenticated ? (
-                        // Si el usuario est� autenticado, muestra el formulario
+                        // Si el usuario esta autenticado, muestra el formulario
                         <FormularioHuerta />
                     ) : (
-                        // Si no, muestra el mensaje de acceso restringido y el di�logo
+                        // Si no, muestra el mensaje de acceso restringido y el dialogo
                         <>
                             <LoginDialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen} />
                             <Card className="w-full max-w-2xl mx-auto my-8 shadow-lg">
                                 <CardHeader>
                                     <CardTitle>Acceso Restringido</CardTitle>
-                                    <CardDescription>Debes iniciar sesi�n para poder registrar una huerta.</CardDescription>
+                                    <CardDescription>Debes iniciar sesión para poder registrar una huerta.</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <Button className="w-full" onClick={() => setIsLoginDialogOpen(true)}>
-                                        Iniciar Sesi�n para Publicar
+                                        Iniciar Sesión para Publicar
                                     </Button>
                                 </CardContent>
                             </Card>
