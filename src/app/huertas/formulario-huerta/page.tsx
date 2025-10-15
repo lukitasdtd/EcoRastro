@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { FormularioHuerta } from "@/components/formulario-huerta";
 import { LoginDialog } from '@/components/login-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Logo } from "@/components/logo";
 
 // Metadata se mantiene para el SEO
 // export const metadata: Metadata = {
@@ -34,7 +34,14 @@ export default function FormularioHuertaPage() {
             <div className="container mx-auto px-4 py-8 md:py-16">
                 <header className="text-center mb-6">
                     <div className="inline-block mx-auto mb-4">
-                        <Logo />
+                        <Image
+                            src="/favicon3.png"
+                            alt="EcoRastro Logo"
+                            width={240}
+                            height={124}
+                            priority
+                            className="h-28 w-auto mt-2"
+                        />
                     </div>
                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                         Formulario de Huerta

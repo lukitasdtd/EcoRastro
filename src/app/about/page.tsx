@@ -17,14 +17,14 @@ export default function AboutPage() {
         <section className="text-center">
           <div className="inline-block">
             <Image
-              src="/ecorastro logo transparente.png"
+              src="/favicon3.png"
               alt="EcoRastro Logo"
               width={150}
               height={150}
               className="mx-auto"
             />
           </div>
-          <h1 className="text-5xl font-bold text-gray-800 mt-4">Quienes Somos</h1>
+          <h1 className="text-8xl font-bold mt-4 bg-gradient-to-r from-primary to-accent text-transparent bg-clip-text">Quienes Somos</h1>
           <p className="text-xl text-gray-600 mt-2">
             "Unimos corazones para devolver a las mascotas su hogar".
           </p>
