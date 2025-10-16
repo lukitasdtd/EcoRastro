@@ -2,9 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { X, Calendar, Sun, Droplets, ListChecks } from 'lucide-react';
+import { Calendar, Sun, ListChecks } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogOverlay, DialogPortal } from "@/components/ui/dialog";
-import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { CropDetail } from '@/lib/crop-details';
 import { CropIcon } from './CropIcon';
@@ -36,9 +35,6 @@ export const CropDetailModal: React.FC<CropDetailModalProps> = ({ crop, onClose 
               <CropIcon cropId={crop.id} className="text-3xl" />
               {crop.name}
             </DialogTitle>
-            <Button variant="ghost" size="icon" onClick={onClose} className="absolute top-3 right-3 rounded-full h-8 w-8">
-              <X className="h-5 w-5" />
-            </Button>
           </DialogHeader>
           
           <div className="grid md:grid-cols-2 gap-0 overflow-y-auto">
