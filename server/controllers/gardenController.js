@@ -3,9 +3,9 @@ const pool = require('../utils/db');
 
 const controllerName = "gardenController";
 
-// --- FUNCIN PARA CREAR UNA HUERTA ---
+// --- FUNCIÓN PARA CREAR UNA HUERTA ---
 exports.createGarden = async (req, res) => {
-    const client = await pool.connect(); // Acquire client
+    const client = await pool.connect(); // se solicita al client
     try {
         if (!req.file) {
             return res.status(400).json({ message: "La imagen de la huerta es requerida." });
@@ -25,7 +25,7 @@ exports.createGarden = async (req, res) => {
         const fullAddressJson = JSON.stringify(addressObject);
 
         // 3. Insertar en la tabla "huertas" incluyendo los campos de contacto
-        const nuevaHuerta = await client.query( // Use client
+        const nuevaHuerta = await client.query( // se usa client
             'INSERT INTO "huertas" (nombre, descripcion, direccion, image_url, user_rut, cont_email, cont_tel) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
             [nombre, descripcion, fullAddressJson, imageUrl, userRut, cont_email, cont_tel]
         );
@@ -44,9 +44,9 @@ exports.createGarden = async (req, res) => {
     }
 };
 
-// --- FUNCIN PARA OBTENER TODAS LAS HUERTAS ---
+// --- FUNCIÓN PARA OBTENER TODAS LAS HUERTAS ---
 exports.getGardens = async (req, res) => {
-    const client = await pool.connect(); // Acquire client
+    const client = await pool.connect(); // se llama al client
     try {
         const todasLasHuertas = await client.query('SELECT * FROM "huertas"'); // Use client
         res.status(200).json(todasLasHuertas.rows);

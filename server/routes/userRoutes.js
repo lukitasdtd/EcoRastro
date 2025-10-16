@@ -35,5 +35,4 @@ router.put('/:id', authenticateToken, userValidationRules(), validate, userContr
 // Eliminar un usuario (requiere token)
 router.delete('/:id', authenticateToken, userController.deleteUser);
 
-
 module.exports = router;
